@@ -21,7 +21,7 @@ export const Hero = () => {
             </div>
             <Content className="flex flex-col items-center justify-center min-h-full">
                 <div className="text-center space-y-5 w-full max-w-151.5">
-                    <h1 className="font-sora text-white font-extrabold text-5xl">Scheduled cooking. Ready for pickup.</h1>
+                    <h1 className="font-sora text-white font-extrabold text-3xl md:text-5xl">Scheduled cooking. Ready for pickup.</h1>
                     <p className="text-white font-normal text-base">Pre-order meals and collect them fresh at your chosen time.</p>
                     <div className="space-y-4">
                         <InputGroup className="h-13 bg-orange-5">

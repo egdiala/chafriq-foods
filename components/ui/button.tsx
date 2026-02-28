@@ -5,11 +5,11 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-4xl border border-transparent bg-clip-padding text-base font-semibold focus-visible:ring-[3px] aria-invalid:ring-[3px] [&_svg:not([class*='size-'])]:size-4 inline-flex items-center justify-center whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none shrink-0 [&_svg]:shrink-0 outline-none group/button select-none",
+  "relative isolate overflow-hidden focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-4xl border border-transparent bg-clip-padding text-base font-semibold focus-visible:ring-[3px] aria-invalid:ring-[3px] [&_svg:not([class*='size-'])]:size-4 inline-flex items-center justify-center whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none shrink-0 [&_svg]:shrink-0 outline-none group/button select-none",
   {
     variants: {
       variant: {
-        default: "bg-orange-2 text-orange-5 hover:bg-orange-1",
+        default: "bg-orange-2 text-orange-5 after:bg-orange-1 after:absolute after:inset-x-0 after:h-50 after:rounded-full after:translate-y-full hover:after:translate-y-0 after:-z-10 after:transform after:transition-transform after:duration-300 after:ease-in",
         secondary: "bg-orange-5 text-orange-2 hover:bg-orange-1 hover:text-orange-5",
         tertiary: "bg-transparent text-orange-2 hover:bg-orange-1 hover:text-orange-5",
         outline: "border-border bg-input/30 hover:bg-input/50 hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground",

@@ -85,6 +85,8 @@
   --color-background: var(--website-bg);
   --color-input-field: var(--input-field);
   --color-outline: var(--outline);
+
+  --shadow-elevated: 0px 14px 50.5px -2px rgba(96, 77, 0, 0.11);
 }
 
 :root {
