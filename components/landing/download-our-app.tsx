@@ -3,7 +3,7 @@ import { Content } from "../content"
 
 export const DownloadOurApp = () => {
     return (
-        <section id="download-our-app" className="relative overflow-hidden isolate bg-red-1 [clip-path:ellipse(150%_100%_at_50%_0%)] lg:[clip-path:ellipse(120%_100%_at_50%_0%)]">
+        <section id="download-our-app" className="relative isolate bg-red-1 [clip-path:ellipse(150%_100%_at_50%_0%)] lg:[clip-path:ellipse(120%_100%_at_50%_0%)]">
             <TopWave className="absolute top-0 -translate-y-10 md:-translate-y-15 inset-x-0 w-full h-auto" />
             <Content className="isolate">
                 <div className="grid grid-cols-1 md:grid-cols-2">
