@@ -1,6 +1,5 @@
 import { Faq } from "@/components/landing/faq";
 import { Hero } from "@/components/landing/hero";
-import { Footer } from "@/components/landing/footer";
 import { StepsAway } from "@/components/landing/steps-away";
 import { DownloadOurApp } from "@/components/landing/download-our-app";
 import { EarnOnYourTerms } from "@/components/landing/earn-on-your-terms";
@@ -15,7 +14,6 @@ export default function HomePage() {
             <QualityYouCanTrust />
             <DownloadOurApp />
             <Faq />
-            <Footer />
         </>
     );
 }

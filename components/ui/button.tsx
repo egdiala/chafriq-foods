@@ -10,8 +10,9 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-orange-2 text-orange-5 after:bg-orange-1 after:absolute after:inset-x-0 after:h-50 after:rounded-full after:translate-y-full hover:after:translate-y-0 after:-z-10 after:transform after:transition-transform after:duration-300 after:ease-in",
-        secondary: "bg-orange-5 text-orange-2 hover:bg-orange-1 hover:text-orange-5",
-        tertiary: "bg-transparent text-orange-2 hover:bg-orange-1 hover:text-orange-5",
+        secondary: "bg-orange-5 text-orange-2 hover:text-orange-5 after:bg-orange-1 after:absolute after:inset-x-0 after:h-50 after:rounded-full after:translate-y-full hover:after:translate-y-0 after:-z-10 after:transform after:transition-transform after:duration-300 after:ease-in",
+        "secondary-dark": "bg-orange-4 text-orange-1 hover:text-orange-5 after:bg-orange-1 after:absolute after:inset-x-0 after:h-50 after:rounded-full after:translate-y-full hover:after:translate-y-0 after:-z-10 after:transform after:transition-transform after:duration-300 after:ease-in",
+        tertiary: "bg-transparent text-orange-2 hover:text-orange-5 after:bg-orange-1 after:absolute after:inset-x-0 after:h-50 after:rounded-full after:translate-y-full hover:after:translate-y-0 after:-z-10 after:transform after:transition-transform after:duration-300 after:ease-in",
         outline: "border-border bg-input/30 hover:bg-input/50 hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground",
         ghost: "hover:bg-muted hover:text-grey-dark-3 dark:hover:bg-muted/50 aria-expanded:bg-muted aria-expanded:text-foreground",
         destructive: "bg-destructive/10 hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/20 text-destructive focus-visible:border-destructive/40 dark:hover:bg-destructive/30",
@@ -29,7 +30,8 @@ const buttonVariants = cva(
         big: "h-11.5 px-4 gap-2",
         small: "h-8 px-3 gap-1",
         smallest: "h-6.5 px-3 gap-1",
-        "icon-only": "size-8"
+        "icon-only": "size-8",
+        "icon-big": "size-11.5 [&_svg:not([class*='size-'])]:size-7",
       },
     },
     defaultVariants: {

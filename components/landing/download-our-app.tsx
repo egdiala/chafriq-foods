@@ -6,12 +6,12 @@ export const DownloadOurApp = () => {
         <section id="download-our-app" className="relative isolate bg-red-1 [clip-path:ellipse(150%_100%_at_50%_0%)] lg:[clip-path:ellipse(120%_100%_at_50%_0%)]">
             <TopWave className="absolute top-0 -translate-y-10 md:-translate-y-15 inset-x-0 w-full h-auto" />
             <Content className="isolate">
-                <div className="grid grid-cols-1 md:grid-cols-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 pb-27">
                     <div className="grid gap-4 w-full md:max-w-108 md:place-self-center">
                         <h2 className="font-sora text-white font-extrabold text-[3.5rem] leading-15">Good Food, Whenever You Want It</h2>
                         <p className="text-white font-normal text-base">Order faster, save favorites, track deliveries, and discover new cooks — all from your phone</p>
                     </div>
-                    <div className="md:absolute md:inset-x-0 md:right-0 md:[&>img]:translate-x-80 md:bottom-0 md:h-full hidden md:flex">
+                    <div className="md:absolute -z-10 ml-auto md:inset-x-0 md:right-0 md:[&>img]:translate-x-0 md:bottom-0 md:h-full hidden md:flex w-[50vw]">
                         <Image
                             src="/order-food-mobile-app.png"
                             alt="order-food-mobile"
@@ -19,12 +19,12 @@ export const DownloadOurApp = () => {
                             className="object-contain object-center"
                         />
                     </div>
-                    <div className="md:hidden h-67">
+                    <div className="md:hidden h-67 w-full translate-y-37">
                         <Image
                             src="/order-food-mobile-app.png"
                             alt="order-food-mobile"
                             fill
-                            className="object-cover"
+                            className="object-cover object-center"
                         />
                     </div>
                 </div>

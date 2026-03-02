@@ -18,7 +18,7 @@ export const Faq = () => {
                     <div className="mx-auto w-full md:max-w-176.5">
                         <h2 className="text-center font-sora text-grey-dark-0 font-extrabold text-[2.5rem] leading-12">Everything You Need to Know Before You Order</h2>
                     </div>
-                    <Accordion type="single" collapsible defaultValue="item-1" className="w-full max-w-204 gap-5">
+                    <Accordion type="single" collapsible className="w-full max-w-204 gap-5">
                         {
                             faqs.map((faq, index) => (
                                 <AccordionItem key={index} value={`item-${index}`}>

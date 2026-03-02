@@ -1,8 +1,8 @@
 import { Search } from "lucide-react"
 import { Content } from "../content"
 import { Button } from "../ui/button"
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../ui/input-group"
 import { IconCalendar, IconCookingPot } from "../icons"
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../ui/input-group"
 
 export const Hero = () => {
     return (

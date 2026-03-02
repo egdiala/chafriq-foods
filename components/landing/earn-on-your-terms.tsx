@@ -39,7 +39,7 @@ export const EarnOnYourTerms = () => {
                         <h2 className="font-sora text-grey-dark-0 font-extrabold text-[2.5rem] leading-12">Cook What You Love. Earn on Your Terms.</h2>
                         <p className="text-grey-dark-2 font-normal text-base">Chafriq empowers passionate cooks to turn their skills into income. Set your menu, control your schedule, and get orders from people who love your food.</p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
                         {
                             terms.map((term, index) => (
                                 <div key={index} className={cn("flex items-center gap-4 px-5 py-3 rounded-4xl basis-1/4", term.background)}>
