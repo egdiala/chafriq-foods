@@ -1,0 +1,50 @@
+name: Deploy to Dev Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Start an SSH agent with the deploy key from GitHub Secrets
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.INC_SSH_KEY }}
+
+      # Optional: Ensure known hosts to prevent MITM attack
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan ${{ secrets.DEV_SERVER_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      # Run commands on the remote server
+      - name: Deploy Vite.js app
+        run: |
+          ssh ${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }} << 'EOF'
+            set -e  # Exit if any command fails
+            myPath="/var/www/chafriq-web"
+            mkdir -p $myPath
+            cd $myPath
+
+            # If .git doesn't exist → clone
+            [ ! -d .git ] && git clone git@github.com:${{ github.repository }}.git .
+
+            # Reset any local changes to avoid conflict
+            git reset --hard
+            git pull
+
+            # Install Node.js dependencies and build the project
+            npm install --legacy-peer-deps
+            npm run build
+
+          EOF
