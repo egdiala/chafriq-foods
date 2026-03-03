@@ -24,11 +24,11 @@ export const Header = () => {
                         }
                     </Link>
                     <div className="flex items-center justify-end gap-5">
-                        <Button type="button" size="icon-big" variant="secondary-dark">
+                        <Button type="button" size="icon-big" variant={isWhite ? "secondary-dark" : "secondary"}>
                             <IconShoppingCart />
                         </Button>
                         <div className="md:flex items-center gap-5 hidden">
-                            <Button type="button" variant="secondary-dark">
+                            <Button type="button" variant={isWhite ? "secondary-dark" : "secondary"}>
                                 Sign in
                             </Button>
                             <Button type="button">
