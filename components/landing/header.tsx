@@ -31,8 +31,10 @@ export const Header = () => {
                             <Button type="button" variant={isWhite ? "secondary-dark" : "secondary"}>
                                 Sign in
                             </Button>
-                            <Button type="button">
-                                Become a Cook
+                            <Button type="button" asChild>
+                                <Link href="/vendor/register">
+                                    Become a Cook
+                                </Link>
                             </Button>
                         </div>
                         <Button type="button" size="icon-big" className="flex md:hidden">

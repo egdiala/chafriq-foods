@@ -43,6 +43,7 @@ export default function ContactUsPage() {
             console.log(value)
         },
     })
+    
     return (
         <section className="bg-orange-5 flex-1">
             <Content>
