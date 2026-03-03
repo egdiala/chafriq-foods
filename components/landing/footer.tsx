@@ -13,8 +13,8 @@ const footerLinks = {
         { link: "#", text: "FAQs" }
     ],
     "legal": [
-        { link: "#", text: "Terms of Use" },
-        { link: "#", text: "Privacy Policy" },
+        { link: "/terms-and-conditions", text: "Terms of Use" },
+        { link: "/privacy-policy", text: "Privacy Policy" },
     ]
 }
 
