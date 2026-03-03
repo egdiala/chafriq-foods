@@ -17,12 +17,12 @@ type SocialLink = {
 
 const footerLinks: Record<string, FooterLink[]> = {
     "actions": [
-        { link: "#", text: "Become a Cook" },
+        { link: "/vendor/register", text: "Become a Cook" },
         { link: "/explore-cooks", text: "Explore Cooks" }
     ],
     "support": [
         { link: "/contact-us", text: "Help Center" },
-        { link: "#", text: "FAQs" }
+        { link: "/#faq", text: "FAQs" }
     ],
     "legal": [
         { link: "/terms-and-conditions", text: "Terms of Use" },
@@ -49,7 +49,7 @@ export const Footer = () => {
     return (
         <footer className="bg-grey-dark-0">
             <Content>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 place-items-center md:place-items-start text-center md:text-left gap-12.5">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 place-items-center md:place-items-start text-center md:text-left gap-8 md:gap-12.5">
                     <div className="flex flex-col gap-4">
                         <LogoWithText />
                         <p className="text-orange-3 text-xs">(C) {new Date().getFullYear()} CHAFIRQ</p>
@@ -58,7 +58,7 @@ export const Footer = () => {
                         Object.keys(footerLinks).map((item) => (
                             <div key={item} className="flex flex-col gap-4">
                                 <span className="uppercase font-medium text-xs text-orange-4">{item}</span>
-                                <div className="flex flex-col gap-6 items-center md:items-start">
+                                <div className="flex flex-col gap-3 md:gap-6 items-center md:items-start">
                                 {
                                     footerLinks[item as keyof typeof footerLinks].map((footerLink, index) => (
                                         <Link
