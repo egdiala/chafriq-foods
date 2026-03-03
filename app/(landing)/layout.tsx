@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Footer } from "@/components/landing/footer";
-import { Header } from "@/components/landing/header";
+import { LayoutContent } from "@/components/landing/layout-content";
 
 export const metadata: Metadata = {
     title: "Chafriq Foods",
@@ -9,10 +8,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
-        <main className="relative">
-            <Header />
+        <LayoutContent>
             {children}
-            <Footer />
-        </main>
+        </LayoutContent>
     );
 }

@@ -6,7 +6,7 @@ import { Search } from "lucide-react"
 import { Separator } from "../ui/separator"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../ui/input-group"
 import { IconArrowDown, IconCalendar, IconClockCountdown, IconEggCrack, IconForkKnife, IconGlobe, IconMapPinLine, IconPath, IconSetup } from "../icons"
-import { CuisineCard } from "./cuisine-card";
+import { CookCard } from "./cook-card";
 
 const filters = [
     { icon: <IconForkKnife />, label: "All Meals" },
@@ -16,7 +16,7 @@ const filters = [
     { icon: <IconEggCrack />, label: "Vegan" }
 ]
 
-export const ExploreCuisinesStepsAway = () => {
+export const ExploreCooksStepsAway = () => {
     const [active, setActive] = useState(0)
     return (
         <section id="steps-away" className="relative isolate bg-white after:hidden after:md:block after:-z-10 after:absolute after:bg-red-2 after:size-67.5 after:rounded-full after:bottom-0 after:top-1/2 after:right-0 after:translate-x-1/2 after:filter after:blur-[300px] overflow-hidden">
@@ -30,12 +30,12 @@ export const ExploreCuisinesStepsAway = () => {
                         <div className="flex items-center py-2 px-3 gap-4 bg-grey-dark-4 w-fit rounded-full mx-auto [&_svg]:size-3 [&_svg]:text-grey-dark-3">
                             <div className="flex items-center gap-1">
                                 <IconMapPinLine />
-                                <span className="text-xs text-grey-dark-2 flex-1 line-clamp-1 text-balance">6391 Elgin St. Celina, Delaware 10299</span>
+                                <span className="text-xs text-grey-dark-2">6391 Elgin St. Celina, Delaware 10299</span>
                             </div>
                             <Separator orientation="vertical" />
                             <div className="flex items-center gap-1">
                                 <IconCalendar />
-                                <span className="text-xs text-grey-dark-2 flex-1 line-clamp-1 text-balance">2nd May, 2023</span>
+                                <span className="text-xs text-grey-dark-2">2nd May, 2023</span>
                             </div>
                         </div>
                         <InputGroup className="h-13 bg-white">
@@ -64,7 +64,7 @@ export const ExploreCuisinesStepsAway = () => {
                     <div className="grid gap-8 grid-cols-[repeat(auto-fill,minmax(285px,1fr))]">
                     {
                         Array.from({ length: 10 }).map((_, index) => (
-                            <CuisineCard key={index} />
+                            <CookCard key={index} />
                         ))
                     }
                     </div>

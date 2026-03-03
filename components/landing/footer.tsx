@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils"
 const footerLinks = {
     "actions": [
         { link: "#", text: "Become a Cook" },
-        { link: "#", text: "Explore Cooks" }
+        { link: "/explore-cooks", text: "Explore Cooks" }
     ],
     "support": [
-        { link: "#", text: "Help Center" },
+        { link: "/contact-us", text: "Help Center" },
         { link: "#", text: "FAQs" }
     ],
     "legal": [

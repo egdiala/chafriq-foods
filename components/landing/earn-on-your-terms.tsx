@@ -30,9 +30,9 @@ const terms = [
     },
 ]
 
-export const EarnOnYourTerms = () => {
+export const EarnOnYourTerms = ({ className }: { className?: string; }) => {
     return (
-        <section id="earn-on-your-terms" className="bg-white">
+        <section id="earn-on-your-terms" className={cn("bg-white", className)}>
             <Content>
                 <div className="flex flex-col gap-11">
                     <div className="grid gap-4 w-full md:max-w-151.5">
