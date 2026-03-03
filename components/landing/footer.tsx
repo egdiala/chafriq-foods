@@ -1,9 +1,21 @@
 import Link from "next/link"
+import type { Route } from "next"
 import { Content } from "../content"
 import { IconFacebook, IconInstagram, IconTwitter, LogoWithText } from "../icons"
 import { cn } from "@/lib/utils"
+import { JSX } from "react"
 
-const footerLinks = {
+type FooterLink = {
+    link: Route | "#"
+    text: string
+}
+
+type SocialLink = {
+    link: Route | "#"
+    icon: JSX.Element
+}
+
+const footerLinks: Record<string, FooterLink[]> = {
     "actions": [
         { link: "#", text: "Become a Cook" },
         { link: "/explore-cooks", text: "Explore Cooks" }
@@ -18,7 +30,7 @@ const footerLinks = {
     ]
 }
 
-const socialLinks = [
+const socialLinks: SocialLink[] = [
     {
         icon: <IconInstagram />,
         link: "#"
