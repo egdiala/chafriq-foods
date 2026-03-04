@@ -6,11 +6,18 @@ import { Header } from "./header"
 import { cn } from "@/lib/utils"
 import { useMemo } from "react"
 
+const flexUrls = [
+    "/contact-us",
+    "/vendor/forgot-password",
+    "/vendor/reset-password",
+    "/vendor/login"
+]
+
 export const LayoutContent = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     const pathname = usePathname()
 
     const isFlex = useMemo(() => {
-        return pathname === "/contact-us"
+        return flexUrls.includes(pathname)
     }, [pathname])
     
     return (
