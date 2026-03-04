@@ -9,14 +9,14 @@ export const StepsAway = () => {
                     <div className="order-2 md:order-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-153">
                         <div className="grid grid-cols-2 md:grid-cols-1 gap-4">
                             <div className="grid relative h-40 md:h-51.5 rounded-xl md:rounded-4xl overflow-hidden">
-                                <Image src="/woman-frying.png" alt="woman-frying" className="object-cover object-center" fill />
+                                <Image src="/woman-frying.webp" alt="woman-frying" className="object-cover object-center" fill />
                             </div>
                             <div className="grid relative h-40 md:h-51.5 rounded-xl md:rounded-4xl overflow-hidden">
-                                <Image src="/woman-cutting-tomatoes.png" alt="woman-cutting-tomatoes" className="object-cover object-center" fill />
+                                <Image src="/woman-cutting-tomatoes.webp" alt="woman-cutting-tomatoes" className="object-cover object-center" fill />
                             </div>
                         </div>
                         <div className="grid relative h-50 md:h-107 rounded-xl md:rounded-4xl overflow-hidden">
-                            <Image src="/man-preparing-sushi.png" alt="man-preparing-sushi" className="object-cover object-[50%_45%] md:object-center" fill />
+                            <Image src="/man-preparing-sushi.webp" alt="man-preparing-sushi" className="object-cover object-[50%_45%] md:object-center" fill />
                         </div>
                     </div>
                     <div className="order-1 md:order-2 grid gap-4 w-full md:max-w-108">

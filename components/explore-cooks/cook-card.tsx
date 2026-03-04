@@ -16,7 +16,7 @@ export const CookCard = () => {
                     <Button variant="carousel" size="icon-xs" className="absolute top-2 right-2 z-10">
                         <IconFavorite />
                     </Button>
-                    <Image src="/quality-1.png" alt="chef" className="object-cover" fill />
+                    <Image src="/quality-1.webp" alt="chef" className="object-cover" fill />
                 </div>
             </CardContent>
             <div className="flex flex-col gap-3 px-3">

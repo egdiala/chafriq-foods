@@ -8,22 +8,22 @@ const qualities = [
     {
         title: "Selective by Design",
         description: "We feature a tightly curated group of top local cooks.",
-        image: "/quality-1.png"
+        image: "/quality-1.webp"
     },
     {
         title: "Flavour-Approved",
         description: "Dishes are evaluated for taste, quality, and presentation.",
-        image: "/quality-3.png"
+        image: "/quality-3.webp"
     },
     {
         title: "Excellence in Every Order",
         description: "From preparation to pickup, quality always comes first.",
-        image: "/quality-2.png"
+        image: "/quality-2.webp"
     },
     {
         title: "Certified Kitchens, Trusted Chefs",
         description: "Every partner meets hygiene and safety standards.",
-        image: "/quality-4.png"
+        image: "/quality-4.webp"
     },
 ]
 
@@ -40,7 +40,7 @@ export const QualityYouCanTrust = () => {
                             qualities.map((quality, index) => (
                                 <div key={index} className="flex flex-col gap-5 group">
                                     <div className={cn("md:group-even:order-2 grid relative rounded-4xl overflow-hidden", index > 1 ? "h-58" : "h-58 md:h-79.5")}>
-                                        <Image src={quality.image} alt={quality.image.replace(".png", "").replace("/", "")} className="object-cover object-center" fill />
+                                        <Image src={quality.image} alt={quality.image.replace(".webp", "").replace("/", "")} className="object-cover object-center" fill />
                                     </div>
                                     <div className="md:group-even:order-1 grid gap-1 rounded-4xl p-5 bg-white shadow-(--shadow-elevated)">
                                         <h3 className="font-semibold text-base text-orange-2">{quality.title}</h3>

@@ -13,7 +13,7 @@ export const DownloadOurApp = () => {
                     </div>
                     <div className="md:absolute -z-10 ml-auto md:inset-x-0 md:right-0 md:[&>img]:translate-x-0 md:bottom-0 md:h-full hidden md:flex w-[50vw]">
                         <Image
-                            src="/order-food-mobile-app.png"
+                            src="/order-food-mobile-app.webp"
                             alt="order-food-mobile"
                             fill
                             className="object-contain object-center"
@@ -21,7 +21,7 @@ export const DownloadOurApp = () => {
                     </div>
                     <div className="md:hidden h-67 w-full translate-y-37">
                         <Image
-                            src="/order-food-mobile-app.png"
+                            src="/order-food-mobile-app.webp"
                             alt="order-food-mobile"
                             fill
                             className="object-cover object-center"
