@@ -33,6 +33,7 @@ jobs:
           ssh ${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }} << 'EOF'
             set -e  # Exit if any command fails
             myPath="/var/www/chafriq-web"
+            pm2Name="chafriq-webapp"
             mkdir -p $myPath
             cd $myPath
 
@@ -46,5 +47,5 @@ jobs:
             # Install Node.js dependencies and build the project
             npm install --legacy-peer-deps
             npm run build
-
+            pm2 reload $pm2Name || pm2 start "npm run startProd" --name $pm2Name
           EOF
