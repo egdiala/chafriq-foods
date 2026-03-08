@@ -25,7 +25,7 @@ export const VendorLayoutContent = ({ children }: Readonly<{ children: React.Rea
     }, [pathname])
     
     return (
-        <main className={cn("relative h-full lg:bg-orange-5 lg:p-4 space-y-4", isFlex && "flex flex-col")}>
+        <main className={cn("relative min-h-full lg:bg-orange-5 lg:p-4 lg:space-y-4", isFlex && "flex flex-col")}>
             <VendorHeader />
             {children}
         </main>
