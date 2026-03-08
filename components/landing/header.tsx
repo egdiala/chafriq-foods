@@ -28,8 +28,10 @@ export const Header = () => {
                             <IconShoppingCart />
                         </Button>
                         <div className="md:flex items-center gap-5 hidden">
-                            <Button type="button" variant={isWhite ? "secondary-dark" : "secondary"}>
-                                Sign in
+                            <Button type="button" variant={isWhite ? "secondary-dark" : "secondary"} asChild>
+                                <Link href="/customer/login">
+                                    Sign in
+                                </Link>
                             </Button>
                             <Button type="button" asChild>
                                 <Link href="/vendor/register">

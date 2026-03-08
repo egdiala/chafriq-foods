@@ -1,11 +1,11 @@
 import { Content } from "@/components/content";
-import { VendorLoginContent } from "@/components/vendor/auth/login-content";
+import { CustomerLoginContent } from "@/components/customer/auth/login-content";
 
-export default function VendorLoginPage() {
+export default function CustomerLoginPage() {
     return (
         <section className="flex-1">
             <Content>
-                <VendorLoginContent />
+                <CustomerLoginContent />
             </Content>
         </section>
     )

@@ -3,7 +3,7 @@ import { VendorRegisterContent } from "@/components/vendor/auth/register-content
 
 export default function VendorRegisterPage() {
     return (
-        <section>
+        <section className="flex-1">
             <Content>
                 <VendorRegisterContent />
             </Content>

@@ -1,10 +1,9 @@
 "use client"
 
 import { usePathname } from "next/navigation"
-import { Footer } from "./footer"
-import { Header } from "./header"
 import { cn } from "@/lib/utils"
 import { useMemo } from "react"
+import { VendorHeader } from "./header"
 
 const flexUrls = [
     "/contact-us",
@@ -18,7 +17,7 @@ const flexUrls = [
     "/customer/register",
 ]
 
-export const LayoutContent = ({ children }: Readonly<{ children: React.ReactNode }>) => {
+export const VendorLayoutContent = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     const pathname = usePathname()
 
     const isFlex = useMemo(() => {
@@ -26,10 +25,9 @@ export const LayoutContent = ({ children }: Readonly<{ children: React.ReactNode
     }, [pathname])
     
     return (
-        <main className={cn("relative h-full", isFlex && "flex flex-col")}>
-            <Header />
+        <main className={cn("relative h-full lg:bg-orange-5 lg:p-4 space-y-4", isFlex && "flex flex-col")}>
+            <VendorHeader />
             {children}
-            <Footer />
         </main>
     )
 }

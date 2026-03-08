@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils"
 import { Content } from "../content"
 import { IconCalendar, IconChefHat, IconCookingPot, IconRssSimple, IconStorefront } from "../icons"
 import { Button } from "../ui/button"
+import Link from "next/link"
 
 const terms = [
     {
@@ -51,9 +52,11 @@ export const EarnOnYourTerms = ({ className }: { className?: string; }) => {
                             ))
                         }
                     </div>
-                    <Button className="[&>svg]:size-6! w-fit">
-                        <IconChefHat />
-                        Become a Cook
+                    <Button className="[&>svg]:size-6! w-fit" asChild>
+                        <Link href="/vendor/register">
+                            <IconChefHat />
+                            Become a Cook
+                        </Link>
                     </Button>
                 </div>
             </Content>
