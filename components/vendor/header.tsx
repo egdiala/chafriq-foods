@@ -8,8 +8,11 @@ import { type RouteType } from "next/dist/lib/load-custom-routes";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { IconArrowDown, IconBell, IconBowlSteam, IconChartBar, IconChartLine, IconChefHat, IconCurrencyDollar, IconHamMenu, IconHeadset, IconSignOut, IconStorefront, IconUser, LogoWithText } from "../icons";
+import { Logout } from "./logout";
+import { useState } from "react";
 
 export const VendorHeader = () => {
+    const [openLogout, setOpenLogout] = useState(false)
     const headerLinks = [
         { icon: <IconChartLine />, text: "Dashboard", href: "/vendor" },
         { icon: <IconBowlSteam />, text: "Orders", href: "/vendor/orders" },
@@ -76,9 +79,11 @@ export const VendorHeader = () => {
                                         <IconHeadset />
                                         Support
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem className="[&>svg]:text-orange-2 not-data-[variant=destructive]:focus:**:text-orange-2!">
-                                        <IconSignOut />
-                                        Logout
+                                    <DropdownMenuItem className="[&>svg]:text-orange-2 not-data-[variant=destructive]:focus:**:text-orange-2!" asChild>
+                                        <button type="button" className="w-full" onClick={() => setOpenLogout(true)}>
+                                            <IconSignOut />
+                                            Logout
+                                        </button>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                             </DropdownMenuContent>
@@ -86,6 +91,7 @@ export const VendorHeader = () => {
                     </div>
                 </div>
             </Content>
+            <Logout open={openLogout} setOpen={setOpenLogout} />
         </nav>
     )
 }

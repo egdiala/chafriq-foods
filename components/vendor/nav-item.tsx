@@ -8,7 +8,7 @@ export const NavItem = ({ children, className, ...props }: LinkProps<RouteType>)
     const pathname = usePathname()
 
     const isActive = useMemo(() => {
-        return !!pathname.startsWith(props.href.toString())
+        return props.href.toString() !== "/vendor" ? pathname.startsWith(props.href.toString()) : pathname === props.href.toString()
     }, [pathname, props.href])
     
     return (
