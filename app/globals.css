@@ -77,10 +77,12 @@
 
   /* Semantic */
   --color-success: var(--success);
+  --color-success-light: var(--success-light);
   --color-neu: var(--neu);
   --color-neu-light: var(--neu-light);
   --color-error: var(--error);
   --color-amber: var(--amber);
+  --color-amber-light: var(--amber-light);
 
   /* Background */
   --color-background: var(--website-bg);
@@ -157,10 +159,12 @@
 
   /* Semantic */
   --success: #4ea507;
+  --success-light: #f8fef5;
   --neu: #007bff;
   --neu-light: #f2f9fe;
   --error: #de3631;
   --amber: #bb7f05;
+  --amber-light: #fff7e8;
 
   /* Misc */
   --website-bg: #f3f5f9;
