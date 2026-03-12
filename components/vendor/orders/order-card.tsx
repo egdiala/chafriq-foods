@@ -1,11 +1,15 @@
-import { IconBowlSteam, IconCyclist, IconMapPinLine, IconTrip, IconUser } from "@/components/icons"
-import { IconDot } from "@/components/icons/icon-dot"
 import { Badge } from "@/components/ui/badge"
+import { IconDot } from "@/components/icons/icon-dot"
 import { Separator } from "@/components/ui/separator"
+import { IconBowlSteam, IconCyclist, IconMapPinLine, IconTrip, IconUser } from "@/components/icons"
 
-export const OrderCard = () => {
+type Props = {
+    view: () => void;
+}
+
+export const OrderCard = ({ view }: Props) => {
     return (
-        <div className="flex items-start p-3 gap-3 sm:gap-4 rounded-lg inset-ring-1 inset-ring-outline">
+        <div onClick={view} className="flex items-start p-3 gap-3 sm:gap-4 rounded-lg inset-ring-1 inset-ring-outline cursor-pointer">
             <div className="rounded-full overflow-hidden size-13 sm:size-24.5 bg-orange-1 outline -outline-offset-1 outline-white/10">
                 <img src="https://images.unsplash.com/photo-1432139555190-58524dae6a55?q=80&w=2676&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="food" className="object-cover size-24.5" />
             </div>
