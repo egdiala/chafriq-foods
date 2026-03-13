@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+import { Logout } from "./logout";
 import { Content } from "../content";
 import { NavItem } from "./nav-item";
 import { Button } from "../ui/button";
@@ -8,8 +10,6 @@ import { type RouteType } from "next/dist/lib/load-custom-routes";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { IconArrowDown, IconBell, IconBowlSteam, IconChartBar, IconChartLine, IconChefHat, IconCurrencyDollar, IconHamMenu, IconHeadset, IconSignOut, IconStorefront, IconUser, LogoWithText } from "../icons";
-import { Logout } from "./logout";
-import { useState } from "react";
 
 export const VendorHeader = () => {
     const [openLogout, setOpenLogout] = useState(false)
@@ -67,13 +67,17 @@ export const VendorHeader = () => {
                                 </div>
                                 <DropdownMenuSeparator className="mx-px" />
                                 <DropdownMenuGroup className="mt-2">
-                                    <DropdownMenuItem className="[&>svg]:text-orange-2 not-data-[variant=destructive]:focus:**:text-orange-2!">
-                                        <IconUser />
-                                        View Profile
+                                    <DropdownMenuItem className="[&>svg]:text-orange-2 not-data-[variant=destructive]:focus:**:text-orange-2!" asChild>
+                                        <Link href="/vendor/profile">
+                                            <IconUser />
+                                            View Profile
+                                        </Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem className="[&>svg]:text-orange-2 not-data-[variant=destructive]:focus:**:text-orange-2!">
-                                        <IconCurrencyDollar />
-                                        Payout
+                                    <DropdownMenuItem className="[&>svg]:text-orange-2 not-data-[variant=destructive]:focus:**:text-orange-2!" asChild>
+                                        <Link href="/vendor/payout">
+                                            <IconCurrencyDollar />
+                                            Payout
+                                        </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem className="[&>svg]:text-orange-2 not-data-[variant=destructive]:focus:**:text-orange-2!">
                                         <IconHeadset />
