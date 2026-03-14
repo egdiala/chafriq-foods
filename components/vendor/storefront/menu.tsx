@@ -10,17 +10,17 @@ type Props = {
 
 export const Menu = ({ className }: Props) => {
     return (
-        <Card className={cn("py-5", className)}>
-            <CardHeader className="px-5">
+        <Card className={cn("py-0 sm:py-5 ring-0 sm:ring-1 overflow-visible", className)}>
+            <CardHeader className="px-0 sm:px-5">
                 <div className="flex items-center justify-between">
                     <CardTitle>Menu (23)</CardTitle>
                     <Button variant="secondary" size="small" className="text-sm font-medium">
                         <Plus className="size-4!" />
-                        Add New Cuisine
+                        <span className="sr-only sm:not-sr-only">Add New Cuisine</span>
                     </Button>
                 </div>
             </CardHeader>
-            <CardContent className="px-5">
+            <CardContent className="px-0 sm:px-5">
                 <div className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(285px,1fr))]">
                 {
                     Array.from({ length: 7 }).map((_, index) => (
