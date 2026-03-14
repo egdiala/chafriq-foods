@@ -16,6 +16,8 @@ export * from "./icon-cooking-pot";
 export * from "./icon-copy-simple";
 export * from "./icon-currency-dollar";
 export * from "./icon-cyclist";
+export * from "./icon-dot";
+export * from "./icon-download";
 export * from "./icon-egg-crack";
 export * from "./icon-email";
 export * from "./icon-external-link";
