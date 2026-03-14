@@ -16,7 +16,7 @@ export const VendorHeader = () => {
     const headerLinks = [
         { icon: <IconChartLine />, text: "Dashboard", href: "/vendor" },
         { icon: <IconBowlSteam />, text: "Orders", href: "/vendor/orders" },
-        { icon: <IconStorefront />, text: "Storefront", href: "/vendor/store" },
+        { icon: <IconStorefront />, text: "Storefront", href: "/vendor/storefront" },
         { icon: <IconChartBar />, text: "Reporting", href: "/vendor/report" },
     ]
     return (
