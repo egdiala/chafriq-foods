@@ -30,7 +30,7 @@ export const CookCard = () => {
                 <div className="flex items-center gap-3.5 flex-wrap">
                 {
                     Array.from({ length: 3 }).map((_, index) => (
-                        <span key={index} className="h-4.5 flex items-center justify-center px-1 text-amber text-xs bg-amber/5 rounded">Cuisine Type {index + 1}</span>
+                        <span key={index} className="h-4.5 flex items-center justify-center px-1 text-amber text-xs bg-amber-light rounded">Cuisine Type {index + 1}</span>
                     ))
                 }
                 </div>

@@ -10,12 +10,12 @@ type Props = {
 export const Logout = ({ open, setOpen }: Props) => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="gap-5 sm:max-w-md" showCloseButton={false}>
+            <DialogContent className="gap-5 sm:max-w-98.5" showCloseButton={false}>
                 <div className="relative size-14">
                     <Image src="/question-mark.gif" alt="question-mark" fill />
                 </div>
                 <DialogHeader>
-                    <DialogTitle>Log out?</DialogTitle>
+                    <DialogTitle className="font-semibold text-base">Log out?</DialogTitle>
                     <DialogDescription>
                         Are you sure you want to logout from this platform.
                     </DialogDescription>

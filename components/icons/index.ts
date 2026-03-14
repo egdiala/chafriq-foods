@@ -13,6 +13,7 @@ export * from "./icon-clock-countdown";
 export * from "./icon-cloud-arrow-up";
 export * from "./icon-coins";
 export * from "./icon-cooking-pot";
+export * from "./icon-copy-simple";
 export * from "./icon-currency-dollar";
 export * from "./icon-cyclist";
 export * from "./icon-egg-crack";

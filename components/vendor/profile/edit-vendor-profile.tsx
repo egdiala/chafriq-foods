@@ -11,7 +11,7 @@ type Props = {
     setOpen: (v: boolean) => void;
 }
 
-export const EditProfileContent = ({ open, setOpen }: Props) => {
+export const EditVendorProfile = ({ open, setOpen }: Props) => {
 
     const editProfileForm = useForm({
         defaultValues: {
