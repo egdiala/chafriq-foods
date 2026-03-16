@@ -11,9 +11,9 @@ import Link from "next/link";
 
 const MAIN_ALLERGIES = ["peanuts", "tree nuts", "milk (dairy)", "egg", "wheat/grain", "soy", "fish", "shellfish", "sesame"]
 
-export const VendorAddCuisineContent = () => {
+export const VendorEditCuisineContent = () => {
 
-    const addCuisineForm = useForm({
+    const editCuisineForm = useForm({
         defaultValues: {
             name: "",
             quantity: "",
@@ -42,29 +42,29 @@ export const VendorAddCuisineContent = () => {
         const validImages = Array.from(files).filter((file) => file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024)
 
         validImages.forEach((img) => {
-            return addCuisineForm.pushFieldValue("cuisineImages", img)
+            return editCuisineForm.pushFieldValue("cuisineImages", img)
         })
     }
 
     const removeImage = (index: number) => {
-        addCuisineForm.removeFieldValue("cuisineImages", index)
+        editCuisineForm.removeFieldValue("cuisineImages", index)
     }
     
     return (
         <>
             <div className="text-center space-y-2 mx-auto">
-                <h1 className="font-sora text-grey-dark-0 font-extrabold text-lg md:text-2xl">Add Cuisine</h1>
+                <h1 className="font-sora text-grey-dark-0 font-extrabold text-lg md:text-2xl">Edit Cuisine</h1>
                 <p className="text-grey-dark-3 font-normal text-xs">Lorem ipsum dolor sit amet consectetur. Pharetra vitae tristique volutpat sed augue augue viverra orci lectus. Diam diam ut ac at leo convallis.</p>
             </div>
 
             <form className="flex flex-col gap-12.5 mx-auto" onSubmit={(e) => {
                 e.preventDefault()
-                addCuisineForm.handleSubmit()
+                editCuisineForm.handleSubmit()
             }}>
                 <FieldSet>
                     <FieldLegend>Cuisine Info</FieldLegend>
                     <FieldGroup>
-                        <addCuisineForm.Field name="name">
+                        <editCuisineForm.Field name="name">
                             {(field) => {
                                 const isInvalid = !field.state.meta.isValid
                                 return (
@@ -83,10 +83,10 @@ export const VendorAddCuisineContent = () => {
                                     </Field>
                                 )
                             }}
-                        </addCuisineForm.Field>
+                        </editCuisineForm.Field>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                            <addCuisineForm.Field name="quantity">
+                            <editCuisineForm.Field name="quantity">
                                 {(field) => {
                                     const isInvalid = !field.state.meta.isValid
                                     return (
@@ -105,8 +105,8 @@ export const VendorAddCuisineContent = () => {
                                         </Field>
                                     )
                                 }}
-                            </addCuisineForm.Field>
-                            <addCuisineForm.Field name="unit">
+                            </editCuisineForm.Field>
+                            <editCuisineForm.Field name="unit">
                                 {(field) => {
                                     const isInvalid = !field.state.meta.isValid
                                     return (
@@ -125,8 +125,8 @@ export const VendorAddCuisineContent = () => {
                                         </Field>
                                     )
                                 }}
-                            </addCuisineForm.Field>
-                            <addCuisineForm.Field name="minimumOrderSize">
+                            </editCuisineForm.Field>
+                            <editCuisineForm.Field name="minimumOrderSize">
                                 {(field) => {
                                     const isInvalid = !field.state.meta.isValid
                                     return (
@@ -145,10 +145,10 @@ export const VendorAddCuisineContent = () => {
                                         </Field>
                                     )
                                 }}
-                            </addCuisineForm.Field>
+                            </editCuisineForm.Field>
                         </div>
 
-                        <addCuisineForm.Field name="content">
+                        <editCuisineForm.Field name="content">
                             {(field) => {
                                 const isInvalid = !field.state.meta.isValid
                                 return (
@@ -167,10 +167,10 @@ export const VendorAddCuisineContent = () => {
                                     </Field>
                                 )
                             }}
-                        </addCuisineForm.Field>
+                        </editCuisineForm.Field>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <addCuisineForm.Field name="duration">
+                            <editCuisineForm.Field name="duration">
                                 {(field) => {
                                     const isInvalid = !field.state.meta.isValid
                                     return (
@@ -189,8 +189,8 @@ export const VendorAddCuisineContent = () => {
                                         </Field>
                                     )
                                 }}
-                            </addCuisineForm.Field>
-                            <addCuisineForm.Field name="amount">
+                            </editCuisineForm.Field>
+                            <editCuisineForm.Field name="amount">
                                 {(field) => {
                                     const isInvalid = !field.state.meta.isValid
                                     return (
@@ -209,10 +209,10 @@ export const VendorAddCuisineContent = () => {
                                         </Field>
                                     )
                                 }}
-                            </addCuisineForm.Field>
+                            </editCuisineForm.Field>
                         </div>
                         
-                        <addCuisineForm.Field name="note">
+                        <editCuisineForm.Field name="note">
                             {(field) => {
                                 const isInvalid = !field.state.meta.isValid
                                 return (
@@ -231,14 +231,14 @@ export const VendorAddCuisineContent = () => {
                                     </Field>
                                 )
                             }}
-                        </addCuisineForm.Field>
+                        </editCuisineForm.Field>
                     </FieldGroup>
                 </FieldSet>
 
                 <FieldSet>
                     <FieldLegend>Allergy Information</FieldLegend>
                     <FieldGroup>
-                        <addCuisineForm.Field name="allergies" mode="array">
+                        <editCuisineForm.Field name="allergies" mode="array">
                         {(field) => {
                             const isInvalid = !field.state.meta.isValid
                             return (
@@ -247,7 +247,7 @@ export const VendorAddCuisineContent = () => {
                                     <div className="flex items-center gap-4 flex-wrap"> 
                                         {MAIN_ALLERGIES.map((item, i) => {
                                             return (
-                                                <addCuisineForm.Field key={i} name={`allergies[${i}]`}>
+                                                <editCuisineForm.Field key={i} name={`allergies[${i}]`}>
                                                     {(subField) => {
                                                         const values = field.state.value
                                                         const isSelected = values?.includes(item.toLowerCase())
@@ -257,7 +257,7 @@ export const VendorAddCuisineContent = () => {
                                                             </button>
                                                         )
                                                     }}
-                                                </addCuisineForm.Field>
+                                                </editCuisineForm.Field>
                                             )
                                         })}
                                     </div>
@@ -265,9 +265,9 @@ export const VendorAddCuisineContent = () => {
                                 </div>
                             )
                         }}
-                        </addCuisineForm.Field>
+                        </editCuisineForm.Field>
 
-                        <addCuisineForm.Field name="contaminations" mode="array">
+                        <editCuisineForm.Field name="contaminations" mode="array">
                         {(field) => {
                             const isInvalid = !field.state.meta.isValid
                             return (
@@ -276,7 +276,7 @@ export const VendorAddCuisineContent = () => {
                                     <div className="flex items-center gap-4 flex-wrap"> 
                                         {MAIN_ALLERGIES.map((item, i) => {
                                             return (
-                                                <addCuisineForm.Field key={i} name={`contaminations[${i}]`}>
+                                                <editCuisineForm.Field key={i} name={`contaminations[${i}]`}>
                                                     {(subField) => {
                                                         const values = field.state.value
                                                         const isSelected = values?.includes(item.toLowerCase())
@@ -286,7 +286,7 @@ export const VendorAddCuisineContent = () => {
                                                             </button>
                                                         )
                                                     }}
-                                                </addCuisineForm.Field>
+                                                </editCuisineForm.Field>
                                             )
                                         })}
                                     </div>
@@ -294,9 +294,9 @@ export const VendorAddCuisineContent = () => {
                                 </div>
                             )
                         }}
-                        </addCuisineForm.Field>
+                        </editCuisineForm.Field>
 
-                        <addCuisineForm.Field name="allergyNotes">
+                        <editCuisineForm.Field name="allergyNotes">
                             {(field) => {
                                 const isInvalid = !field.state.meta.isValid
                                 return (
@@ -314,14 +314,14 @@ export const VendorAddCuisineContent = () => {
                                     </Field>
                                 )
                             }}
-                        </addCuisineForm.Field>
+                        </editCuisineForm.Field>
                     </FieldGroup>
                 </FieldSet>
 
                 <FieldSet>
                     <FieldLegend>CUISINE IMAGES</FieldLegend>
                     <FieldGroup>
-                        <addCuisineForm.Field name="cuisineImages" mode="array">
+                        <editCuisineForm.Field name="cuisineImages" mode="array">
                         {(field) => {
                             const isInvalid = !field.state.meta.isValid
                             return (
@@ -338,7 +338,7 @@ export const VendorAddCuisineContent = () => {
                                         {field.state.value?.map((file, i) => {
                                             const preview = URL.createObjectURL(file)
                                             return (
-                                                <addCuisineForm.Field key={i} name={`cuisineImages[${i}]`}>
+                                                <editCuisineForm.Field key={i} name={`cuisineImages[${i}]`}>
                                                     {() => {
                                                         return (
                                                             <div key={i} className="relative size-24 overflow-hidden rounded-lg">
@@ -355,7 +355,7 @@ export const VendorAddCuisineContent = () => {
                                                             </div>
                                                         )
                                                     }}
-                                                </addCuisineForm.Field>
+                                                </editCuisineForm.Field>
                                             )
                                         })}
                                     </div>
@@ -363,11 +363,11 @@ export const VendorAddCuisineContent = () => {
                                 </div>
                             )
                         }}
-                        </addCuisineForm.Field>
+                        </editCuisineForm.Field>
                     </FieldGroup>
                 </FieldSet>
                                 
-                <addCuisineForm.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+                <editCuisineForm.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
                     {([canSubmit]) => {
                         return (
                             <div className="flex items-center gap-4 *:flex-1 max-w-2/3 mx-auto w-full">
@@ -380,7 +380,7 @@ export const VendorAddCuisineContent = () => {
                             </div>
                         )
                     }}
-                </addCuisineForm.Subscribe>
+                </editCuisineForm.Subscribe>
 
             </form>
         </>
