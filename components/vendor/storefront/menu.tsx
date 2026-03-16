@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
+import Link from "next/link";
 
 type Props = {
     className?: string;
@@ -14,9 +15,11 @@ export const Menu = ({ className }: Props) => {
             <CardHeader className="px-0 sm:px-5">
                 <div className="flex items-center justify-between">
                     <CardTitle>Menu (23)</CardTitle>
-                    <Button variant="secondary" size="small" className="text-sm font-medium">
-                        <Plus className="size-4!" />
-                        <span className="sr-only sm:not-sr-only">Add New Cuisine</span>
+                    <Button variant="secondary" size="small" className="text-sm font-medium" asChild>
+                        <Link href="/vendor/storefront/add">
+                            <Plus className="size-4!" />
+                            <span className="sr-only sm:not-sr-only">Add New Cuisine</span>
+                        </Link>
                     </Button>
                 </div>
             </CardHeader>
