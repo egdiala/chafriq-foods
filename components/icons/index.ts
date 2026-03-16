@@ -38,6 +38,7 @@ export * from "./icon-shopping-cart";
 export * from "./icon-sign-out";
 export * from "./icon-star";
 export * from "./icon-storefront";
+export * from "./icon-toggle-left";
 export * from "./icon-trash-simple";
 export * from "./icon-trending-up";
 export * from "./icon-trip";

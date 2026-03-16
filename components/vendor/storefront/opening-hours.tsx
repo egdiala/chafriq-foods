@@ -6,9 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { startOfWeek, addDays, format } from "date-fns";
 import { SetDayAvailability } from "./set-day-availability";
-import { IconDot } from "@/components/icons";
+import { IconDot, IconPencilSimple, IconToggleLeft, IconTrashSimple } from "@/components/icons";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { DeleteSchedule } from "./delete-schedule";
 
 export const OpeningHours = () => {
+    const [openDelete, setOpenDelete] = useState({ id: "", isOpen: false })
     const [openDay, setOpenDay] = useState({ day: "", isOpen: false })
     const start = startOfWeek(new Date(), { weekStartsOn: 1 });
 
@@ -41,7 +44,26 @@ export const OpeningHours = () => {
                                             <IconDot />
                                             <span className="line-clamp-1">Available</span>
                                         </div>
-                                        <Ellipsis className="size-4 text-grey-dark-3" />
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button variant="tertiary" size="icon-xs">
+                                                    <Ellipsis className="size-4" />
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent align="end" className="w-28 p-2">
+                                                <div className="flex items-center gap-3">
+                                                    <Button variant="secondary" size="icon-xs" type="button">
+                                                        <IconToggleLeft />
+                                                    </Button>
+                                                    <Button variant="secondary" size="icon-xs" type="button">
+                                                        <IconPencilSimple />
+                                                    </Button>
+                                                    <Button variant="secondary" size="icon-xs" type="button" onClick={() => setOpenDelete({ id: "", isOpen: true })}>
+                                                        <IconTrashSimple />
+                                                    </Button>
+                                                </div>
+                                            </PopoverContent>
+                                        </Popover>
                                     </div>
                                 </div>
                             </div>
@@ -50,6 +72,7 @@ export const OpeningHours = () => {
                 }
                 </div>
             </div>
+            <DeleteSchedule open={openDelete.isOpen} setOpen={setOpenDelete} />
             <SetDayAvailability day={openDay.day} open={openDay.isOpen} setOpen={setOpenDay} />
         </>
     )

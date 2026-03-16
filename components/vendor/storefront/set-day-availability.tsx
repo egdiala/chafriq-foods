@@ -61,7 +61,7 @@ export const SetDayAvailability = ({ day, open, setOpen }: Props) => {
                                                             onBlur={subField.handleBlur}
                                                             onChange={(e) => subField.handleChange(e.target.value)}
                                                         />
-                                                        {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
+                                                        {isInvalid && (<FieldError errors={subField.state.meta.errors} />)}
                                                     </Field>
                                                 )
                                             }}
