@@ -21,7 +21,7 @@ export const Menu = ({ className }: Props) => {
                 </div>
             </CardHeader>
             <CardContent className="px-0 sm:px-5">
-                <div className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(285px,1fr))]">
+                <div className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(260px,1fr))]">
                 {
                     Array.from({ length: 7 }).map((_, index) => (
                         <CuisineCard key={index} />
