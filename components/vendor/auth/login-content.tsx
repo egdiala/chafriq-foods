@@ -95,7 +95,7 @@ export const VendorLoginContent = () => {
             </FieldGroup>
 
             <div className="flex flex-col items-center gap-5">
-                <Button type="submit">Sign in</Button>
+                <Button type="submit" asChild><Link href="/vendor">Sign in</Link></Button>
                 <Link href="/vendor/forgot-password" className="font-medium text-sm text-grey-dark-0 hover:underline hover:underline-offset-1">Reset Password</Link>
                 <p className="text-xs text-grey-dark-3 text-center">By clicking Sign in you agree to the terms and conditions of using this service</p>
             </div>
