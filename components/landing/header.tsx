@@ -12,7 +12,7 @@ export const Header = () => {
     const pathname = usePathname()
 
     const isWhite = useMemo(() => {
-        return (pathname === "/") || (pathname.startsWith("/explore"))
+        return (pathname === "/") || ((pathname.startsWith("/explore")) && !pathname.startsWith("/explore-cuisines/"))
     },[pathname])
     return (
         <header className={cn(isWhite ? "absolute inset-x-0 top-0 z-10" : "bg-white border-b border-b-outline")}>

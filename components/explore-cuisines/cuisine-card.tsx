@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { IconBowlFood, IconPath, IconStorefront } from "../icons"
 import { IconHourglass } from "../icons/icon-hourglass"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
@@ -12,7 +13,8 @@ const items = [
 
 export const CuisineCard = () => {
     return (
-        <Card className="group hover:ring-orange-2 hover:bg-orange-5">
+        <Card className="group hover:ring-orange-2 hover:bg-orange-5 relative">
+            <Link href="/explore-cuisines/1" className="absolute inset-0 w-full h-full" />
             <CardContent>
                 <Carousel opts={{ loop: true }} className="w-full">
                     <CarouselContent>
