@@ -2,6 +2,7 @@ import Image from "next/image"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { IconFavorite, IconForkKnife, IconMapPinLine } from "../icons"
+import Link from "next/link"
 
 const items = [
     { icon: <IconMapPinLine />, label: "25km away" },
@@ -10,8 +11,9 @@ const items = [
 
 export const CookCard = () => {
     return (
-        <Card className="group hover:ring-orange-2 hover:bg-orange-5">
-            <CardContent>
+        <Card className="group hover:ring-orange-2 hover:bg-orange-5 relative">
+            <Link href="/explore-cooks/1" className="absolute inset-0 w-full h-full" />
+            <CardContent className="isolate">
                 <div className="relative rounded-xl overflow-hidden aspect-video">
                     <Button variant="carousel" size="icon-xs" className="absolute top-2 right-2 z-10">
                         <IconFavorite />

@@ -1,12 +1,13 @@
-import { IconBowlFood } from "../icons"
+import { IconBowlFood, IconPath, IconStorefront } from "../icons"
+import { IconHourglass } from "../icons/icon-hourglass"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 
 const items = [
     { icon: <IconBowlFood />, label: "1 plate" },
-    { icon: <IconBowlFood />, label: "1 hour" },
-    { icon: <IconBowlFood />, label: "25km away" },
-    { icon: <IconBowlFood />, label: "African kitchen" },
+    { icon: <IconHourglass />, label: "1 hour" },
+    { icon: <IconPath />, label: "25km away" },
+    { icon: <IconStorefront />, label: "African kitchen" },
 ]
 
 export const CuisineCard = () => {
