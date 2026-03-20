@@ -24,13 +24,13 @@ export const CuisineDetails = () => {
                         <BreadcrumbList>
                             <BreadcrumbItem>
                                 <BreadcrumbLink asChild>
-                                    <Link href="/explore-cooks">Explore Cooks</Link>
+                                    <Link href="/cooks">Explore Cooks</Link>
                                 </BreadcrumbLink>
                             </BreadcrumbItem>   
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
                                 <BreadcrumbLink asChild>
-                                    <Link href="/explore-cooks/1">Jollof Rice Kitchen</Link>
+                                    <Link href="/cooks/1">Jollof Rice Kitchen</Link>
                                 </BreadcrumbLink>
                             </BreadcrumbItem>   
                             <BreadcrumbSeparator />

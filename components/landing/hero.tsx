@@ -3,6 +3,7 @@ import { Content } from "../content"
 import { Button } from "../ui/button"
 import { IconCalendar, IconCookingPot } from "../icons"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../ui/input-group"
+import Link from "next/link"
 
 export const Hero = () => {
     return (
@@ -39,9 +40,11 @@ export const Hero = () => {
                             </InputGroupAddon>
                         </InputGroup>
                         <p className="text-orange-3 font-normal text-sm">Address not found, please adjust your search parameter</p>
-                        <Button className="[&>svg]:size-6!">
-                            <IconCookingPot />
-                            Find Meals
+                        <Button className="[&>svg]:size-6!" asChild>
+                            <Link href="/meals">
+                                <IconCookingPot />
+                                Find Meals
+                            </Link>
                         </Button>
                     </div>
                 </div>

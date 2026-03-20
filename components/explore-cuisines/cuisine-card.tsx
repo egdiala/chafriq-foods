@@ -14,7 +14,7 @@ const items = [
 export const CuisineCard = () => {
     return (
         <Card className="group hover:ring-orange-2 hover:bg-orange-5 relative">
-            <Link href="/explore-cuisines/1" className="absolute inset-0 w-full h-full" />
+            <Link href="/meals/1" className="absolute inset-0 w-full h-full" />
             <CardContent>
                 <Carousel opts={{ loop: true }} className="w-full">
                     <CarouselContent>

@@ -18,7 +18,7 @@ type SocialLink = {
 const footerLinks: Record<string, FooterLink[]> = {
     "actions": [
         { link: "/vendor/register", text: "Become a Cook" },
-        { link: "/explore-cooks", text: "Explore Cooks" }
+        { link: "/cooks", text: "Explore Cooks" }
     ],
     "support": [
         { link: "/contact-us", text: "Help Center" },
