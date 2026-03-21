@@ -4,19 +4,25 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "@tanstack/react-form-nextjs";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { useResetPasswordVendor } from "@/services/mutations/use-auth";
+import { resetPasswordVendorFormSchema } from "@/validations/vendor-auth";
 
 export const VendorResetPasswordContent = () => {
-
+    const { mutate, isPending } = useResetPasswordVendor()
+    
     const vendorForgotPasswordForm = useForm({
         defaultValues: {
-            password: "",
-            confirmPassword: ""
+            email: "",
+            otp_code: "",
+            new_password: "",
+            confirm_new_password: ""
         },
         validators: {
-            // onSubmit: loginFormSchema
+            onSubmit: resetPasswordVendorFormSchema
         },
         onSubmit: async ({ value }) => {
-            console.log(value)
+            if (isPending) return;
+            mutate(value)
         },
     })
     
@@ -30,7 +36,7 @@ export const VendorResetPasswordContent = () => {
             </div>
 
             <FieldGroup>
-                <vendorForgotPasswordForm.Field name="password">
+                <vendorForgotPasswordForm.Field name="new_password">
                     {(field) => {
                         const isInvalid = !field.state.meta.isValid
                         return (
@@ -51,7 +57,7 @@ export const VendorResetPasswordContent = () => {
                     }}
                 </vendorForgotPasswordForm.Field>
 
-                <vendorForgotPasswordForm.Field name="confirmPassword">
+                <vendorForgotPasswordForm.Field name="confirm_new_password">
                     {(field) => {
                         const isInvalid = !field.state.meta.isValid
                         return (
@@ -74,7 +80,7 @@ export const VendorResetPasswordContent = () => {
             </FieldGroup>
 
             <div className="flex flex-col items-center gap-5">
-                <Button type="submit">Reset Password</Button>
+                <Button type="submit" disabled={isPending}>Reset Password</Button>
             </div>
         </form>
     )

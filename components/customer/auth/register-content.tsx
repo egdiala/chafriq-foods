@@ -25,9 +25,9 @@ const PersonalInformation = () => {
 
     const customerPersonalInfoForm = useForm({
         defaultValues: {
-            fullName: "",
+            full_name: "",
             email: "",
-            phone: "",
+            phone_number: "",
             password: "",
             terms: false
         },
@@ -53,12 +53,12 @@ const PersonalInformation = () => {
 
                 <FieldGroup>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <customerPersonalInfoForm.Field name="fullName">
+                        <customerPersonalInfoForm.Field name="full_name">
                             {(field) => {
                                 const isInvalid = !field.state.meta.isValid
                                 return (
                                     <Field data-invalid={isInvalid}>
-                                        <FieldLabel htmlFor={field.name}>First Name</FieldLabel>
+                                        <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
                                         <Input
                                             type="text"
                                             id={field.name}
@@ -96,7 +96,7 @@ const PersonalInformation = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <customerPersonalInfoForm.Field name="phone">
+                        <customerPersonalInfoForm.Field name="phone_number">
                             {(field) => {
                                 const isInvalid = !field.state.meta.isValid
                                 return (

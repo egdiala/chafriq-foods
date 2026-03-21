@@ -7,19 +7,25 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "@tanstack/react-form-nextjs";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { ForgotPasswordOtpDialog } from "./forgot-password-otp-dialog";
+import { useForgotPasswordVendor } from "@/services/mutations/use-auth";
+import { forgotPasswordVendorFormSchema } from "@/validations/vendor-auth";
 
 export const VendorForgotPasswordContent = () => {
     const [open, setOpen] = useState(false)
+    const { mutate, isPending } = useForgotPasswordVendor(() => {
+        setOpen(true)
+    })
 
     const vendorForgotPasswordForm = useForm({
         defaultValues: {
             email: "",
         },
         validators: {
-            // onSubmit: loginFormSchema
+            onSubmit: forgotPasswordVendorFormSchema
         },
         onSubmit: async ({ value }) => {
-            console.log(value)
+            if (isPending) return;
+            mutate(value)
             setOpen(true)
         },
     })
@@ -60,12 +66,13 @@ export const VendorForgotPasswordContent = () => {
                 </vendorForgotPasswordForm.Field>
 
                 <div className="flex flex-col items-center gap-5">
-                    <Button type="submit">Verify Email</Button>
+                    <Button type="submit" disabled={isPending}>Verify Email</Button>
                 </div>
             </form>
 
             <ForgotPasswordOtpDialog
                 open={open}
+                email={vendorForgotPasswordForm.getFieldValue("email")}
                 setOpen={setOpen}
             />
         </>

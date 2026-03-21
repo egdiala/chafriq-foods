@@ -1,39 +1,66 @@
 "use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { useForm } from "@tanstack/react-form-nextjs"
-import { Field, FieldError } from "@/components/ui/field"
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import Link from "next/link";
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { useCountdown } from "@/hooks/use-countdown";
+import { useForm } from "@tanstack/react-form-nextjs";
+import { Field, FieldError } from "@/components/ui/field";
+import { confirmOtpVendorFormSchema } from "@/validations/vendor-auth";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { useConfirmOtpVendor, useForgotPasswordVendor } from "@/services/mutations/use-auth";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 type Props = {
     open: boolean;
+    email: string;
     setOpen: (v: boolean) => void;
 }
 
-export const ForgotPasswordOtpDialog = ({ open, setOpen }: Props) => {
+export const ForgotPasswordOtpDialog = ({ email, open, setOpen }: Props) => {
+    const { mutate, isPending: isResending } = useForgotPasswordVendor()
+    const { seconds, isFinished, start, reset } = useCountdown({
+        initialSeconds: 30,
+    });
+    const { mutate: verifyOtp, isPending } = useConfirmOtpVendor(() => {
+        setOpen(false)
+    })
 
     const verifyEmailForm = useForm({
         defaultValues: {
-            code: ""
+            otp_code: ""
         },
         listeners: {
             onChange: ({ formApi }) => {
-                const otpCode = formApi.getFieldValue("code")
-                if (otpCode && (otpCode.length === 6)) {
+                const otpCode = formApi.getFieldValue("otp_code")
+                if (otpCode && (otpCode.length === 4)) {
                     formApi.handleSubmit()
                 }
             },
         },
         validators: {
-            // onSubmit: loginFormSchema
+            onSubmit: confirmOtpVendorFormSchema
         },
         onSubmit: async ({ value }) => {
-            console.log(value)
-            setOpen(true)
+            if (isPending) return;
+            verifyOtp({ email, ...value })
         },
     })
+
+    useEffect(() => {
+        if (open) {
+            reset(30);
+            start();
+        }
+    }, [open]);
+
+    const handleResend = () => {
+        if (!isFinished || isResending) return;
+
+        mutate({ email });
+        reset(30);
+        start();
+    };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -45,15 +72,15 @@ export const ForgotPasswordOtpDialog = ({ open, setOpen }: Props) => {
                     <DialogHeader>
                         <DialogTitle>Verify Your Email</DialogTitle>
                         <DialogDescription>
-                            Enter the code sent to am *** **n@gmail.com
+                            Enter the code sent to {email}
                         </DialogDescription>
                     </DialogHeader>
-                    <verifyEmailForm.Field name="code">
+                    <verifyEmailForm.Field name="otp_code">
                         {(field) => {
                             const isInvalid = !field.state.meta.isValid
                             return (
                                 <Field className="mb-6" data-invalid={isInvalid}>
-                                    <InputOTP id={field.name} name={field.name} value={field.state.value} onBlur={field.handleBlur} maxLength={6} onChange={field.handleChange}>
+                                    <InputOTP id={field.name} name={field.name} value={field.state.value} onBlur={field.handleBlur} maxLength={4} onChange={field.handleChange}>
                                         <InputOTPGroup>
                                             <InputOTPSlot index={0} />
                                         </InputOTPGroup>
@@ -66,12 +93,6 @@ export const ForgotPasswordOtpDialog = ({ open, setOpen }: Props) => {
                                         <InputOTPGroup>
                                             <InputOTPSlot index={3} />
                                         </InputOTPGroup>
-                                        <InputOTPGroup>
-                                            <InputOTPSlot index={4} />
-                                        </InputOTPGroup>
-                                        <InputOTPGroup>
-                                            <InputOTPSlot index={5} />
-                                        </InputOTPGroup>
                                     </InputOTP>
                                     {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                 </Field>
@@ -80,7 +101,9 @@ export const ForgotPasswordOtpDialog = ({ open, setOpen }: Props) => {
                     </verifyEmailForm.Field>
                     <DialogFooter className="gap-4">
                         <div className="flex items-center justify-center gap-1 text-sm text-grey-dark-3">Already have an account? <Link href="/vendor/login" className="font-medium text-grey-dark-0 hover:underline hover:underline-offset-1">Sign in instead</Link></div>
-                        <Button type="submit" className="w-full">Resend Code in 28s</Button>
+                        <Button type="button" className="w-full" disabled={isResending || seconds > 0} onClick={handleResend}>
+                            {isResending ? "Sending..." : seconds > 0 ? `Resend Code in ${seconds}s` : "Resend Code"}
+                        </Button>
                     </DialogFooter>
                 </DialogContent>
             </form>
