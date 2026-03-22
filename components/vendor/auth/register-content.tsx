@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { registerVendorFormSchema } from "@/validations/vendor-auth";
 import { VerifyEmailOnRegisterDialog } from "./verify-email-on-register-dialog";
 import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useCountryList, useDishList } from "@/services/queries/use-explore";
 
 type Steps = "personal-information" | "other-information"
 
@@ -33,6 +34,12 @@ export const VendorRegisterContent = () => {
 const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
     const [open, setOpen] = useState(false)
     const { mutate, isPending } = useRegisterVendor()
+    const { data: dishList, isLoading: isLoadingDishList } = useDishList()
+    const { data: countryList, isLoading: isLoadingCountryList } = useCountryList()
+
+    const states = useMemo(() => {
+        return countryList?.data?.[0]?.states?.filter((item) => item.type === "state") || []
+    },[countryList?.data])
 
     const vendorPersonalInfoForm = useForm({
         defaultValues: {
@@ -192,15 +199,18 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                     return (
                                         <Field data-invalid={isInvalid}>
                                             <FieldLabel htmlFor={field.name}>State</FieldLabel>
-                                            <Input
-                                                type="text"
-                                                id={field.name}
-                                                name={field.name}
-                                                aria-invalid={isInvalid}
-                                                value={field.state.value}
-                                                onBlur={field.handleBlur}
-                                                onChange={(e) => field.handleChange(e.target.value)}
-                                            />
+                                            <Select value={field.state.value} name={field.name} onValueChange={field.handleChange}>
+                                                <SelectTrigger id={field.name} aria-invalid={isInvalid}>
+                                                    <SelectValue placeholder="Select state" />
+                                                </SelectTrigger>
+                                                <SelectContent position="popper" align="start">
+                                                    {
+                                                        states?.map((state) => (
+                                                            <SelectItem value={state.name} key={state.id}>{state.name}</SelectItem>
+                                                        ))
+                                                    }
+                                                </SelectContent>
+                                            </Select>
                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                         </Field>
                                     )

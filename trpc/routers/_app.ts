@@ -2,9 +2,11 @@ import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 import { baseProcedure, createTRPCRouter } from "../init";
 import { authRouter } from "./auth";
+import { exploreRouter } from "./explore";
 
 export const appRouter = createTRPCRouter({
   auth: authRouter,
+  explore: exploreRouter,
   hello: baseProcedure.query(() => {
     return {
       message: "Hello, world!",
