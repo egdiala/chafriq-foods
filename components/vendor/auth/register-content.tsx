@@ -1,19 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { Activity, Fragment, useMemo, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useForm } from "@tanstack/react-form-nextjs";
+import { useForm, useStore } from "@tanstack/react-form-nextjs";
 import { InputFile } from "@/components/ui/input-file";
 import { useRegisterVendor } from "@/services/mutations/use-auth";
 import { registerVendorFormSchema } from "@/validations/vendor-auth";
 import { VerifyEmailOnRegisterDialog } from "./verify-email-on-register-dialog";
 import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useCountryList, useDishList } from "@/services/queries/use-explore";
+import { useCountryList, useDishList, useSearchLocations } from "@/services/queries/use-explore";
+import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList, ComboboxStatus, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox";
+import { Spinner } from "@/components/ui/spinner";
+import { PhoneInput } from "@/components/ui/phone-input";
 
 type Steps = "personal-information" | "other-information"
 
@@ -33,9 +36,17 @@ export const VendorRegisterContent = () => {
 
 const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
     const [open, setOpen] = useState(false)
-    const { mutate, isPending } = useRegisterVendor()
+    const { mutate, isPending: isRegistering } = useRegisterVendor()
     const { data: dishList, isLoading: isLoadingDishList } = useDishList()
     const { data: countryList, isLoading: isLoadingCountryList } = useCountryList()
+
+    const [searchValue, setSearchValue] = useState('');
+    const trimmedSearchValue = searchValue.trim();
+
+    const abortControllerRef = useRef<AbortController | null>(null);
+
+    const { data, isLoading, error } = useSearchLocations({ q: searchValue, country: "au" })
+    const [defaultValue, setDefaultValue] = useState<SearchLocationsResponse | null>(null);
 
     const states = useMemo(() => {
         return countryList?.data?.[0]?.states?.filter((item) => item.type === "state") || []
@@ -52,9 +63,10 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
             home_zip: "",
             business_name: "",
             business_address_id: "",
+            is_home_address: false,
             business_abn: "",
             year_exp: "",
-            dish_list: "",
+            dish_list: [] as string[],
             gender: "",
             phone_number: "",
             email: "",
@@ -65,10 +77,35 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
             onSubmit: registerVendorFormSchema
         },
         onSubmit: async ({ value }) => {
-            if (isPending) return;
-            mutate(value)
+            if (isRegistering) return;
+            console.log(value)
         },
     })
+
+    const selectedValue = useStore(vendorPersonalInfoForm.store, (state) => state.values.home_address)
+    const isHomeAddress = useStore(vendorPersonalInfoForm.store, (state) => state.values.is_home_address)
+
+    function getStatus() {
+        if (isLoading) {
+            return (
+                <Fragment><Spinner />Searching…</Fragment>
+            );
+        }
+
+        if (error) {
+            return <Fragment>An error occurred</Fragment>;
+        }
+
+        if (trimmedSearchValue === '') {
+            return selectedValue ? null : 'Start typing to search…';
+        }
+
+        if (data?.data.length === 0) {
+            return `No matches for "${trimmedSearchValue}".`;
+        }
+
+        return null;
+    }
     
     return (
         <>
@@ -132,7 +169,7 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                     const isInvalid = !field.state.meta.isValid
                                     return (
                                         <Field data-invalid={isInvalid}>
-                                            <FieldLabel htmlFor={field.name}>Gender (optional)</FieldLabel>
+                                            <FieldLabel htmlFor={field.name}>Gender</FieldLabel>
                                             <Select value={field.state.value} name={field.name} onValueChange={field.handleChange}>
                                                 <SelectTrigger id={field.name} aria-invalid={isInvalid}>
                                                     <SelectValue placeholder="Select gender" />
@@ -156,14 +193,15 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                     return (
                                         <Field data-invalid={isInvalid}>
                                             <FieldLabel htmlFor={field.name}>Phone</FieldLabel>
-                                            <Input
-                                                type="text"
+                                            <PhoneInput
+                                                placeholder="Enter a phone number"
                                                 id={field.name}
                                                 name={field.name}
                                                 aria-invalid={isInvalid}
                                                 value={field.state.value}
                                                 onBlur={field.handleBlur}
-                                                onChange={(e) => field.handleChange(e.target.value)}
+                                                defaultCountry="AU"
+                                                onChange={(value) => field.handleChange(value)}
                                             />
                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                         </Field>
@@ -179,15 +217,57 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                     return (
                                         <Field data-invalid={isInvalid}>
                                             <FieldLabel htmlFor={field.name}>Home Address</FieldLabel>
-                                            <Input
+                                            <Combobox
+                                                filter={null}
+                                                items={data?.data || []}
+                                                value={defaultValue}
+                                                autoHighlight
+                                                itemToStringLabel={(address: SearchLocationsResponse) => address.name}
+                                                onValueChange={(value) => {
+                                                    setDefaultValue(value);
+                                                    setSearchValue('');
+                                                }}
+                                                onInputValueChange={(nextSearchValue, { reason }) => {
+                                                    setSearchValue(nextSearchValue);
+
+                                                    const controller = new AbortController();
+                                                    abortControllerRef.current?.abort();
+                                                    abortControllerRef.current = controller;
+
+                                                    if (nextSearchValue === '') {
+                                                        return;
+                                                    }
+
+                                                    if (reason === 'item-press') {
+                                                        return;
+                                                    }
+
+                                                    if (controller.signal.aborted) {
+                                                        return;
+                                                    }
+                                                }}
+                                            >
+                                            <ComboboxInput 
                                                 type="text"
                                                 id={field.name}
-                                                name={field.name}
-                                                aria-invalid={isInvalid}
-                                                value={field.state.value}
-                                                onBlur={field.handleBlur}
+                                                name={field.name} 
+                                                aria-invalid={isInvalid}  
+                                                onBlur={field.handleBlur} 
+                                                placeholder="Search address..."
                                                 onChange={(e) => field.handleChange(e.target.value)}
                                             />
+                                            <ComboboxContent>
+                                                <ComboboxStatus>{getStatus()}</ComboboxStatus>
+                                                {/* <ComboboxEmpty>{getEmptyMessage()}</ComboboxEmpty> */}
+                                                <ComboboxList>
+                                                {(address) => (
+                                                    <ComboboxItem key={address.id} value={address}>
+                                                    {address.name}
+                                                    </ComboboxItem>
+                                                )}
+                                                </ComboboxList>
+                                            </ComboboxContent>
+                                            </Combobox>
                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                         </Field>
                                     )
@@ -293,13 +373,94 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                     return (
                                         <Field data-invalid={isInvalid}>
                                             <FieldLabel htmlFor={field.name}>Type of Cuisine</FieldLabel>
+                                            <Combobox
+                                                multiple
+                                                items={dishList?.data || []}
+                                                value={field.state.value}
+                                                autoHighlight
+                                                itemToStringLabel={(address: string) => address}
+                                                onValueChange={(value) => {
+                                                    field.handleChange(value);
+                                                    setSearchValue('');
+                                                }}
+                                                onInputValueChange={(nextSearchValue, { reason }) => {
+                                                    setSearchValue(nextSearchValue);
+
+                                                    const controller = new AbortController();
+                                                    abortControllerRef.current?.abort();
+                                                    abortControllerRef.current = controller;
+
+                                                    if (nextSearchValue === '') {
+                                                        return;
+                                                    }
+
+                                                    if (reason === 'item-press') {
+                                                        return;
+                                                    }
+
+                                                    if (controller.signal.aborted) {
+                                                        return;
+                                                    }
+                                                }}
+                                            >
+                                            <ComboboxTrigger render={
+                                                <button type="button" className="h-12 text-left bg-input-field w-full rounded px-3 py-1 text-sm text-grey-dark-0 transition-colors inset-ring-1 inset-ring-outline data-popup-open:inset-ring-orange-2 data-popup-open:bg-orange-5 active:scale-99">
+                                                    <ComboboxValue
+                                                        placeholder={
+                                                        <span className="text-left">
+                                                            Select or Create New Project
+                                                        </span>
+                                                        }
+                                                    >
+                                                        {(item: DishListResponse[]) => (
+                                                        <>
+                                                            {item.length === 0 ? (
+                                                            <span className="text-contrast-low">
+                                                                Select or Create New Project
+                                                            </span>
+                                                            ) : item.length > 1 ? (
+                                                            `${item.join(", ")}`
+                                                            ) : (
+                                                            item[0]
+                                                            )}
+                                                        </>
+                                                        )}
+                                                    </ComboboxValue>
+                                                </button>
+                                            } />
+                                            <ComboboxContent>
+                                                <ComboboxEmpty>No data found</ComboboxEmpty>
+                                                <ComboboxList>
+                                                {(dish) => (
+                                                    <ComboboxItem key={dish.dish_type_id} value={dish.name}>
+                                                    {dish.name}
+                                                    </ComboboxItem>
+                                                )}
+                                                </ComboboxList>
+                                            </ComboboxContent>
+                                            </Combobox>
+                                            {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
+                                        </Field>
+                                    )
+                                }}
+                            </vendorPersonalInfoForm.Field>
+                        </div>
+                        
+                        <div className="space-y-2">
+                            <vendorPersonalInfoForm.Field name="business_address_id">
+                                {(field) => {
+                                    const isInvalid = !field.state.meta.isValid
+                                    return (
+                                        <Field data-invalid={isInvalid}>
+                                            <FieldLabel htmlFor={field.name}>Business location (This would be shown to customers) </FieldLabel>
                                             <Input
                                                 type="text"
                                                 id={field.name}
                                                 name={field.name}
                                                 aria-invalid={isInvalid}
-                                                value={field.state.value}
+                                                value={field.state.value ?? ""}
                                                 onBlur={field.handleBlur}
+                                                readOnly={isHomeAddress}
                                                 onChange={(e) => field.handleChange(e.target.value)}
                                             />
                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
@@ -307,28 +468,35 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                     )
                                 }}
                             </vendorPersonalInfoForm.Field>
-                        </div>
+                            
+                            <Activity mode={selectedValue ? "visible" : "hidden"}>
+                                <vendorPersonalInfoForm.Field name="is_home_address">
+                                    {(field) => {
+                                        return (
+                                            <div className="flex items-center space-x-1">
+                                                <Checkbox
+                                                    id={field.name}
+                                                    checked={field.state.value}
+                                                    onCheckedChange={(value) => {
+                                                        field.handleChange(!!value)
+                                                        if (value) {
+                                                            vendorPersonalInfoForm.setFieldValue("business_address_id", (defaultValue as SearchLocationsResponse)?.name)
+                                                        } else {
+                                                            vendorPersonalInfoForm.setFieldValue("business_address_id", "")
+                                                        }
+                                                    }}
+                                                    aria-label="Same as home address"
+                                                />
+                                                <label htmlFor={field.name} className="font-normal gap-1 text-xs text-grey-dark-3">
+                                                    Same as home address
+                                                </label>
+                                            </div>
+                                        )
+                                    }}
 
-                        <vendorPersonalInfoForm.Field name="business_address_id">
-                            {(field) => {
-                                const isInvalid = !field.state.meta.isValid
-                                return (
-                                    <Field data-invalid={isInvalid}>
-                                        <FieldLabel htmlFor={field.name}>Business location (This would be shown to customers) </FieldLabel>
-                                        <Input
-                                            type="text"
-                                            id={field.name}
-                                            name={field.name}
-                                            aria-invalid={isInvalid}
-                                            value={field.state.value}
-                                            onBlur={field.handleBlur}
-                                            onChange={(e) => field.handleChange(e.target.value)}
-                                        />
-                                        {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
-                                    </Field>
-                                )
-                            }}
-                        </vendorPersonalInfoForm.Field>
+                                </vendorPersonalInfoForm.Field>
+                            </Activity>
+                        </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <vendorPersonalInfoForm.Field name="year_exp">
@@ -441,7 +609,7 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                 </FieldSet>
 
                 <div className="flex flex-col items-center gap-5">
-                    <Button type="submit" disabled={isPending}>Verify Email</Button>
+                    <Button type="submit" disabled={isRegistering}>Verify Email</Button>
                     <p className="text-sm text-grey-dark-3">Already have an account? <Link href="/vendor/login" className="font-medium text-grey-dark-0 hover:underline hover:underline-offset-1">Sign in instead</Link></p>
                 </div>
             </form>

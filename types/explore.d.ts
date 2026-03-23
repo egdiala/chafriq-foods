@@ -21,3 +21,9 @@ interface CountryState {
     longitude: string;
     type: "territory" | "state"
 }
+
+interface DishListResponse {
+    name: string;
+    description: string;
+    dish_type_id: string;
+}

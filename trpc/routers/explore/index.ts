@@ -4,7 +4,7 @@ import { searchLocationsFormSchema } from "@/validations/explore";
 import { TRPCError } from "@trpc/server";
 
 export const exploreRouter = createTRPCRouter({
-    searchLocations: baseProcedure.input(searchLocationsFormSchema).mutation(async ({ input }): Promise<{ status: string; data: SearchLocationsResponse[] }> => {
+    searchLocations: baseProcedure.input(searchLocationsFormSchema).query(async ({ input }): Promise<{ status: string; data: SearchLocationsResponse[] }> => {
         try {
             const response = await api.post("customers/requests/search-locations", input);
             return response.data;
@@ -26,7 +26,7 @@ export const exploreRouter = createTRPCRouter({
             });
         }
     }),
-    getDishList: baseProcedure.query(async (): Promise<{ status: string; data: SearchLocationsResponse[] }> => {
+    getDishList: baseProcedure.query(async (): Promise<{ status: string; data: DishListResponse[] }> => {
         try {
             const response = await api.get("customers/requests/dish-lists");
             return response.data;
