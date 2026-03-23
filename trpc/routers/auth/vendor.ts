@@ -17,7 +17,7 @@ type RegisterApiResponse = {
 export const vendorAuthRouter = createTRPCRouter({
     register: baseProcedure.input(registerVendorFormSchema).mutation(async ({ input }): Promise<RegisterApiResponse> => {
         try {
-            const { terms: _terms, ...payload } = input
+            const { terms, is_home_address, ...payload } = input
             const response = await api.post("cooks/auths/register", payload);
             return response.data;
         } catch (error) {

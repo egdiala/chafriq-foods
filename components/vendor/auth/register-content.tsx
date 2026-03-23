@@ -17,6 +17,7 @@ import { useCountryList, useDishList, useSearchLocations } from "@/services/quer
 import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList, ComboboxStatus, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox";
 import { Spinner } from "@/components/ui/spinner";
 import { PhoneInput } from "@/components/ui/phone-input";
+import { Eye, EyeOff } from "lucide-react";
 
 type Steps = "personal-information" | "other-information"
 
@@ -36,6 +37,7 @@ export const VendorRegisterContent = () => {
 
 const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
     const [open, setOpen] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
     const { mutate, isPending: isRegistering } = useRegisterVendor()
     const { data: dishList, isLoading: isLoadingDishList } = useDishList()
     const { data: countryList, isLoading: isLoadingCountryList } = useCountryList()
@@ -78,7 +80,8 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
         },
         onSubmit: async ({ value }) => {
             if (isRegistering) return;
-            console.log(value)
+            const { business_address_id, is_home_address, home_address, ...rest } = value
+            mutate({ business_address_id: is_home_address ? defaultValue?.id as string : business_address_id, home_address: defaultValue?.name as string, is_home_address, ...rest })
         },
     })
 
@@ -573,15 +576,24 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                     return (
                                         <Field data-invalid={isInvalid}>
                                             <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                                            <Input
-                                                type="text"
-                                                id={field.name}
-                                                name={field.name}
-                                                aria-invalid={isInvalid}
-                                                value={field.state.value}
-                                                onBlur={field.handleBlur}
-                                                onChange={(e) => field.handleChange(e.target.value)}
-                                            />
+                                            <div className="relative">
+                                                <Input
+                                                    type={showPassword ? "text" : "password"}
+                                                    id={field.name}
+                                                    name={field.name}
+                                                    aria-invalid={isInvalid}
+                                                    value={field.state.value}
+                                                    onBlur={field.handleBlur}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute inset-y-0 right-2 text-grey-dark-2 [&>svg]:size-4"
+                                                >
+                                                    {showPassword ? <EyeOff /> : <Eye />}
+                                                </button>
+                                            </div>
                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                         </Field>
                                     )
