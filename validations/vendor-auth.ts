@@ -87,6 +87,13 @@ export const confirmOtpVendorFormSchema = z.object({
 
 export type ConfirmOtpVendorFormType = z.infer<typeof confirmOtpVendorFormSchema>;
 
+export const resendOtpVendorFormSchema = z.object({
+    email: z.email("Invalid email address").min(1, "Email is required"),
+    request_type: z.enum(["register", "reset"]),
+})
+
+export type ResendOtpVendorFormType = z.infer<typeof resendOtpVendorFormSchema>;
+
 export const resetPasswordVendorFormSchema = z.object({
     email: z.email("Invalid email address").min(1, "Email is required"),
     otp_code: z.string().length(4, "Otp code is required"),

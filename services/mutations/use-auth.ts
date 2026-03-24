@@ -1,6 +1,8 @@
 import { useTRPC } from "@/trpc/client";
 import { toast } from 'sonner';
 import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/use-auth";
+import { useUser } from "@/context/use-user";
 
 export const useRegisterVendor = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
@@ -21,11 +23,16 @@ export const useRegisterVendor = (fn?: (value: unknown) => void) => {
 
 export const useLoginVendor = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
+    const { handleLogin } = useAuth()
+    const { updateType, updateUser } = useUser()
     return useMutation(
         trpc.auth.vendor.login.mutationOptions({
             onSuccess: (data) => {
-                if (data.id) {
+                if (data.status === "ok") {
+                    handleLogin(data.data)
                     fn?.(data);
+                    updateType("vendor")
+                    updateUser(data.data)
                     toast.success("Login successful")
                 }
             },
@@ -58,9 +65,26 @@ export const useConfirmOtpVendor = (fn?: (value: unknown) => void) => {
     return useMutation(
         trpc.auth.vendor.confirmOtp.mutationOptions({
             onSuccess: (data) => {
-                if (data.id) {
+                if (data.status === "ok") {
                     fn?.(data);
                     toast.success("Otp confirmed")
+                }
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
+export const useResendOtpVendor = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    return useMutation(
+        trpc.auth.vendor.resendOtp.mutationOptions({
+            onSuccess: (data) => {
+                if (data.id) {
+                    fn?.(data);
+                    toast.success("Otp sent successfully")
                 }
             },
             onError: (error) => {

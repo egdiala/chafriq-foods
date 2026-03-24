@@ -37,11 +37,10 @@ export const VendorRegisterContent = () => {
 }
 
 const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
-    const router = useRouter()
     const [open, setOpen] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const { mutate, isPending: isRegistering } = useRegisterVendor(() => {
-        router.push("/vendor/login")
+        setOpen(true)
     })
     const { data: dishList, isLoading: isLoadingDishList } = useDishList()
     const { data: countryList, isLoading: isLoadingCountryList } = useCountryList()
@@ -96,6 +95,7 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
 
     const selectedValue = useStore(vendorPersonalInfoForm.store, (state) => state.values.home_address)
     const isHomeAddress = useStore(vendorPersonalInfoForm.store, (state) => state.values.is_home_address)
+    const email = useStore(vendorPersonalInfoForm.store, (state) => state.values.email)
 
     function getStatus() {
         if (isLoading) {
@@ -638,6 +638,7 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
             </form>
             <VerifyEmailOnRegisterDialog
                 open={open}
+                email={email || "s.egdiala@gmail.com"}
                 setOpen={(v) => {
                     setOpen(v)
                     nextStep()
