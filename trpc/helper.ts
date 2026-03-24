@@ -60,5 +60,5 @@ api.interceptors.response.use((response) => response, async (error) => {
 });
 
 export const handleErrorMessage = (error: any) => {
-    return (error?.response?.data?.detail || error?.response?.data?.message || error?.message || "An unknown error occurred");
+    return (error?.response?.data?.error || error?.response?.data?.message || error?.message || "An unknown error occurred");
 };

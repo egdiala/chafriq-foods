@@ -18,6 +18,7 @@ import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, 
 import { Spinner } from "@/components/ui/spinner";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Steps = "personal-information" | "other-information"
 
@@ -36,9 +37,12 @@ export const VendorRegisterContent = () => {
 }
 
 const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
+    const router = useRouter()
     const [open, setOpen] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
-    const { mutate, isPending: isRegistering } = useRegisterVendor()
+    const { mutate, isPending: isRegistering } = useRegisterVendor(() => {
+        router.push("/vendor/login")
+    })
     const { data: dishList, isLoading: isLoadingDishList } = useDishList()
     const { data: countryList, isLoading: isLoadingCountryList } = useCountryList()
 
@@ -58,7 +62,6 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
         defaultValues: {
             first_name: "",
             last_name: "",
-            // middle_name: undefined as string | undefined,
             home_address: "",
             home_state: "",
             home_city: "",
@@ -80,8 +83,14 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
         },
         onSubmit: async ({ value }) => {
             if (isRegistering) return;
-            const { business_address_id, is_home_address, home_address, ...rest } = value
-            mutate({ business_address_id: is_home_address ? defaultValue?.id as string : business_address_id, home_address: defaultValue?.name as string, is_home_address, ...rest })
+            const { business_address_id, is_home_address, home_address, phone_number, ...rest } = value
+            mutate({
+                business_address_id: is_home_address ? defaultValue?.id as string : business_address_id,
+                home_address: defaultValue?.name as string,
+                is_home_address,
+                phone_number: phone_number?.replace(/^\+/, ""),
+                ...rest
+            })
         },
     })
 
@@ -109,7 +118,7 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
 
         return null;
     }
-    
+
     return (
         <>
             <form className="flex flex-col gap-12.5 w-full max-w-164.5 mx-auto" onSubmit={(e) => {
@@ -282,7 +291,7 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                     return (
                                         <Field data-invalid={isInvalid}>
                                             <FieldLabel htmlFor={field.name}>State</FieldLabel>
-                                            <Select value={field.state.value} name={field.name} onValueChange={field.handleChange}>
+                                            <Select value={field.state.value} name={field.name} disabled={isLoadingCountryList} onValueChange={field.handleChange}>
                                                 <SelectTrigger id={field.name} aria-invalid={isInvalid}>
                                                     <SelectValue placeholder="Select state" />
                                                 </SelectTrigger>
@@ -378,13 +387,13 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                             <FieldLabel htmlFor={field.name}>Type of Cuisine</FieldLabel>
                                             <Combobox
                                                 multiple
+                                                disabled={isLoadingDishList}
                                                 items={dishList?.data || []}
                                                 value={field.state.value}
                                                 autoHighlight
-                                                itemToStringLabel={(address: string) => address}
+                                                itemToStringLabel={(dish: string) => dish}
                                                 onValueChange={(value) => {
                                                     field.handleChange(value);
-                                                    setSearchValue('');
                                                 }}
                                                 onInputValueChange={(nextSearchValue, { reason }) => {
                                                     setSearchValue(nextSearchValue);
@@ -415,16 +424,18 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                                         </span>
                                                         }
                                                     >
-                                                        {(item: DishListResponse[]) => (
+                                                        {(item: string[]) => (
                                                         <>
                                                             {item.length === 0 ? (
                                                             <span className="text-contrast-low">
                                                                 Select or Create New Project
                                                             </span>
                                                             ) : item.length > 1 ? (
-                                                            `${item.join(", ")}`
+                                                            <span className="line-clamp-1 text-ellipsis">{item.map((itm) => {
+                                                                return dishList?.data?.find((dishItm) => dishItm.dish_type_id === itm)?.name
+                                                            }).join(", ")}</span>
                                                             ) : (
-                                                            item[0]
+                                                            <span className="line-clamp-1 text-ellipsis">{dishList?.data?.find((itm) => itm.dish_type_id === item[0])?.name}</span>
                                                             )}
                                                         </>
                                                         )}
@@ -435,7 +446,7 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                                 <ComboboxEmpty>No data found</ComboboxEmpty>
                                                 <ComboboxList>
                                                 {(dish) => (
-                                                    <ComboboxItem key={dish.dish_type_id} value={dish.name}>
+                                                    <ComboboxItem key={dish.dish_type_id} value={dish.dish_type_id}>
                                                     {dish.name}
                                                     </ComboboxItem>
                                                 )}
