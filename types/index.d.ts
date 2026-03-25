@@ -4,11 +4,13 @@ type RefreshTokenResponse = {
     token_type: string;
 };
 
+type UserType = "vendor" | "customer";
+
 type VendorLoginResponse = {
     first_name: string;
     last_name: string;
     email: string;
-    email_status: 1,
+    email_status: KycStatus;
     phone_number: string;
     gender: "male" | "female";
     business_name: string;

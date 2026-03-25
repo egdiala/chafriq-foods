@@ -1,6 +1,5 @@
 import { create } from "zustand";
-
-type UserType = "vendor" | "customer";
+import { persist, createJSONStorage } from 'zustand/middleware'
 
 interface UserState {
   type: UserType | null;
@@ -9,9 +8,17 @@ interface UserState {
   updateUser: (value: VendorLoginResponse | null) => void;
 }
 
-export const useUser = create<UserState>((set) => ({
-  user: null,
-  type: null,
-  updateType: (value: UserType | null) => set(() => ({ type: value })),
-  updateUser: (value: VendorLoginResponse | null) => set(() => ({ user: value })),
-}));
+export const useUser = create<UserState>()(
+  persist(
+    (set, get) => ({
+      user: null,
+      type: null,
+      updateType: (value: UserType | null) => set(() => ({ type: value })),
+      updateUser: (value: VendorLoginResponse | null) => set(() => ({ user: value })),
+    }),
+    {
+      name: 'user', // name of the item in the storage (must be unique)
+      storage: createJSONStorage(() => sessionStorage), // (optional) by default, 'localStorage' is used
+    },
+  ),
+)

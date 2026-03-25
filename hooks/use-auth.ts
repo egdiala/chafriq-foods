@@ -14,7 +14,7 @@ export const useAuth = () => {
     
     async function handleLogout() {
         await clearCredentials()
-        window.location.href = "/login";
+        window.location.href = "/";
     }
 
     // const { mutate, isPending, isSuccess } = useLogout({
@@ -27,12 +27,13 @@ export const useAuth = () => {
         // mutate()
     }
 
-    async function handleLogin(data: Partial<ConfirmOtpType>) {
+    async function handleLogin(data: Partial<ConfirmOtpType>, user: UserType) {
         await setCredentials({
             access_token: data.token as string,
-            refresh_token: data.token as string,
+            user_type: user,
         })
+        router.push(`/${user}`)
     }
 
-    return { logout: logoutUser, handleLogin }
+    return { logout: logoutUser, handleLogin, handleLogout }
 }

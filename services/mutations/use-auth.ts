@@ -29,7 +29,7 @@ export const useLoginVendor = (fn?: (value: unknown) => void) => {
         trpc.auth.vendor.login.mutationOptions({
             onSuccess: (data) => {
                 if (data.status === "ok") {
-                    handleLogin(data.data)
+                    handleLogin(data.data, "vendor")
                     fn?.(data);
                     updateType("vendor")
                     updateUser(data.data)

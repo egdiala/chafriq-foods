@@ -5,10 +5,14 @@ import { useMemo } from "react"
 import { cn } from "@/lib/utils"
 import { Content } from "../content"
 import { Button } from "../ui/button"
+import { useUser } from "@/context/use-user"
 import { usePathname } from "next/navigation"
 import { IconHamMenu, IconShoppingCart, LogoWithText, LogoWithTextWhite } from "../icons"
+import { CustomerProfileDropdown } from "../customer/profile-dropdown";
+import { VendorProfileDropdown } from "../vendor/profile-dropdown";
 
 export const Header = () => {
+    const { type } = useUser()
     const pathname = usePathname()
 
     const isWhite = useMemo(() => {
@@ -28,16 +32,26 @@ export const Header = () => {
                             <IconShoppingCart />
                         </Button>
                         <div className="md:flex items-center gap-5 hidden">
-                            <Button type="button" variant={isWhite ? "secondary-dark" : "secondary"} asChild>
-                                <Link href="/customer/login">
-                                    Sign in
-                                </Link>
-                            </Button>
-                            <Button type="button" asChild>
-                                <Link href="/vendor/register">
-                                    Become a Cook
-                                </Link>
-                            </Button>
+                            {
+                                type === "customer" ? (
+                                    <CustomerProfileDropdown />
+                                ) : (type === "vendor") ? (
+                                    <VendorProfileDropdown />
+                                ) : (
+                                    <>
+                                        <Button type="button" variant={isWhite ? "secondary-dark" : "secondary"} asChild>
+                                            <Link href="/customer/login">
+                                                Sign in
+                                            </Link>
+                                        </Button>
+                                        <Button type="button" asChild>
+                                            <Link href="/vendor/register">
+                                                Become a Cook
+                                            </Link>
+                                        </Button>
+                                    </>
+                                )
+                            }
                         </div>
                         <Button type="button" size="icon-big" className="flex md:hidden">
                             <IconHamMenu />
