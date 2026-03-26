@@ -8,6 +8,7 @@ interface VendorProfileResponse {
     business_name: string;
     business_username?: string;
     business_address: string;
+    business_address_id: string;
     business_abn: string;
     business_location: {
         type: string;
@@ -16,6 +17,7 @@ interface VendorProfileResponse {
     business_logo: string;
     avatar: string;
     kyc_status: KycStatus;
+    order_distance?: number;
     year_exp: number;
     home_country: string;
     home_state: string;

@@ -2,23 +2,72 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useUser } from "@/context/use-user";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { DeleteAccount } from "./delete-account";
 import { IconLock } from "@/components/icons/icon-lock";
 import { EditOrderSettings } from "./edit-order-settings";
 import { EditBusinessProfile } from "./edit-business-profile";
-import { IconCopySimple, IconPencilSimple, IconTrashSimple } from "@/components/icons";
+import { IconCheckmark, IconCopySimple, IconPencilSimple, IconTrashSimple } from "@/components/icons";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EditVendorProfile } from "./edit-vendor-profile";
+import { formatPhoneNumberIntl } from "react-phone-number-input";
+import { useClipboard } from "@/hooks/use-clipboard";
+import { AnimatePresence, motion } from "motion/react";
 
 export const ProfileTabContent = () => {
+    const { user } = useUser()
+    const { isCopied, copyToClipboard } = useClipboard({})
     const [openDeleteModal, setOpenDeleteModal] = useState(false)
     const [openBusinessModal, setOpenBusinessModal] = useState(false)
+    const [openPersonalModal, setOpenPersonalModal] = useState(false)
     const [openEditOrderModal, setOpenEditOrderModal] = useState(false)
 
     return (
         <>
-            <Card className="sm:col-span-2 rounded-xl py-4">
+            <Card className="rounded-xl py-4">
+                <div className="flex items-center justify-between pr-4">
+                    <CardHeader className="flex-1 px-4">
+                        <CardTitle className="font-medium text-xs text-neu">PERSONAL PROFILE</CardTitle>
+                        <CardDescription>Manage your personal details</CardDescription>
+                    </CardHeader>
+                    <Button type="button" variant="tertiary" size="smallest" onClick={() => setOpenPersonalModal(true)}>
+                        <IconPencilSimple />Edit
+                    </Button>
+                </div>
+                <CardContent className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
+                    <div className="flex flex-col gap-1">
+                        <span className="text-xs text-grey-dark-2">Phone</span>
+                        <p className="font-medium text-sm text-grey-dark-2">{formatPhoneNumberIntl(`+${user?.phone_number}` as string)}</p>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <span className="text-xs text-grey-dark-2">Gender</span>
+                        <p className="font-medium text-sm text-grey-dark-2 capitalize">{user?.gender}</p>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <span className="text-xs text-grey-dark-2">Years of Experience</span>
+                        <p className="font-medium text-sm text-grey-dark-2">{user?.year_exp}</p>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <span className="text-xs text-grey-dark-2">State</span>
+                        <p className="font-medium text-sm text-grey-dark-2">{user?.home_state}</p>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <span className="text-xs text-grey-dark-2">City</span>
+                        <p className="font-medium text-sm text-grey-dark-2">{user?.home_city}</p>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <span className="text-xs text-grey-dark-2">Zip Code</span>
+                        <p className="font-medium text-sm text-grey-dark-2">{user?.home_zip}</p>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <span className="text-xs text-grey-dark-2">Address</span>
+                        <p className="font-medium text-sm text-grey-dark-2">{user?.home_address}</p>
+                    </div>
+                </CardContent>
+            </Card>
+
+            <Card className="rounded-xl py-4">
                 <div className="flex items-center justify-between pr-4">
                     <CardHeader className="flex-1 px-4">
                         <CardTitle className="font-medium text-xs text-neu">BUSINESS PROFILE</CardTitle>
@@ -28,43 +77,76 @@ export const ProfileTabContent = () => {
                         <IconPencilSimple />Edit
                     </Button>
                 </div>
-                <CardContent className="grid sm:grid-cols-2 gap-4 px-4">
-                    <div className="flex flex-col gap-6">
-                        <div className="flex flex-col gap-1">
-                            <span className="text-xs text-grey-dark-2">Username</span>
-                            <div className="flex flex-wrap items-center gap-2">
-                                <span className="font-medium text-sm text-grey-dark-2">Increase</span>
-                                <div className="flex items-center gap-2">
-                                    <Link href="#" className="text-xs underline text-orange-2">https://chatfriq.com/cooks/[your-username]</Link>
-                                    <IconCopySimple className="text-orange-2" />
-                                </div>
+                <CardContent className="grid lg:grid-cols-2 gap-4 px-4">
+                    <div className="flex flex-col gap-1">
+                        <span className="text-xs text-grey-dark-2">Username</span>
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-medium text-sm text-grey-dark-2">{user?.business_username || "-"}</span>
+                            <div className="flex items-center gap-2">
+                                <Link href={!user?.business_username ? "#" : `/cooks/${user?.business_username}`} className="text-xs underline text-orange-2">
+                                    https://chafriq.com/cooks/{user?.business_username || "[your-username]"}
+                                </Link>
+                                <button
+                                    type="button" className="disabled:cursor-not-allowed"
+                                    disabled={!user?.business_username} onClick={() => copyToClipboard(`https://chafriq.com/cooks/${user?.business_username}`)}
+                                >
+                                    <AnimatePresence mode="wait" initial={false}>
+                                        {isCopied ? (
+                                            <motion.span
+                                                key="checkmark"
+                                                variants={variants}
+                                                initial="hidden"
+                                                animate="visible"
+                                                exit="hidden"
+                                                className="grid place-content-center"
+                                            >
+                                                <IconCheckmark className="size-4 text-orange-2" />
+                                            </motion.span>
+                                        ) : (
+                                            <motion.span
+                                                key="copy"
+                                                variants={variants}
+                                                initial="hidden"
+                                                animate="visible"
+                                                exit="hidden"
+                                                className="grid place-content-center"
+                                            >
+                                                <IconCopySimple className="size-4 text-orange-2" />
+                                            </motion.span>
+                                        )}
+                                    </AnimatePresence>
+                                </button>
                             </div>
-                        </div>
-                        <div className="flex flex-col gap-1">
-                            <span className="text-xs text-grey-dark-2">Business Name</span>
-                            <p className="font-medium text-sm text-grey-dark-2">African Jollof Kitchen</p>
                         </div>
                     </div>
-                    <div className="flex flex-col gap-6">
-                        <div className="flex flex-col gap-1">
-                            <span className="text-xs text-grey-dark-2">Business Address</span>
-                            <p className="font-medium text-sm text-grey-dark-2">77 Maple Ave. Austin, Texas 73301</p>
-                        </div>
-                        <div className="flex flex-col gap-1">
-                            <span className="text-xs text-grey-dark-2">Type of Cuisine</span>
-                            <div className="flex items-center gap-3.5 flex-wrap">
-                            {
-                                Array.from({ length: 3 }).map((_, index) => (
-                                    <span key={index} className="h-5 flex items-center justify-center px-2 text-amber text-xs bg-amber-light rounded">Cuisine Type {index + 1}</span>
-                                ))
-                            }
-                            </div>
+                    <div className="flex flex-col gap-1">
+                        <span className="text-xs text-grey-dark-2">Business Name</span>
+                        <p className="font-medium text-sm text-grey-dark-2">{user?.business_name}</p>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <span className="text-xs text-grey-dark-2">Business Address</span>
+                        <p className="font-medium text-sm text-grey-dark-2">{user?.business_address}</p>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <span className="text-xs text-grey-dark-2">Order Distance</span>
+                        <p className="font-medium text-sm text-grey-dark-2">{user?.order_distance || "0"}km</p>
+                    </div>
+                    <div className="flex flex-col gap-1 lg:col-span-2">
+                        <span className="text-xs text-grey-dark-2">Type of Cuisine</span>
+                        <div className="flex items-center gap-3.5 flex-wrap">
+                        {
+                            user?.dish_data.map((dish) => (
+                                <span key={dish.dish_type_id} className="h-5 flex items-center justify-center px-2 text-amber text-xs bg-amber-light rounded">
+                                    {dish.name}
+                                </span>
+                            ))
+                        }
                         </div>
                     </div>
                 </CardContent>
             </Card>
 
-            <Card className="rounded-xl py-4">
+            {/* <Card className="rounded-xl py-4">
                 <div className="flex items-center justify-between pr-4">
                     <CardHeader className="flex-1 px-4">
                         <CardTitle className="font-medium text-xs text-neu">ORDER SETTINGS</CardTitle>
@@ -80,7 +162,7 @@ export const ProfileTabContent = () => {
                             <span className="font-medium text-xs text-grey-dark-2">Order Distance</span>
                             <p className="text-[0.625rem] text-grey-dark-3">Set how far in distance a customer can request for service. Up to 100 km</p>
                         </div>
-                        <span className="font-medium text-xs text-grey-dark-2">50km</span>
+                        <span className="font-medium text-xs text-grey-dark-2">{user?.order_distance || "0"}km</span>
                     </div>
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col gap-1">
@@ -95,9 +177,9 @@ export const ProfileTabContent = () => {
                         </Button>
                     </div>
                 </CardContent>
-            </Card>
+            </Card> */}
 
-            <Card className="rounded-xl py-4">
+            <Card className="rounded-xl py-4 md:col-span-2">
                 <CardHeader className="px-4">
                     <CardTitle className="font-medium text-xs text-neu uppercase">Account Settings</CardTitle>
                     <CardDescription>Manage your account preferences</CardDescription>
@@ -125,8 +207,14 @@ export const ProfileTabContent = () => {
             </Card>
 
             <DeleteAccount open={openDeleteModal} setOpen={setOpenDeleteModal} />
+            <EditVendorProfile open={openPersonalModal} setOpen={setOpenPersonalModal} />
             <EditOrderSettings open={openEditOrderModal} setOpen={setOpenEditOrderModal} />
             <EditBusinessProfile open={openBusinessModal} setOpen={setOpenBusinessModal} />
         </>
     )
 }
+
+const variants = {
+  hidden: { opacity: 0, scale: 0.5 },
+  visible: { opacity: 1, scale: 1 },
+};

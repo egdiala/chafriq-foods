@@ -18,7 +18,6 @@ import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, 
 import { Spinner } from "@/components/ui/spinner";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { Eye, EyeOff } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 type Steps = "personal-information" | "other-information"
 
