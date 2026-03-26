@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { useMemo } from "react"
 import { VendorHeader } from "./header"
+import { useVendorProfile } from "@/services/queries/use-account"
 
 const flexUrls = [
     "/contact-us",
@@ -18,6 +19,7 @@ const flexUrls = [
 ]
 
 export const VendorLayoutContent = ({ children }: Readonly<{ children: React.ReactNode }>) => {
+    useVendorProfile()
     const pathname = usePathname()
 
     const isFlex = useMemo(() => {

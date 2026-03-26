@@ -23,7 +23,7 @@ export const vendorAccountRouter = createTRPCRouter({
     }),
     updateProfile: protectedProcedure.input(updateVendorProfileFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: VendorProfileResponse }> => {
         try {
-            const response = await api.post("cooks/auths/register", input, {
+            const response = await api.post("cooks/accounts", input, {
                 headers: {
                     "Authorization": `Bearer ${ctx.accessToken}`
                 }

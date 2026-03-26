@@ -28,7 +28,7 @@ export const exploreRouter = createTRPCRouter({
     }),
     getDishList: baseProcedure.query(async (): Promise<{ status: string; data: DishListResponse[] }> => {
         try {
-            const response = await api.get("customers/requests/dish-lists");
+            const response = await api.post("customers/requests/dish-lists");
             return response.data;
         } catch (error) {
             throw new TRPCError({

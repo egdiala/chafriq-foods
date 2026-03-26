@@ -2,6 +2,7 @@ import { useUser } from "@/context/use-user";
 import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
 import { type TRPCQueryKeyWithoutPrefix } from "@trpc/tanstack-react-query";
+import { useEffect } from "react";
 
 export const useVendorProfile = (config?: TRPCQueryKeyWithoutPrefix) => {
     const trpc = useTRPC();
@@ -12,10 +13,12 @@ export const useVendorProfile = (config?: TRPCQueryKeyWithoutPrefix) => {
         ...config,
     });
 
-    if (data?.status === "ok") {
-        updateUser(data.data)
-        updateType("vendor")
-    }
+    useEffect(() => {
+        if (data?.status === "ok") {
+            updateUser(data.data);
+            updateType("vendor");
+        }
+    }, [data, updateUser, updateType]);
 
     return { data, ...res }
 }

@@ -6,6 +6,7 @@ interface VendorProfileResponse {
     phone_number: string;
     gender: "male" | "female";
     business_name: string;
+    business_username?: string;
     business_address: string;
     business_abn: string;
     business_location: {

@@ -1,13 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { useUser } from "@/context/use-user";
-import { Button } from "@/components/ui/button";
-import { EditVendorProfile } from "./edit-vendor-profile";
 import { ProfileTabContent } from "./profile-tab-content";
-import { formatPhoneNumberIntl } from "react-phone-number-input";
 import { SubscriptionTabContent } from "./subscription-tab-content";
-import { IconCheckmark, IconPencilSimple } from "@/components/icons";
+import { IconCheckmark } from "@/components/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -20,7 +16,7 @@ export const VendorProfileContent = () => {
                     <TabsTrigger value="profile">Profile</TabsTrigger>
                     <TabsTrigger value="subscription">Subscription</TabsTrigger>
                 </TabsList>
-                <TabsContent value="profile" className="grid sm:grid-cols-2 gap-x-4 sm:gap-x-10 gap-y-4 sm:gap-y-8">
+                <TabsContent value="profile" className="grid md:grid-cols-2 gap-x-4 sm:gap-x-10 gap-y-4 sm:gap-y-8">
                     <ProfileTabContent />
                 </TabsContent>
                 <TabsContent value="subscription" className="grid gap-6">
@@ -33,7 +29,6 @@ export const VendorProfileContent = () => {
 
 const ProfileCard = () => {
     const { user } = useUser()
-    const [openModal, setOpenModal] = useState(false)
     return (
         <>
             <div className="flex items-start sm:items-center gap-3 sm:gap-5 p-4 bg-grey-dark-4 rounded-xl">
@@ -56,15 +51,9 @@ const ProfileCard = () => {
                             <span className="text-xs text-grey-dark-2">Email</span>
                             <p className="font-medium text-sm text-grey-dark-2">{user?.email}</p>
                         </div>
-                        <div className="flex flex-col">
-                            <span className="text-xs text-grey-dark-2">Phone</span>
-                            <p className="font-medium text-sm text-grey-dark-2">{formatPhoneNumberIntl(`+${user?.phone_number}` as string)}</p>
-                        </div>
                     </div>
                 </div>
-                <Button type="button" variant="tertiary" size="smallest" onClick={() => setOpenModal(true)}><IconPencilSimple />Edit</Button>
             </div>
-            <EditVendorProfile open={openModal} setOpen={setOpenModal} />
         </>
     )
 }

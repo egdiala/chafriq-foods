@@ -420,7 +420,7 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                                     <ComboboxValue
                                                         placeholder={
                                                         <span className="text-left">
-                                                            Select or Create New Project
+                                                            Select a cuisine
                                                         </span>
                                                         }
                                                     >
@@ -428,7 +428,7 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                                         <>
                                                             {item.length === 0 ? (
                                                             <span className="text-contrast-low">
-                                                                Select or Create New Project
+                                                                Select a cuisine
                                                             </span>
                                                             ) : item.length > 1 ? (
                                                             <span className="line-clamp-1 text-ellipsis">{item.map((itm) => {
