@@ -14,11 +14,11 @@ export const useAuth = () => {
     const updateType = useUser((s) => s.updateType);
     const updateUser = useUser((s) => s.updateUser);
     
-    async function handleLogout() {
+    async function handleLogout(url?: string) {
         await clearCredentials()
         updateType(null)
         updateUser(null)
-        window.location.href = "/";
+        window.location.href = url || "/";
     }
 
     // const { mutate, isPending, isSuccess } = useLogout({

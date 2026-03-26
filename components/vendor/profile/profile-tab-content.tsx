@@ -6,7 +6,6 @@ import { useUser } from "@/context/use-user";
 import { Button } from "@/components/ui/button";
 import { DeleteAccount } from "./delete-account";
 import { IconLock } from "@/components/icons/icon-lock";
-import { EditOrderSettings } from "./edit-order-settings";
 import { EditBusinessProfile } from "./edit-business-profile";
 import { IconCheckmark, IconCopySimple, IconPencilSimple, IconTrashSimple } from "@/components/icons";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +13,7 @@ import { EditVendorProfile } from "./edit-vendor-profile";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
 import { useClipboard } from "@/hooks/use-clipboard";
 import { AnimatePresence, motion } from "motion/react";
+import { ChangePassword } from "./change-password";
 
 export const ProfileTabContent = () => {
     const { user } = useUser()
@@ -21,7 +21,7 @@ export const ProfileTabContent = () => {
     const [openDeleteModal, setOpenDeleteModal] = useState(false)
     const [openBusinessModal, setOpenBusinessModal] = useState(false)
     const [openPersonalModal, setOpenPersonalModal] = useState(false)
-    const [openEditOrderModal, setOpenEditOrderModal] = useState(false)
+    const [openChangePasswordModal, setOpenChangePasswordModal] = useState(false)
 
     return (
         <>
@@ -190,7 +190,7 @@ export const ProfileTabContent = () => {
                             <span className="font-medium text-xs text-grey-dark-2">Reset Password</span>
                             <p className="text-[0.625rem] text-grey-dark-3">This would reset your account login password</p>
                         </div>
-                        <Button type="button" variant="tertiary" size="small" className="font-medium" onClick={() => setOpenDeleteModal(true)}>
+                        <Button type="button" variant="tertiary" size="small" className="font-medium" onClick={() => setOpenChangePasswordModal(true)}>
                             <IconLock className="size-4" /> Reset Password
                         </Button>
                     </div>
@@ -206,9 +206,9 @@ export const ProfileTabContent = () => {
                 </CardContent>
             </Card>
 
+            <ChangePassword open={openChangePasswordModal} setOpen={setOpenChangePasswordModal} />
             <DeleteAccount open={openDeleteModal} setOpen={setOpenDeleteModal} />
             <EditVendorProfile open={openPersonalModal} setOpen={setOpenPersonalModal} />
-            <EditOrderSettings open={openEditOrderModal} setOpen={setOpenEditOrderModal} />
             <EditBusinessProfile open={openBusinessModal} setOpen={setOpenBusinessModal} />
         </>
     )

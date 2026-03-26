@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { evaluatePasswordRequirements } from "./vendor-auth";
 
 export const updateVendorProfileFormSchema = z.object({
     home_address: z.string().optional(),
@@ -32,3 +33,36 @@ export const editVendorBusinessFormSchema = z.object({
         message: "Order distance must be a number between 0 and 100 km"
     })
 })
+
+export const deleteVendorFormSchema = z.object({
+    password: z.string().min(6, 'Password must be at least 6 characters').refine(
+      (value) => {
+        const { length, uppercase, lowercase, specialChar } = evaluatePasswordRequirements(value);
+        return length && uppercase && lowercase && specialChar;
+      },
+      {
+        message:
+          'Password must contain at least one uppercase letter, one lowercase letter, and one special character'
+      }
+    )
+})
+
+export const changePasswordVendorFormSchema = z.object({
+    old_password: z.string().min(1, "Password is required"),
+    new_password: z.string().min(6, 'Password must be at least 6 characters').refine(
+      (value) => {
+        const { length, uppercase, lowercase, specialChar } = evaluatePasswordRequirements(value);
+        return length && uppercase && lowercase && specialChar;
+      },
+      {
+        message:
+          'Password must contain at least one uppercase letter, one lowercase letter, and one special character'
+      }
+    ),
+    confirm_new_password: z.string()
+}).refine((data) => data.new_password === data.confirm_new_password, {
+  message: 'Passwords do not match',
+  path: ['confirm_new_password']
+});
+
+export type ChangePasswordVendorFormType = z.infer<typeof changePasswordVendorFormSchema>;

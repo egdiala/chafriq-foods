@@ -1,10 +1,15 @@
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent, DialogFooter, DialogClose } from "@/components/ui/dialog"
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+
+import Image from "next/image";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { useForm } from "@tanstack/react-form-nextjs";
-import { useMemo, useState } from "react";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { deleteVendorFormSchema } from "@/validations/vendor-account";
+import { useDeleteVendorProfile } from "@/services/mutations/use-account";
+import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent, DialogFooter, DialogClose } from "@/components/ui/dialog";
 
 type Props = {
     open: boolean;
@@ -12,148 +17,89 @@ type Props = {
 }
 
 export const DeleteAccount = ({ open, setOpen }: Props) => {
-    const [step, setStep] = useState<"verify" | "password">("password")
-
-    const content = useMemo(() => {
-        switch (step) {
-            case "verify":
-                return <VerifyStep />;
-            default:
-                return <PasswordStep onComplete={setStep} />;
-        }
-    }, [step])
+    const [showPassword, setShowPassword] = useState(false)
     
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="gap-5 sm:max-w-125" showCloseButton={step !== "password"}>
-                {content}
-            </DialogContent>
-        </Dialog>
-    )
-}
-
-const PasswordStep = ({ onComplete }: { onComplete: (value: "verify" | "password") => void; }) => {
     const deleteAccountForm = useForm({
         defaultValues: {
             password: "",
         },
         validators: {
-            // onSubmit: loginFormSchema
+            onSubmit: deleteVendorFormSchema
         },
         onSubmit: async ({ value }) => {
-            onComplete("verify")
+            mutate(value)
         },
     })
-    return (
-        <>
-            <DialogHeader>
-                <DialogTitle>Delete your account</DialogTitle>
-                <DialogDescription>
-                    This action will delete your  account and this is irreversible
-                </DialogDescription>
-            </DialogHeader>
-            <form id="delete-password-form" onSubmit={(e) => {
-                e.preventDefault()
-                deleteAccountForm.handleSubmit()
-            }}>
-                <deleteAccountForm.Field name="password">
-                    {(field) => {
-                        const isInvalid = !field.state.meta.isValid
-                        return (
-                            <Field data-invalid={isInvalid}>
-                                <FieldLabel htmlFor={field.name}>Current Password</FieldLabel>
-                                <Input
-                                    type="text"
-                                    id={field.name}
-                                    name={field.name}
-                                    aria-invalid={isInvalid}
-                                    value={field.state.value}
-                                    onBlur={field.handleBlur}
-                                    onChange={(e) => field.handleChange(e.target.value)}
-                                />
-                                {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
-                            </Field>
-                        )
-                    }}
-                </deleteAccountForm.Field>
-            </form>
-            <DialogFooter className="flex-row sm:justify-start [&>button]:flex-1">
-                <DialogClose asChild>
-                    <Button type="button" variant="secondary">Cancel</Button>
-                </DialogClose>
-                <Button type="submit" form="delete-password-form">Continue</Button>
-            </DialogFooter>
-        </>
-    )
-}
 
-const VerifyStep = () => {
+    const closeDialog = (v: boolean) => {
+        setOpen(v)
+        deleteAccountForm.reset()
+    }
 
-    const verifyEmailForm = useForm({
-        defaultValues: {
-            code: ""
-        },
-        listeners: {
-            onChange: ({ formApi }) => {
-                const otpCode = formApi.getFieldValue("code")
-                if (otpCode && (otpCode.length === 6)) {
-                    formApi.handleSubmit()
-                }
-            },
-        },
-        validators: {
-            // onSubmit: loginFormSchema
-        },
-        onSubmit: async ({ value }) => {
-            console.log(value)
-        },
-    })
+    const { mutate, isPending } = useDeleteVendorProfile(() => closeDialog(false))
+    
     return (
-        <>
-            <DialogHeader>
-                <DialogTitle>Verify Your Email</DialogTitle>
-                <DialogDescription>
-                    Enter the code sent to am *** **n@gmail.com
-                </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={(e) => {
-                e.preventDefault()
-                verifyEmailForm.handleSubmit()
-            }}>
-                <verifyEmailForm.Field name="code">
-                    {(field) => {
-                        const isInvalid = !field.state.meta.isValid
-                        return (
-                            <Field className="mb-6" data-invalid={isInvalid}>
-                                <InputOTP id={field.name} name={field.name} value={field.state.value} onBlur={field.handleBlur} maxLength={6} onChange={field.handleChange}>
-                                    <InputOTPGroup>
-                                        <InputOTPSlot index={0} />
-                                    </InputOTPGroup>
-                                    <InputOTPGroup>
-                                        <InputOTPSlot index={1} />
-                                    </InputOTPGroup>
-                                    <InputOTPGroup>
-                                        <InputOTPSlot index={2} />
-                                    </InputOTPGroup>
-                                    <InputOTPGroup>
-                                        <InputOTPSlot index={3} />
-                                    </InputOTPGroup>
-                                    <InputOTPGroup>
-                                        <InputOTPSlot index={4} />
-                                    </InputOTPGroup>
-                                    <InputOTPGroup>
-                                        <InputOTPSlot index={5} />
-                                    </InputOTPGroup>
-                                </InputOTP>
-                                {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
-                            </Field>
-                        )
-                    }}
-                </verifyEmailForm.Field>
-            </form>
-            <DialogFooter className="flex-row sm:justify-start [&>button]:flex-1">
-                <Button type="button">Resend Code in 28s</Button>
-            </DialogFooter>
-        </>
+        <Dialog open={open} onOpenChange={closeDialog}>
+            <DialogContent className="gap-5 sm:max-w-125" showCloseButton={false}>
+                <div className="relative size-14">
+                    <Image src="/caution.gif" alt="caution" fill />
+                </div>
+                <DialogHeader>
+                    <DialogTitle>Delete your account</DialogTitle>
+                    <DialogDescription>
+                        Deleting your account is permanent; your account will be deleted after 7 days. You can cancel anytime within this period by logging in. After 7 days, all your data will be permanently removed and cannot be recovered.
+                    </DialogDescription>
+                </DialogHeader>
+                <form id="delete-password-form" onSubmit={(e) => {
+                    e.preventDefault()
+                    deleteAccountForm.handleSubmit()
+                }}>
+                    <deleteAccountForm.Field name="password">
+                        {(field) => {
+                            const isInvalid = !field.state.meta.isValid
+                            return (
+                                <Field data-invalid={isInvalid}>
+                                    <FieldLabel htmlFor={field.name}>Current Password</FieldLabel>
+                                    <div className="relative">
+                                        <Input
+                                            type={showPassword ? "text" : "password"}
+                                            id={field.name}
+                                            name={field.name}
+                                            aria-invalid={isInvalid}
+                                            value={field.state.value}
+                                            onBlur={field.handleBlur}
+                                            onChange={(e) => field.handleChange(e.target.value)}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute inset-y-0 right-2 text-grey-dark-2 [&>svg]:size-4"
+                                        >
+                                            {showPassword ? <EyeOff /> : <Eye />}
+                                        </button>
+                                    </div>
+                                    {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
+                                </Field>
+                            )
+                        }}
+                    </deleteAccountForm.Field>
+                </form>
+                <DialogFooter className="flex-row sm:justify-start [&>button]:flex-1">
+                    <DialogClose asChild>
+                        <Button type="button" variant="secondary">Cancel</Button>
+                    </DialogClose>
+                    <deleteAccountForm.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+                        {([canSubmit, isSubmitting]) => {
+                            return (
+                                <Button type="submit" form="delete-password-form" disabled={!canSubmit || isSubmitting || isPending}>
+                                    Delete
+                                    {(isPending || isSubmitting) && (<Spinner className="absolute right-4 size-5" />)}
+                                </Button>
+                            )
+                        }}
+                    </deleteAccountForm.Subscribe>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }
