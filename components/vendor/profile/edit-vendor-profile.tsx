@@ -1,10 +1,12 @@
 "use client";
 
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useForm } from "@tanstack/react-form-nextjs"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { PhoneInput } from "@/components/ui/phone-input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useUser } from "@/context/use-user";
 
 type Props = {
     open: boolean;
@@ -12,13 +14,11 @@ type Props = {
 }
 
 export const EditVendorProfile = ({ open, setOpen }: Props) => {
-
+    const { user } = useUser()
     const editProfileForm = useForm({
         defaultValues: {
-            name: "",
-            email: "",
-            phone: "",
-            gender: ""
+            phone_number: `+${user?.phone_number}`,
+            gender: user?.gender as unknown as string
         },
         validators: {
             // onSubmit: loginFormSchema
@@ -34,65 +34,26 @@ export const EditVendorProfile = ({ open, setOpen }: Props) => {
                 <DialogHeader>
                     <DialogTitle>Edit profile</DialogTitle>
                 </DialogHeader>
-                <form className="space-y-5 [&_button]:w-1/3! [&_button]:mt-5! [&_button]:mx-auto!" onSubmit={(e) => {
+                <form id="edit-vendor-profile-form" onSubmit={(e) => {
                     e.preventDefault()
                     editProfileForm.handleSubmit()
                 }}>
                     <FieldGroup>
-                        <editProfileForm.Field name="name">
-                            {(field) => {
-                                const isInvalid = !field.state.meta.isValid
-                                return (
-                                    <Field data-invalid={isInvalid}>
-                                        <FieldLabel htmlFor={field.name}>Name</FieldLabel>
-                                        <Input
-                                            type="text"
-                                            id={field.name}
-                                            name={field.name}
-                                            aria-invalid={isInvalid}
-                                            value={field.state.value}
-                                            onBlur={field.handleBlur}
-                                            onChange={(e) => field.handleChange(e.target.value)}
-                                        />
-                                        {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
-                                    </Field>
-                                )
-                            }}
-                        </editProfileForm.Field>
-                        <editProfileForm.Field name="email">
-                            {(field) => {
-                                const isInvalid = !field.state.meta.isValid
-                                return (
-                                    <Field data-invalid={isInvalid}>
-                                        <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                                        <Input
-                                            type="text"
-                                            id={field.name}
-                                            name={field.name}
-                                            aria-invalid={isInvalid}
-                                            value={field.state.value}
-                                            onBlur={field.handleBlur}
-                                            onChange={(e) => field.handleChange(e.target.value)}
-                                        />
-                                        {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
-                                    </Field>
-                                )
-                            }}
-                        </editProfileForm.Field>
-                        <editProfileForm.Field name="phone">
+                        <editProfileForm.Field name="phone_number">
                             {(field) => {
                                 const isInvalid = !field.state.meta.isValid
                                 return (
                                     <Field data-invalid={isInvalid}>
                                         <FieldLabel htmlFor={field.name}>Phone</FieldLabel>
-                                        <Input
-                                            type="text"
+                                        <PhoneInput
+                                            placeholder="Enter a phone number"
                                             id={field.name}
                                             name={field.name}
                                             aria-invalid={isInvalid}
                                             value={field.state.value}
                                             onBlur={field.handleBlur}
-                                            onChange={(e) => field.handleChange(e.target.value)}
+                                            defaultCountry="AU"
+                                            onChange={(value) => field.handleChange(value)}
                                         />
                                         {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                     </Field>
@@ -105,15 +66,18 @@ export const EditVendorProfile = ({ open, setOpen }: Props) => {
                                 return (
                                     <Field data-invalid={isInvalid}>
                                         <FieldLabel htmlFor={field.name}>Gender</FieldLabel>
-                                        <Input
-                                            type="text"
-                                            id={field.name}
-                                            name={field.name}
-                                            aria-invalid={isInvalid}
-                                            value={field.state.value}
-                                            onBlur={field.handleBlur}
-                                            onChange={(e) => field.handleChange(e.target.value)}
-                                        />
+                                        <Select value={field.state.value} name={field.name} onValueChange={field.handleChange}>
+                                            <SelectTrigger id={field.name} aria-invalid={isInvalid}>
+                                                <SelectValue placeholder="Select gender" />
+                                            </SelectTrigger>
+                                            <SelectContent position="popper" align="start">
+                                                {
+                                                    ["Male", "Female"]?.map((gender) => (
+                                                        <SelectItem value={gender.toLowerCase()} key={gender.toLowerCase()}>{gender}</SelectItem>
+                                                    ))
+                                                }
+                                            </SelectContent>
+                                        </Select>
                                         {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                     </Field>
                                 )
@@ -125,7 +89,7 @@ export const EditVendorProfile = ({ open, setOpen }: Props) => {
                     <DialogClose asChild>
                         <Button type="button" variant="secondary">Cancel</Button>
                     </DialogClose>
-                    <Button type="button">Update</Button>
+                    <Button type="submit" form="edit-vendor-profile-form">Update</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

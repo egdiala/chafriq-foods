@@ -16,7 +16,7 @@ export const CustomerProfileDropdown = () => {
             <DropdownMenuTrigger className="hidden lg:flex items-center gap-1 p-1 bg-orange-5 rounded-full [&_svg]:text-grey-dark-3 data-[state=open]:[&_svg]:-rotate-180">
                 <Avatar>
                     <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>{user?.first_name?.[0]} {user?.last_name?.[0]}</AvatarFallback>
+                    <AvatarFallback>{user?.first_name?.[0]}{user?.last_name?.[0]}</AvatarFallback>
                 </Avatar>
                 <span className="font-medium text-sm text-grey-dark-2">{user?.first_name}</span>
                 <IconArrowDown className="transition-transform duration-200 ease-linear" />
@@ -25,7 +25,7 @@ export const CustomerProfileDropdown = () => {
                 <div className="flex items-center gap-2">
                     <Avatar size="lg">
                         <AvatarImage src="https://github.com/shadcn.png" className="rounded-xl" />
-                        <AvatarFallback>{user?.first_name?.[0]} {user?.last_name?.[0]}</AvatarFallback>
+                        <AvatarFallback>{user?.first_name?.[0]}{user?.last_name?.[0]}</AvatarFallback>
                     </Avatar>
                     <div className="grid gap-px">
                         <span className="font-medium text-sm text-grey-dark-1">{user?.first_name} {user?.last_name}</span>

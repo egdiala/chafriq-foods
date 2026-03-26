@@ -1,4 +1,5 @@
 // import { useOnboarding } from "@/context/onboarding";
+import { useUser } from "@/context/use-user";
 import { clearCredentials, setCredentials } from "@/lib/action";
 // import { useLogout } from "@/services/mutations/use-auth";
 import { useTRPC } from "@/trpc/client";
@@ -10,10 +11,13 @@ export const useAuth = () => {
     const trpc = useTRPC();
     const router = useRouter();
     const queryClient = useQueryClient();
-    // const updateStep = useOnboarding((s) => s.updateStep);
+    const updateType = useUser((s) => s.updateType);
+    const updateUser = useUser((s) => s.updateUser);
     
     async function handleLogout() {
         await clearCredentials()
+        updateType(null)
+        updateUser(null)
         window.location.href = "/";
     }
 
@@ -27,12 +31,22 @@ export const useAuth = () => {
         // mutate()
     }
 
-    async function handleLogin(data: Partial<ConfirmOtpType>, user: UserType) {
+    async function handleLogin(data: Partial<ConfirmOtpType>, userType: UserType) {
         await setCredentials({
             access_token: data.token as string,
-            user_type: user,
+            user_type: userType,
         })
-        router.push(`/${user}`)
+
+        const [profile] = await Promise.all([
+            queryClient.fetchQuery(trpc.account[userType].getProfile.queryOptions()),
+        ]);
+
+        if (profile.status === "ok") {
+            updateUser(profile.data)
+            updateType(userType)
+        }
+
+        router.push(`/${userType}`)
     }
 
     return { logout: logoutUser, handleLogin, handleLogout }

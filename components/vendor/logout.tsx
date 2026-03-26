@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Button } from "../ui/button"
 import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent, DialogFooter, DialogClose } from "../ui/dialog"
+import { useAuth } from "@/hooks/use-auth";
 
 type Props = {
     open: boolean;
@@ -8,6 +9,7 @@ type Props = {
 }
 
 export const Logout = ({ open, setOpen }: Props) => {
+    const { handleLogout } = useAuth()
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="gap-5 sm:max-w-98.5" showCloseButton={false}>
@@ -24,7 +26,7 @@ export const Logout = ({ open, setOpen }: Props) => {
                     <DialogClose asChild>
                         <Button type="button" variant="secondary">Cancel</Button>
                     </DialogClose>
-                    <Button type="button">Logout</Button>
+                    <Button type="button" onClick={() => handleLogout()}>Logout</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

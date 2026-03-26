@@ -17,7 +17,7 @@ export const Hero = () => {
                     preload="auto"
                     className="h-full w-full object-cover"
                 >
-                    <source src="/chafriq-hero-video.webm" type="video/mp4" />
+                    <source src="/chafriq-hero-video.webm" type="video/webm" />
                 </video>
             </div>
             <Content className="flex flex-col items-center justify-center min-h-full">

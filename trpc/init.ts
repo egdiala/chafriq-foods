@@ -31,11 +31,11 @@ export const protectedProcedure = t.procedure.use(async ({ next }) => {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("access_token")?.value;
 
-  const refreshToken = cookieStore.get("refresh_token")?.value;
+  const userType = cookieStore.get("user_type")?.value;
 
-  if (!accessToken || !refreshToken) {
+  if (!accessToken || !userType) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
-  return next({ ctx: { accessToken, refreshToken } });
+  return next({ ctx: { accessToken, userType } });
 });

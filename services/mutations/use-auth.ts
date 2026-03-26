@@ -2,7 +2,6 @@ import { useTRPC } from "@/trpc/client";
 import { toast } from 'sonner';
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
-import { useUser } from "@/context/use-user";
 
 export const useRegisterVendor = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
@@ -24,15 +23,12 @@ export const useRegisterVendor = (fn?: (value: unknown) => void) => {
 export const useLoginVendor = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
     const { handleLogin } = useAuth()
-    const { updateType, updateUser } = useUser()
     return useMutation(
         trpc.auth.vendor.login.mutationOptions({
             onSuccess: (data) => {
                 if (data.status === "ok") {
                     handleLogin(data.data, "vendor")
                     fn?.(data);
-                    updateType("vendor")
-                    updateUser(data.data)
                     toast.success("Login successful")
                 }
             },

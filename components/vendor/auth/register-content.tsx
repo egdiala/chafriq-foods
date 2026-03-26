@@ -523,10 +523,16 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                                 type="text"
                                                 id={field.name}
                                                 name={field.name}
+                                                inputMode="decimal"
+                                                pattern="[0-9]*"
                                                 aria-invalid={isInvalid}
                                                 value={field.state.value}
                                                 onBlur={field.handleBlur}
-                                                onChange={(e) => field.handleChange(e.target.value)}
+                                                onChange={(e) => {
+                                                    const raw = e.target.value.match(/^\d+/)?.[0] || "";
+                                                    const normalized = raw === "" ? "" : raw === "0" ? "0" : raw.replace(/^0+/, "");
+                                                    field.handleChange(normalized)
+                                                }}
                                             />
                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                         </Field>
