@@ -21,32 +21,61 @@ export const useUpdateVendorProfile = (fn?: (value: unknown) => void) => {
     );
 }
 
-const uploadVendorAvatar = async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const res = await fetch("/api/vendor/upload-avatar", {
-        method: "POST",
-        body: formData,
-    });
-
-    if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error?.message || "Upload failed");
-    }
-
-    return res.json();
-};
-
 export const useUploadVendorAvatar = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: uploadVendorAvatar,
+        mutationFn: async (file: File) => {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const res = await fetch("/api/vendor/upload-avatar", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!res.ok) {
+                const error = await res.json();
+                throw new Error(error?.message || "Upload failed");
+            }
+
+            return res.json();
+        },
         onSuccess: async (data) => {
             await queryClient.invalidateQueries({ queryKey: trpc.account.vendor.getProfile.queryKey() })
             fn?.(data);
             toast.success("Avatar updated successfully")
+        },
+        onError: (error) => {
+            toast.error(error.message || "Something went wrong");
+        },
+    });
+}
+
+export const useUploadBusinessLogo = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async (file: File) => {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const res = await fetch("/api/vendor/upload-business-logo", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!res.ok) {
+                const error = await res.json();
+                throw new Error(error?.message || "Upload failed");
+            }
+
+            return res.json();
+        },
+        onSuccess: async (data) => {
+            await queryClient.invalidateQueries({ queryKey: trpc.account.vendor.getProfile.queryKey() })
+            fn?.(data);
+            toast.success("Business logo updated successfully")
         },
         onError: (error) => {
             toast.error(error.message || "Something went wrong");

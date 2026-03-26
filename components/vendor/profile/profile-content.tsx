@@ -59,8 +59,8 @@ const ProfileCard = () => {
             <div className="flex items-start sm:items-center gap-3 sm:gap-5 p-4 bg-grey-dark-4 rounded-xl">
                 <div className="flex flex-col sm:flex-row sm:items-center flex-1 gap-3 sm:gap-10">
                     <div className="flex items-center gap-3 sm:gap-5">
-                        <div className="relative rounded-lg sm:rounded-2xl overflow-hidden">
-                            <Avatar className="size-10 sm:size-23.5 outline-1 outline-orange-2 rounded-lg sm:rounded-2xl">
+                        <div className="relative rounded-lg sm:rounded-2xl outline-1 outline-orange-2 overflow-hidden">
+                            <Avatar className="size-10 sm:size-23.5 rounded-lg sm:rounded-2xl">
                                 <AvatarImage src={user?.avatar || preview} className="rounded-lg sm:rounded-2xl" />
                                 <AvatarFallback className={cn(isPending && "text-orange-5", "rounded-lg sm:rounded-2xl")}>{user?.first_name?.[0]}{user?.last_name?.[0]}</AvatarFallback>
                             </Avatar>
