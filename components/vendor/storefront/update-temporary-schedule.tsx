@@ -126,7 +126,7 @@ export const UpdateTemporarySchedule = ({ open, schedule, setOpen }: Props) => {
                         {([canSubmit, isSubmitting]) => {
                             return (
                                 <Button type="submit" form="temporary-availability-form" disabled={!canSubmit || isSubmitting || isPending}>
-                                    Submit
+                                    Update
                                     {(isPending || isSubmitting) && (<Spinner className="absolute right-4 size-5" />)}
                                 </Button>
                             )
