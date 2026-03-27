@@ -1,15 +1,23 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent, DialogFooter, DialogClose } from "@/components/ui/dialog"
+import { useDeleteAvailability } from "@/services/mutations/use-schedules";
+import { Spinner } from "@/components/ui/spinner";
 
 type Props = {
     open: boolean;
-    setOpen: ({ id, isOpen }: { id: string; isOpen: boolean; }) => void;
+    schedule: GetSchedulesResponse["data"][0];
+    setOpen: ({ schedule, isOpen }: { schedule: GetSchedulesResponse["data"][0]; isOpen: boolean; }) => void;
 }
 
-export const DeleteSchedule = ({ open, setOpen }: Props) => {
+export const DeleteSchedule = ({ open, schedule, setOpen }: Props) => {
+    const closeDialog = (v: boolean) => {
+        setOpen({ schedule: undefined as unknown as GetSchedulesResponse["data"][0], isOpen: v })
+    }
+
+    const { mutate, isPending } = useDeleteAvailability(() => closeDialog(false))
     return (
-        <Dialog open={open} onOpenChange={(isOpen) => setOpen({ id: "", isOpen })}>
+        <Dialog open={open} onOpenChange={closeDialog}>
             <DialogContent className="gap-5 sm:max-w-98.5" showCloseButton={false}>
                 <div className="relative size-14">
                     <Image src="/caution.gif" alt="caution" fill />
@@ -24,7 +32,7 @@ export const DeleteSchedule = ({ open, setOpen }: Props) => {
                     <DialogClose asChild>
                         <Button type="button" variant="secondary">Cancel</Button>
                     </DialogClose>
-                    <Button type="button">Delete</Button>
+                    <Button type="button" onClick={() => mutate(schedule.schedule_id)}>Delete {(isPending) && (<Spinner className="absolute right-4 size-5" />)}</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

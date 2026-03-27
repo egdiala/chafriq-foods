@@ -36,8 +36,85 @@ export const createAvailabilityFormSchema = z.discriminatedUnion("avail_type", [
     path: ["day_date"],
 });
 
+export const updateAvailabilityFormSchema = z
+  .object({
+    schedule_id: z.string().min(1, "Schedule ID is required"),
+    ...baseFields,
+    day_week: z.string().min(1).max(7).optional(),
+    day_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format")
+      .optional(),
+  })
+  .superRefine((data, ctx) => {
+    // ✅ enforce "exactly one"
+    if (!data.day_week && !data.day_date) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Either day_week or day_date is required",
+        path: ["day_week"],
+      });
+      return;
+    }
+
+    if (data.day_week && data.day_date) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Provide only one of day_week or day_date",
+        path: ["day_week"],
+      });
+    }
+
+    // ✅ validate date only if present
+    if (data.day_date) {
+      const today = new Date();
+      const inputDate = new Date(data.day_date);
+
+      if (inputDate < new Date(today.toDateString())) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Date cannot be in the past",
+          path: ["day_date"],
+        });
+      }
+    }
+
+    // ✅ validate time properly
+    const [startH, startM] = data.start_time.split(":").map(Number);
+    const [endH, endM] = data.end_time.split(":").map(Number);
+
+    const startMinutes = startH * 60 + startM;
+    const endMinutes = endH * 60 + endM;
+
+    if (endMinutes <= startMinutes) {
+      ctx.addIssue({
+        code: "custom",
+        message: "End time must be greater than start time",
+        path: ["end_time"],
+      });
+    }
+  });
+
 export const permanentAvailabilityFormSchema = z.object({
     avail_type: z.literal("1"),
+    ...baseFields,
+    day_week: z.string().min(1).max(7),
+})
+.refine((data) => {
+    const [startH, startM] = data.start_time.split(":").map(Number);
+    const [endH, endM] = data.end_time.split(":").map(Number);
+
+    const startMinutes = startH * 60 + startM;
+    const endMinutes = endH * 60 + endM;
+
+    return endMinutes > startMinutes;
+}, {
+    message: "End time must be greater than start time",
+    path: ["end_time"],
+});
+
+export const editPermanentAvailabilityFormSchema = z.object({
+    schedule_id: z.string().min(1, "Schedule ID is required"),
     ...baseFields,
     day_week: z.string().min(1).max(7),
 })

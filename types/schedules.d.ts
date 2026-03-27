@@ -6,6 +6,7 @@ interface GetSchedulesResponse {
     _id: number;
     data: {
         schedule_id: string;
+        status: 0 | 1;
         day_week: number;
         start_time: string;
         end_time: string;
