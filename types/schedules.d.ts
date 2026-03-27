@@ -8,6 +8,7 @@ interface GetSchedulesResponse {
         schedule_id: string;
         status: 0 | 1;
         day_week: number;
+        day_date: string | Date;
         start_time: string;
         end_time: string;
         timezone: string;

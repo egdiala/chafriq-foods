@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, formatTime } from "@/lib/utils";
 import { useState } from "react";
 import { Ellipsis, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -106,7 +106,7 @@ const ScheduleRow = ({ day, daySchedule, onEdit, onDelete }: ScheduleRowProps) =
     const { mutate, isPending } = useToggleAvailabilityStatus()
     return (
         <div className="flex items-center justify-between">
-            <span className="font-medium text-xs text-grey-dark-2">{daySchedule.start_time} - {daySchedule.end_time}</span>
+            <span className="font-medium text-xs text-grey-dark-2">{formatTime(daySchedule.start_time)} - {formatTime(daySchedule.end_time)}</span>
             <div className="flex items-center justify-end gap-1">
                 <div className={cn("flex items-center gap-1 text-xs h-3.5 px-1 w-fit rounded-full", isAvailable ? "bg-success-light text-success" : "bg-red-5 text-red-2")}>
                     <IconDot />

@@ -6,28 +6,29 @@ import { Calendar } from "@/components/ui/calendar";
 import { Separator } from "@/components/ui/separator";
 import { useForm } from "@tanstack/react-form-nextjs";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { temporaryAvailabilityFormSchema } from "@/validations/schedule";
+import { editTemporaryAvailabilityFormSchema } from "@/validations/schedule";
 import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { format } from "date-fns";
-import { useCreateAvailability } from "@/services/mutations/use-schedules";
+import { useUpdateAvailability } from "@/services/mutations/use-schedules";
 import { Spinner } from "@/components/ui/spinner";
 
 type Props = {
     open: boolean;
-    setOpen: (isOpen: boolean) => void;
+    schedule: GetSchedulesResponse["data"][0];
+    setOpen: ({ schedule, isOpen }: { schedule: GetSchedulesResponse["data"][0]; isOpen: boolean; }) => void;
 }
 
-export const SetTemporarySchedule = ({ open, setOpen }: Props) => {
+export const UpdateTemporarySchedule = ({ open, schedule, setOpen }: Props) => {
     const availabilityForm = useForm({
         defaultValues: {
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            start_time: "",
-            end_time: "",
-            avail_type: "2" as const,
-            day_date: "" as unknown as string,
+            timezone: schedule?.timezone as string,
+            start_time: schedule?.start_time as string,
+            end_time: schedule?.end_time as string,
+            schedule_id: schedule?.schedule_id as string,
+            day_date: schedule?.day_date as string,
         },
         validators: {
-            onSubmit: temporaryAvailabilityFormSchema
+            onSubmit: editTemporaryAvailabilityFormSchema
         },
         onSubmit: async ({ value }) => {
             if (isPending) return;
@@ -36,11 +37,11 @@ export const SetTemporarySchedule = ({ open, setOpen }: Props) => {
     })
 
     const closeDialog = (v: boolean) => {
-        setOpen(v)
+        setOpen({ schedule, isOpen: v })
         availabilityForm.reset()
     }
 
-    const { mutate, isPending } = useCreateAvailability(() => closeDialog(false))
+    const { mutate, isPending } = useUpdateAvailability(() => closeDialog(false))
 
     return (
         <Dialog open={open} onOpenChange={closeDialog}>

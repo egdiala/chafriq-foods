@@ -113,6 +113,35 @@ export const permanentAvailabilityFormSchema = z.object({
     path: ["end_time"],
 });
 
+export const temporaryAvailabilityFormSchema = z.object({
+    avail_type: z.literal("2"),
+    ...baseFields,
+    day_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
+})
+.refine((data) => {
+    const [startH, startM] = data.start_time.split(":").map(Number);
+    const [endH, endM] = data.end_time.split(":").map(Number);
+
+    const startMinutes = startH * 60 + startM;
+    const endMinutes = endH * 60 + endM;
+
+    return endMinutes > startMinutes;
+}, {
+    message: "End time must be greater than start time",
+    path: ["end_time"],
+})
+.refine((data) => {
+    const today = new Date();
+    const inputDate = new Date(data.day_date);
+
+    return inputDate >= new Date(today.toDateString());
+}, {
+    message: "Date cannot be in the past",
+    path: ["day_date"],
+});
+
 export const editPermanentAvailabilityFormSchema = z.object({
     schedule_id: z.string().min(1, "Schedule ID is required"),
     ...baseFields,
@@ -129,4 +158,33 @@ export const editPermanentAvailabilityFormSchema = z.object({
 }, {
     message: "End time must be greater than start time",
     path: ["end_time"],
+});
+
+export const editTemporaryAvailabilityFormSchema = z.object({
+    schedule_id: z.string().min(1, "Schedule ID is required"),
+    ...baseFields,
+    day_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
+})
+.refine((data) => {
+    const [startH, startM] = data.start_time.split(":").map(Number);
+    const [endH, endM] = data.end_time.split(":").map(Number);
+
+    const startMinutes = startH * 60 + startM;
+    const endMinutes = endH * 60 + endM;
+
+    return endMinutes > startMinutes;
+}, {
+    message: "End time must be greater than start time",
+    path: ["end_time"],
+})
+.refine((data) => {
+    const today = new Date();
+    const inputDate = new Date(data.day_date);
+
+    return inputDate >= new Date(today.toDateString());
+}, {
+    message: "Date cannot be in the past",
+    path: ["day_date"],
 });

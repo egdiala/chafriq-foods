@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx"
+import { format, set } from "date-fns";
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -46,4 +47,17 @@ export const appendQueryParams = (url: string, params: QueryParams): string => {
 
   // Remove dummy origin if the input URL was relative
   return url.startsWith("http") ? result : result.replace(parsedUrl.origin, "");
+};
+
+export const formatTime = (time: string) => {
+  const [hours, minutes] = time.split(":").map(Number);
+
+  const date = set(new Date(), {
+    hours,
+    minutes,
+    seconds: 0,
+    milliseconds: 0,
+  });
+
+  return format(date, "hh:mmaaa"); // "09:00AM"
 };
