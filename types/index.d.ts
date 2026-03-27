@@ -48,3 +48,8 @@ type VendorLoginResponse = {
 type SignupStage = 1 | 2 // first or second screen completed respectively
 type AccountStatus = 0 | 1 | 2 // pending | active | suspended
 type KycStatus = 0 | 1 // unverified | verified
+
+type QueryParams = Record<
+  string,
+  string | number | boolean | null | undefined | (string | number | boolean)[]
+>;

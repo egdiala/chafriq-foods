@@ -5,11 +5,15 @@ import { Ellipsis, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DeleteSchedule } from "./delete-schedule";
 import { startOfWeek, addDays, format } from "date-fns";
+import { SetTemporarySchedule } from "./set-temporary-schedule";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { IconPencilSimple, IconToggleLeft, IconTrashSimple } from "@/components/icons";
-import { SetTemporarySchedule } from "./set-temporary-schedule";
 
-export const TemporarySchedule = () => {
+type Props = {
+    schedules: GetSchedulesResponse[];
+}
+
+export const TemporarySchedule = ({ schedules }: Props) => {
     const [openSchedule, setOpenSchedule] = useState(false)
     const [openDelete, setOpenDelete] = useState({ id: "", isOpen: false })
     const start = startOfWeek(new Date(), { weekStartsOn: 1 });

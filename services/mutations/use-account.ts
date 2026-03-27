@@ -1,8 +1,7 @@
-import { useTRPC } from "@/trpc/client";
 import { toast } from 'sonner';
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/client";
 import { useAuth } from "@/hooks/use-auth";
-import { api } from "@/trpc/helper";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useUpdateVendorProfile = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();

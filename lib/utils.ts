@@ -28,3 +28,22 @@ export const normalizeNumberInput = (value: string, max = 100, decimals = 2) => 
 
   return finalValue;
 };
+
+export const appendQueryParams = (url: string, params: QueryParams): string => {
+  const parsedUrl = new URL(url, "http://dummy-base"); // supports relative URLs
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === null || value === undefined || value === "") return;
+
+    if (Array.isArray(value)) {
+      value.forEach((v) => parsedUrl.searchParams.append(key, String(v)));
+    } else {
+      parsedUrl.searchParams.set(key, String(value));
+    }
+  });
+
+  const result = parsedUrl.toString();
+
+  // Remove dummy origin if the input URL was relative
+  return url.startsWith("http") ? result : result.replace(parsedUrl.origin, "");
+};
