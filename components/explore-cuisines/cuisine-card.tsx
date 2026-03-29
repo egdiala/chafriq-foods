@@ -20,10 +20,10 @@ export const CuisineCard = ({ cuisine, onView }: Props) => {
         return [
             { icon: <IconBowlFood />, label: `${cuisine.quantity_size} ${cuisine.quantity_unit}${cuisine.quantity_size > 1 ? "s" : ""}` },
             { icon: <IconHourglass />, label: formatHours(cuisine.cooking_hour) },
-            { icon: <IconPath />, label: "25km away" },
+            (type === "customer" ? { icon: <IconPath />, label: "25km away" } : {}),
             ...dishList
         ]
-    }, [cuisine.cooking_hour, cuisine.dish_list, cuisine.quantity_size, cuisine.quantity_unit])
+    }, [cuisine.cooking_hour, cuisine.dish_list, cuisine.quantity_size, cuisine.quantity_unit, type])
     
     return (
         <Card onClick={() => onView?.()} className="group hover:ring-orange-2 hover:bg-orange-5 relative hover:cursor-pointer">
