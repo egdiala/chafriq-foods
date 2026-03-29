@@ -9,9 +9,10 @@ import { formatHours } from "@/lib/utils"
 
 type Props = {
     cuisine: GetMenuResponse
+    onView?: () => void;
 }
 
-export const CuisineCard = ({ cuisine }: Props) => {
+export const CuisineCard = ({ cuisine, onView }: Props) => {
     const { type } = useUser()
 
     const items = useMemo(() => {
@@ -25,9 +26,9 @@ export const CuisineCard = ({ cuisine }: Props) => {
     }, [cuisine.cooking_hour, cuisine.dish_list, cuisine.quantity_size, cuisine.quantity_unit])
     
     return (
-        <Card className="group hover:ring-orange-2 hover:bg-orange-5 relative">
+        <Card onClick={() => onView?.()} className="group hover:ring-orange-2 hover:bg-orange-5 relative hover:cursor-pointer">
             { type === "customer" && (<Link href={`/meals/${cuisine.menu_id}`} className="absolute inset-0 w-full h-full" />)}
-            <CardContent>
+            <CardContent onClick={(e) => e.stopPropagation()}>
                 <Carousel opts={{ loop: true }} className="w-full">
                     <CarouselContent>
                         {(cuisine?.image_data || []).map((media, index) => (

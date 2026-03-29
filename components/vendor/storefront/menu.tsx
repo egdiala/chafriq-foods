@@ -61,7 +61,7 @@ export const Menu = ({ className }: Props) => {
                                 })}>
                                     <IconTrashSimple className="text-red-2" />
                                 </Button>
-                                <CuisineCard cuisine={menu} />
+                                <CuisineCard cuisine={menu} onView={() => setOpen(true)} />
                             </div>
                         ))
                     }
