@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from "clsx"
-import { format, set } from "date-fns";
+import { format, formatDuration, intervalToDuration, set } from "date-fns";
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -28,6 +28,37 @@ export const normalizeNumberInput = (value: string, max = 100, decimals = 2) => 
   }
 
   return finalValue;
+};
+
+export const normalizeDecimalInput = (value: string, decimals = 2) => {
+  // Remove everything except digits and dot
+  let cleaned = value.replace(/[^0-9.]/g, "");
+
+  // Prevent multiple dots
+  const parts = cleaned.split(".");
+  if (parts.length > 2) {
+    cleaned = parts[0] + "." + parts.slice(1).join("");
+  }
+
+  let [intPart = "", fracPart = ""] = cleaned.split(".");
+
+  // Handle ".5" → "0.5"
+  if (intPart === "" && cleaned.startsWith(".")) {
+    intPart = "0";
+  }
+
+  // Remove leading zeros (but keep single "0")
+  if (intPart !== "0") {
+    intPart = intPart.replace(/^0+/, "") || "0";
+  }
+
+  // Limit decimal places
+  fracPart = fracPart.slice(0, decimals);
+
+  // Rebuild value
+  return cleaned.includes(".")
+    ? `${intPart}.${fracPart}`
+    : intPart;
 };
 
 export const appendQueryParams = (url: string, params: QueryParams): string => {
@@ -60,4 +91,19 @@ export const formatTime = (time: string) => {
   });
 
   return format(date, "hh:mmaaa"); // "09:00AM"
+};
+
+export const formatHours = (hours: number) => {
+  if (!hours || hours <= 0) return "0 sec";
+
+  const totalSeconds = Math.round(hours * 60 * 60);
+
+  const duration = intervalToDuration({
+    start: 0,
+    end: totalSeconds * 1000,
+  });
+
+  return formatDuration(duration, {
+    format: ["hours", "minutes", "seconds"],
+  });
 };

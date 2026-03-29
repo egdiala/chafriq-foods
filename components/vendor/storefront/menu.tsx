@@ -10,7 +10,8 @@ import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { useGetMenuList } from "@/services/queries/use-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { IconBowlFood } from "@/components/icons";
+import { IconBowlFood, IconTrashSimple } from "@/components/icons";
+import { DeleteCuisine } from "./delete-cuisine";
 
 type Props = {
     className?: string;
@@ -19,6 +20,10 @@ type Props = {
 export const Menu = ({ className }: Props) => {
     const [open, setOpen] = useState(false)
     const { data, isLoading } = useGetMenuList({})
+    const [openDelete, setOpenDelete] = useState({
+        cuisine: null as GetMenuResponse | null,
+        isOpen: false
+    })
     return (
         <>
         <Card className={cn("py-0 sm:py-5 ring-0 sm:ring-1 overflow-visible", className)}>
@@ -48,9 +53,15 @@ export const Menu = ({ className }: Props) => {
                 ) : (!isLoading && data && (data?.data.length > 0)) ? (
                     <div className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(260px,1fr))]">
                     {
-                        data.data.map((_, index) => (
-                            <div key={index} onClick={() => setOpen(true)}>
-                                <CuisineCard />
+                        data.data.map((menu) => (
+                            <div key={menu.menu_id} className="relative">
+                                <Button variant="carousel" size="icon-xs" className="absolute top-2.5 right-2.5 z-10" onClick={() => setOpenDelete({
+                                    cuisine: menu,
+                                    isOpen: true
+                                })}>
+                                    <IconTrashSimple className="text-red-2" />
+                                </Button>
+                                <CuisineCard cuisine={menu} />
                             </div>
                         ))
                     }
@@ -67,6 +78,7 @@ export const Menu = ({ className }: Props) => {
             }
             </CardContent>
         </Card>
+        <DeleteCuisine open={openDelete.isOpen} cuisine={openDelete.cuisine} setOpen={setOpenDelete} />
         <ViewCuisineDrawer open={open} setOpen={setOpen} />
         </>
     )

@@ -6,7 +6,7 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { createMenuFormSchema, getMenuListSchema } from "@/validations/menu";
 
 export const menuRouter = createTRPCRouter({
-    getMenuList: protectedProcedure.input(getMenuListSchema).query(async ({ ctx, input }): Promise<{ status: string; data: GetSchedulesResponse[] }> => {
+    getMenuList: protectedProcedure.input(getMenuListSchema).query(async ({ ctx, input }): Promise<{ status: string; data: GetMenuResponse[] }> => {
         try {
             const response = await api.get(appendQueryParams("cooks/accounts/menu-lists", input), {
                 headers: {
@@ -36,9 +36,24 @@ export const menuRouter = createTRPCRouter({
             });
         }
     }),
-    createMenu: protectedProcedure.input(createMenuFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: GetSchedulesResponse[] }> => {
+    createMenu: protectedProcedure.input(createMenuFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: CreateMenuResponse }> => {
         try {
             const response = await api.post("cooks/accounts/menu-lists", input, {
+                headers: {
+                    "Authorization": `Bearer ${ctx.accessToken}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: handleErrorMessage(error),
+            });
+        }
+    }),
+    deleteMenu: protectedProcedure.input(z.string().min(1, "Schedule ID is required")).mutation(async ({ ctx, input }): Promise<{ status: string; data: CreateMenuResponse }> => {
+        try {
+            const response = await api.delete(`cooks/accounts/menu-lists/${input}`, {
                 headers: {
                     "Authorization": `Bearer ${ctx.accessToken}`
                 }

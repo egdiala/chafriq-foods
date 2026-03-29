@@ -1,23 +1,26 @@
 "use client";
 
-import { Input } from "@/components/ui/input"
-import { useForm } from "@tanstack/react-form-nextjs"
-import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field"
-import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
-import { IconCloudArrowUp, IconTrashSimple } from "@/components/icons";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useCreateMenu } from "@/services/mutations/use-menu";
-import { createMenuFormSchema } from "@/validations/menu";
-import { useDishList, useGetAllergies } from "@/services/queries/use-explore";
-import { Activity, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
+import { cn, normalizeDecimalInput } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { Textarea } from "@/components/ui/textarea";
+import { useForm } from "@tanstack/react-form-nextjs";
+import { createMenuFormSchema } from "@/validations/menu";
+import { IconCloudArrowUp, IconTrashSimple } from "@/components/icons";
+import { Activity, useEffect, useMemo, useRef, useState } from "react";
+import { useDishList, useGetAllergies } from "@/services/queries/use-explore";
+import { useCreateMenu, useUploadMenuMedia } from "@/services/mutations/use-menu";
+import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field"
 import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxItem, ComboboxList, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox";
 
 const MAX_FILES = 5;
 
 export const VendorAddCuisineContent = () => {
+    const router = useRouter()
     const { data, isLoading } = useGetAllergies()
     const [cuisineImages, setCuisineImages] = useState<File[]>([])
     const { data: dishList, isLoading: isLoadingDishList } = useDishList()
@@ -47,11 +50,25 @@ export const VendorAddCuisineContent = () => {
             onSubmit: createMenuFormSchema
         },
         onSubmit: async ({ value }) => {
-            console.log(value)
+            if (isPending || isUploadingMedia) return;
+            mutate(value)
         },
     })
 
-    const { mutate, isPending } = useCreateMenu()
+    const { mutate: uploadMedia, isPending: isUploadingMedia } = useUploadMenuMedia((res) => {
+        console.log(res)
+
+        router.push("/vendor/storefront")
+    })
+    const { mutate, isPending } = useCreateMenu(async (response) => {
+        const formData = new FormData();
+
+        cuisineImages.forEach((file) => {
+            formData.append("file", file);
+        });
+
+        uploadMedia({ menuId: response?.menu_id, formData })
+    })
 
     const handleFiles = (files: FileList | null) => {
         if (!files) return;
@@ -154,10 +171,16 @@ export const VendorAddCuisineContent = () => {
                                                 type="text"
                                                 id={field.name}
                                                 name={field.name}
+                                                inputMode="numeric"
+                                                pattern="[0-9]*"
                                                 aria-invalid={isInvalid}
                                                 value={field.state.value}
                                                 onBlur={field.handleBlur}
-                                                onChange={(e) => field.handleChange(e.target.value)}
+                                                onChange={(e) => {
+                                                    const raw = e.target.value.match(/^\d+/)?.[0] || "";
+                                                    const normalized = raw === "" ? "" : raw === "0" ? "0" : raw.replace(/^0+/, "");
+                                                    field.handleChange(normalized)
+                                                }}
                                             />
                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                         </Field>
@@ -194,10 +217,16 @@ export const VendorAddCuisineContent = () => {
                                                 type="text"
                                                 id={field.name}
                                                 name={field.name}
+                                                inputMode="numeric"
+                                                pattern="[0-9]*"
                                                 aria-invalid={isInvalid}
                                                 value={field.state.value}
                                                 onBlur={field.handleBlur}
-                                                onChange={(e) => field.handleChange(e.target.value)}
+                                                onChange={(e) => {
+                                                    const raw = e.target.value.match(/^\d+/)?.[0] || "";
+                                                    const normalized = raw === "" ? "" : raw === "0" ? "0" : raw.replace(/^0+/, "");
+                                                    field.handleChange(normalized)
+                                                }}
                                             />
                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                         </Field>
@@ -319,10 +348,15 @@ export const VendorAddCuisineContent = () => {
                                                 type="text"
                                                 id={field.name}
                                                 name={field.name}
+                                                inputMode="decimal"
+                                                pattern="^\d*\.?\d*$"
                                                 aria-invalid={isInvalid}
                                                 value={field.state.value}
                                                 onBlur={field.handleBlur}
-                                                onChange={(e) => field.handleChange(e.target.value)}
+                                                onChange={(e) => {
+                                                    const normalized = normalizeDecimalInput(e.target.value)
+                                                    field.handleChange(normalized)
+                                                }}
                                             />
                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                         </Field>
@@ -339,10 +373,15 @@ export const VendorAddCuisineContent = () => {
                                                 type="text"
                                                 id={field.name}
                                                 name={field.name}
+                                                inputMode="decimal"
+                                                pattern="^\d*\.?\d*$"
                                                 aria-invalid={isInvalid}
                                                 value={field.state.value}
                                                 onBlur={field.handleBlur}
-                                                onChange={(e) => field.handleChange(e.target.value)}
+                                                onChange={(e) => {
+                                                    const normalized = normalizeDecimalInput(e.target.value)
+                                                    field.handleChange(normalized)
+                                                }}
                                             />
                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                         </Field>
@@ -500,22 +539,23 @@ export const VendorAddCuisineContent = () => {
                         </div>
                     </FieldGroup>
                 </FieldSet>
-                                
-                <addCuisineForm.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-                    {([canSubmit]) => {
-                        return (
-                            <div className="flex items-center gap-4 *:flex-1 sm:max-w-2/3 mx-auto w-full">
-                                <Button variant="secondary" type="button" asChild>
-                                    <Link href="/vendor/storefront">Cancel</Link>
-                                </Button>
-                                <Button type="submit" disabled={!canSubmit}>
-                                    Add Cuisine
-                                </Button>
-                            </div>
-                        )
-                    }}
-                </addCuisineForm.Subscribe>
 
+                <div className="flex items-center gap-4 *:flex-1 sm:max-w-2/3 mx-auto w-full">
+                    <Button variant="secondary" type="button" asChild>
+                        <Link href="/vendor/storefront">Cancel</Link>
+                    </Button>
+                                
+                    <addCuisineForm.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+                        {([canSubmit, isSubmitting]) => {
+                            return (
+                                <Button type="submit" disabled={!canSubmit || isPending || isUploadingMedia}>
+                                    Add Cuisine
+                                    {(isPending || isSubmitting || isUploadingMedia) && (<Spinner className="absolute right-4 size-5" />)}
+                                </Button>
+                            )
+                        }}
+                    </addCuisineForm.Subscribe>
+                </div>
             </form>
         </>
     )

@@ -3,25 +3,52 @@ import { IconBowlFood, IconPath, IconStorefront } from "../icons"
 import { IconHourglass } from "../icons/icon-hourglass"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import { useUser } from "@/context/use-user"
+import { useMemo } from "react"
+import { formatHours } from "@/lib/utils"
 
-const items = [
-    { icon: <IconBowlFood />, label: "1 plate" },
-    { icon: <IconHourglass />, label: "1 hour" },
-    { icon: <IconPath />, label: "25km away" },
-    { icon: <IconStorefront />, label: "African kitchen" },
-]
+type Props = {
+    cuisine: GetMenuResponse
+}
 
-export const CuisineCard = () => {
+export const CuisineCard = ({ cuisine }: Props) => {
+    const { type } = useUser()
+
+    const items = useMemo(() => {
+        const dishList = cuisine.dish_list.map((dish) => ({ icon: <IconStorefront />, label: dish.name }))
+        return [
+            { icon: <IconBowlFood />, label: `${cuisine.quantity_size} ${cuisine.quantity_unit}${cuisine.quantity_size > 1 ? "s" : ""}` },
+            { icon: <IconHourglass />, label: formatHours(cuisine.cooking_hour) },
+            { icon: <IconPath />, label: "25km away" },
+            ...dishList
+        ]
+    }, [cuisine.cooking_hour, cuisine.dish_list, cuisine.quantity_size, cuisine.quantity_unit])
+    
     return (
         <Card className="group hover:ring-orange-2 hover:bg-orange-5 relative">
-            <Link href="/meals/1" className="absolute inset-0 w-full h-full" />
+            { type === "customer" && (<Link href={`/meals/${cuisine.menu_id}`} className="absolute inset-0 w-full h-full" />)}
             <CardContent>
                 <Carousel opts={{ loop: true }} className="w-full">
                     <CarouselContent>
-                        {Array.from({ length: 5 }).map((_, index) => (
+                        {(cuisine?.image_data || []).map((media, index) => (
                         <CarouselItem key={index}>
                             <div className="rounded-xl overflow-hidden aspect-video bg-orange-1">
-                                <img src="https://images.unsplash.com/photo-1432139555190-58524dae6a55?q=80&w=2676&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="food" />
+                                {
+                                    media.mime_type.startsWith("image") ? (
+                                        <img src={media?.file_url} alt={media.image_id} className="object-cover object-center w-full" />
+                                    ): (
+                                        <video
+                                            autoPlay
+                                            loop
+                                            muted
+                                            playsInline
+                                            preload="auto"
+                                            className="h-full w-full object-cover"
+                                        >
+                                            <source src={media?.file_url} type={media.mime_type} />
+                                        </video>
+                                    )
+                                }
                             </div>
                         </CarouselItem>
                         ))}
@@ -32,8 +59,8 @@ export const CuisineCard = () => {
             </CardContent>
             <div className="flex flex-col gap-3 px-3">
                 <CardHeader className="px-0">
-                    <CardTitle>Jollof & Fried Rice Combo</CardTitle>
-                    <CardDescription>1 Jollof, 1 Fried, 2 Beef, 1 Plantain + pack</CardDescription>
+                    <CardTitle>{cuisine.menu_name}</CardTitle>
+                    <CardDescription className="line-clamp-4">{cuisine.menu_content}</CardDescription>
                 </CardHeader>
                 <div className="flex items-center gap-3 flex-wrap">
                 {
@@ -45,7 +72,9 @@ export const CuisineCard = () => {
                     ))
                 }
                 </div>
-                <span className="font-medium text-lg text-grey-dark-2">$34.34/Plate</span>
+                <span className="font-medium text-lg text-grey-dark-2">
+                    {Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD" }).format(cuisine.menu_amount)}/{cuisine.quantity_unit.toLowerCase()}
+                </span>
             </div>
         </Card>
     )
