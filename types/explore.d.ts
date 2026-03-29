@@ -27,3 +27,9 @@ interface DishListResponse {
     description: string;
     dish_type_id: string;
 }
+
+interface AllergiesResponse {
+    name: string;
+    description: string;
+    allergy_id: string;
+}

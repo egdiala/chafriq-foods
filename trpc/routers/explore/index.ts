@@ -37,4 +37,15 @@ export const exploreRouter = createTRPCRouter({
             });
         }
     }),
+    getAllergies: baseProcedure.query(async (): Promise<{ status: string; data: AllergiesResponse[] }> => {
+        try {
+            const response = await api.post("customers/requests/allergies");
+            return response.data;
+        } catch (error) {
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: handleErrorMessage(error),
+            });
+        }
+    }),
 });

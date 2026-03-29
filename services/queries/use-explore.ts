@@ -27,3 +27,11 @@ export const useSearchLocations = (params: SearchLocationsFormType, config?: TRP
         ...config,
     });
 }
+
+export const useGetAllergies = (config?: TRPCQueryKeyWithoutPrefix) => {
+    const trpc = useTRPC();
+    return useQuery({
+        ...trpc.explore.getAllergies.queryOptions(),
+        ...config,
+    });
+}

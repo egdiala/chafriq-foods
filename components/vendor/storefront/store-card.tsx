@@ -69,10 +69,10 @@ export const StoreCard = ({ className }: Props) => {
                                 <IconCheckmark />
                                 <span className="line-clamp-1">ID Verified</span>
                             </div>
-                            <div className="sm:hidden flex items-center gap-2 text-sm text-grey-dark-2 [&>svg]:text-yellow-2"><IconStarFull /> 4.5</div>
+                            <div className="sm:hidden flex items-center gap-2 text-sm text-grey-dark-2 [&>svg]:text-yellow-2"><IconStarFull /> {user?.rating?.toFixed(1) || 0}</div>
                         </div>
                     </div>
-                    <div className="hidden sm:flex items-center gap-2 text-sm text-grey-dark-2 [&>svg]:text-yellow-2"><IconStarFull /> 4.5</div>
+                    <div className="hidden sm:flex items-center gap-2 text-sm text-grey-dark-2 [&>svg]:text-yellow-2"><IconStarFull /> {user?.rating?.toFixed(1) || 0}</div>
                 </div>
                 <div className="flex items-center gap-3.5 flex-wrap">
                 {

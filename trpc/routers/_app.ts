@@ -5,11 +5,13 @@ import { authRouter } from "./auth";
 import { exploreRouter } from "./explore";
 import { accountRouter } from "./account";
 import { schedulesRouter } from "./schedules";
+import { menuRouter } from "./menu";
 
 export const appRouter = createTRPCRouter({
   auth: authRouter,
   account: accountRouter,
   explore: exploreRouter,
+  menu: menuRouter,
   schedules: schedulesRouter,
   hello: baseProcedure.query(() => {
     return {

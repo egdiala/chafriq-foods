@@ -27,6 +27,7 @@ interface VendorProfileResponse {
     account_status: AccountStatus;
     signup_stage: SignupStage;
     suspend_reason: string;
+    rating?: number;
     alert_settings: {
         orders: number;
         promos: number;
