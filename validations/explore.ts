@@ -6,3 +6,62 @@ export const searchLocationsFormSchema = z.object({
 })
 
 export type SearchLocationsFormType = z.infer<typeof searchLocationsFormSchema>;
+
+export const exploreCooksSchema = z.object({
+    latitude: z.string().optional(),
+    longitude: z.string().optional(),
+
+    order_date: z.string().optional(),
+
+    timezone: z.string().optional(),
+
+    dish_type_id: z.string().optional(),
+    q: z.string().optional(),
+
+    req_type: z.enum(["1", "2"]).optional(),
+
+    item_per_page: z
+      .string()
+      .refine((val) => !isNaN(Number(val)), "item_per_page must be a number")
+      .refine((val) => Number(val) > 0, "item_per_page must be greater than 0")
+      .refine((val) => Number(val) <= 200, "item_per_page max is 200")
+      .optional(),
+  })
+  .superRefine((data, ctx) => {
+    // latitude ↔ longitude dependency
+    if (data.latitude && !data.longitude) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "longitude is required when latitude is provided",
+        path: ["longitude"],
+      });
+    }
+
+    if (data.longitude && !data.latitude) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "latitude is required when longitude is provided",
+        path: ["latitude"],
+      });
+    }
+
+    // order_date → timezone dependency
+    if (data.order_date && !data.timezone) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "timezone is required when order_date is provided",
+        path: ["timezone"],
+      });
+      }
+  });
+
+export type ExploreCooksType = z.infer<typeof exploreCooksSchema>;
+
+export const exploreCookSchema = z.object({
+    latitude: z.string().optional(),
+    longitude: z.string().optional(),
+    cook_id: z.string().optional(),
+    timezone: z.string().optional(),
+})
+
+export type ExploreCookType = z.infer<typeof exploreCookSchema>;

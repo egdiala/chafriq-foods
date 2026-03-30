@@ -1,23 +1,43 @@
 "use client";
 
-import { useState } from "react"
-import { Content } from "../content"
-import { Search } from "lucide-react"
-import { Separator } from "../ui/separator"
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../ui/input-group"
-import { IconArrowDown, IconCalendar, IconClockCountdown, IconEggCrack, IconForkKnife, IconGlobe, IconMapPinLine, IconPath, IconSetup } from "../icons"
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { Content } from "../content";
+import { Calendar } from "../ui/calendar";
+import { useMemo, useState } from "react";
+import { Skeleton } from "../ui/skeleton";
+import { Separator } from "../ui/separator";
+import { Check, Search } from "lucide-react";
 import { CuisineCard } from "./cuisine-card";
-
-const filters = [
-    { icon: <IconForkKnife />, label: "All Meals" },
-    { icon: <IconGlobe />, label: "African" },
-    { icon: <IconClockCountdown />, label: "1 hour" },
-    { icon: <IconPath />, label: "34km away" },
-    { icon: <IconEggCrack />, label: "Vegan" }
-]
+import { useUser } from "@/context/use-user";
+import { useDebounce } from "@uidotdev/usehooks";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { useDishList, useGetMeals } from "@/services/queries/use-explore";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../ui/input-group";
+import { IconArrowDown, IconBowlFood, IconCalendar, IconForkKnife, IconMapPinLine, IconSetup } from "../icons";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 export const ExploreCuisinesStepsAway = () => {
-    const [active, setActive] = useState(0)
+    const { location } = useUser()
+    const [query, setQuery] = useState("");
+    const debouncedQuery = useDebounce(query, 300);
+
+    const { data: dishList, isLoading: isLoadingDishList } = useDishList()
+    const [filters, setFilters] = useState({
+        dish_type_id: "",
+        order_date: ""
+    })
+
+    const { data, isLoading } = useGetMeals({
+        latitude: location?.latitude?.toString() || "",
+        longitude: location?.longitude?.toString() || "",
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        q: debouncedQuery,
+        ...filters
+    })
+
+    const selectedDish = useMemo(() => dishList?.data?.find((item) => item.dish_type_id === filters.dish_type_id)?.name, [dishList?.data, filters.dish_type_id])
+
     return (
         <section id="steps-away" className="relative isolate bg-white after:hidden after:md:block after:-z-10 after:absolute after:bg-red-2 after:size-67.5 after:rounded-full after:bottom-0 after:top-1/2 after:right-0 after:translate-x-1/2 after:filter after:blur-[300px] overflow-hidden">
             <Content>
@@ -39,7 +59,7 @@ export const ExploreCuisinesStepsAway = () => {
                             </div>
                         </div>
                         <InputGroup className="h-13 bg-white">
-                            <InputGroupInput placeholder="Search a meal, cook, cuisine " />
+                            <InputGroupInput placeholder="Search a meal, cook, cuisine" onChange={(e) => setQuery(e.target.value)} />
                             <InputGroupAddon>
                                 <Search className="ml-1" />
                             </InputGroupAddon>
@@ -50,24 +70,86 @@ export const ExploreCuisinesStepsAway = () => {
                             </InputGroupAddon>
                         </InputGroup>
                         <div className="flex items-center justify-center flex-wrap gap-3 md:gap-7">
-                        {
-                            filters.map((filter, index) => (
-                                <button data-active={active === index} key={index} type="button" onClick={() => setActive(index)} className="group inline-flex gap-1 items-center inset-ring-1 rounded-full px-3 h-9 bg-grey-dark-4 inset-ring-grey-dark-4 [&>svg]:text-orange-2 data-[active=true]:bg-orange-5 data-[active=true]:inset-ring-orange-2 data-[active=true]:text-orange-2! transition-all duration-200 ease-out">
-                                    {filter.icon}
-                                    <span className="text-sm text-grey-dark-2 group-data-[active=true]:text-orange-2">{filter.label}</span>
-                                    <IconArrowDown className="text-grey-dark-3! group-data-[active=true]:text-orange-2!" />
-                                </button>
-                            ))
-                        }
+                            <DropdownMenu>
+                                <DropdownMenuTrigger disabled={isLoadingDishList} asChild>
+                                    <button type="button" data-selected={!!selectedDish} className="group inline-flex gap-1 items-center inset-ring-1 rounded-full px-3 h-9 bg-grey-dark-4 inset-ring-grey-dark-4 [&>svg]:text-orange-2 data-[selected=true]:bg-orange-5 data-[selected=true]:inset-ring-orange-2 data-[selected=true]:text-orange-2! transition-all duration-200 ease-out">
+                                        <IconForkKnife />
+                                        <span className="text-sm text-grey-dark-2 group-data-[selected=true]:text-orange-2">{selectedDish || "Dish type"}</span>
+                                        <IconArrowDown className="text-grey-dark-3! group-data-[selected=true]:text-orange-2!" />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                {
+                                    dishList?.data.map((item) => (
+                                        <DropdownMenuItem
+                                            className="relative not-data-[variant=destructive]:focus:**:text-orange-2"
+                                            key={item.dish_type_id} onClick={() => setFilters((prev) => ({
+                                                ...prev,
+                                                dish_type_id: item.dish_type_id === prev.dish_type_id ? "" : item.dish_type_id
+                                            }))}
+                                        >
+                                            {item.name}
+                                            <Check className={cn("absolute right-2", item.dish_type_id === filters.dish_type_id ? "visible" : "invisible")} />
+                                        </DropdownMenuItem>
+                                    ))
+                                }
+                                </DropdownMenuContent>    
+                            </DropdownMenu>
+
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <button type="button" data-selected={!!filters?.order_date} className="group inline-flex gap-1 items-center inset-ring-1 rounded-full px-3 h-9 bg-grey-dark-4 inset-ring-grey-dark-4 [&>svg]:text-orange-2 data-[selected=true]:bg-orange-5 data-[selected=true]:inset-ring-orange-2 data-[selected=true]:text-orange-2! transition-all duration-200 ease-out">
+                                        <IconCalendar />
+                                        <span className="text-sm text-grey-dark-2 group-data-[selected=true]:text-orange-2">{filters?.order_date || "Order date"}</span>
+                                        <IconArrowDown className="text-grey-dark-3! group-data-[selected=true]:text-orange-2!" />
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent align="end" className="p-1 w-65">
+                                    <Calendar
+                                        mode="single"
+                                        selected={filters.order_date as unknown as Date}
+                                        onSelect={(pickedDate) => setFilters((prev) => ({
+                                            ...prev,
+                                            order_date: pickedDate ? format(pickedDate as unknown as Date, "yyyy-MM-dd") : ""
+                                        }))}
+                                        defaultMonth={new Date()}
+                                        className="bg-transparent"
+                                        captionLayout="label"
+                                        disabled={{ before: new Date() }}
+                                    />
+                                </PopoverContent>    
+                            </Popover>
                         </div>
                     </div>
-                    <div className="grid gap-8 grid-cols-[repeat(auto-fill,minmax(285px,1fr))]">
                     {
-                        Array.from({ length: 10 }).map((_, index) => (
-                            <CuisineCard key={index} />
-                        ))
+                        isLoading ? (
+                            <div className="grid gap-8 grid-cols-[repeat(auto-fill,minmax(285px,1fr))]">
+                            {
+                                Array.from({ length: 6 }).map((_, index) => (
+                                    <div key={index}>
+                                        <Skeleton className="h-60" />
+                                    </div>
+                                ))
+                            }
+                            </div>
+                        ) : (!isLoading && data && (data?.data.length > 0)) ? (
+                            <div className="grid gap-8 grid-cols-[repeat(auto-fill,minmax(285px,1fr))]">
+                            {
+                                data?.data?.map((cuisine) => (
+                                    <CuisineCard key={cuisine.menu_id} cuisine={cuisine} />
+                                ))
+                            }
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center w-full max-w-md text-center mx-auto py-24">
+                                <div className="bg-orange-5 rounded-full grid place-content-center size-9 inset-ring-1 inset-ring-orange-2/50 mb-4">
+                                    <IconBowlFood className="size-4.5 text-orange-2" />
+                                </div>
+                                <span className="text-grey-dark-0 text-base font-semibold">No meals found</span>
+                                <p className="text-grey-dark-2 text-sm font-normal">We couldn’t find any meals matching your search. Try adjusting your filters or searching with different keywords.</p>
+                            </div>
+                        )
                     }
-                    </div>
                 </div>
             </Content>
         </section>

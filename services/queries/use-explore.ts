@@ -1,5 +1,5 @@
 import { useTRPC } from "@/trpc/client";
-import { SearchLocationsFormType } from "@/validations/explore";
+import { ExploreCooksType, ExploreCookType, SearchLocationsFormType } from "@/validations/explore";
 import { useQuery } from "@tanstack/react-query";
 import { type TRPCQueryKeyWithoutPrefix } from "@trpc/tanstack-react-query";
 
@@ -32,6 +32,40 @@ export const useGetAllergies = (config?: TRPCQueryKeyWithoutPrefix) => {
     const trpc = useTRPC();
     return useQuery({
         ...trpc.explore.getAllergies.queryOptions(),
+        ...config,
+    });
+}
+
+export const useGetCooks = (params: ExploreCooksType, config?: TRPCQueryKeyWithoutPrefix) => {
+    const trpc = useTRPC();
+    return useQuery({
+        ...trpc.explore.getCooks.queryOptions(params),
+        ...config,
+    });
+}
+
+export const useGetCook = (params: ExploreCookType, config?: TRPCQueryKeyWithoutPrefix) => {
+    const trpc = useTRPC();
+    return useQuery({
+        ...trpc.explore.getCook.queryOptions(params),
+        enabled: !!params.cook_id,
+        ...config,
+    });
+}
+
+export const useGetMeals = (params: ExploreCooksType, config?: TRPCQueryKeyWithoutPrefix) => {
+    const trpc = useTRPC();
+    return useQuery({
+        ...trpc.explore.getMeals.queryOptions(params),
+        ...config,
+    });
+}
+
+export const useGetMeal = (params: ExploreCookType, config?: TRPCQueryKeyWithoutPrefix) => {
+    const trpc = useTRPC();
+    return useQuery({
+        ...trpc.explore.getMeal.queryOptions(params),
+        enabled: !!params.cook_id,
         ...config,
     });
 }

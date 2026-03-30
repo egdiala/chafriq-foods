@@ -8,6 +8,7 @@ import { StoreCard } from "./store-card";
 import { Separator } from "../ui/separator";
 import { RatingsAndReview } from "./ratings-and-review";
 import { StoreAvailability } from "./store-availability";
+import { useGetCook } from "@/services/queries/use-explore";
 import { CuisineCard } from "../explore-cuisines/cuisine-card";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../ui/input-group";
 import { IconArrowDown, IconForkKnife, IconGlobe, IconClockCountdown, IconEggCrack, IconSetup } from "../icons"
@@ -20,8 +21,18 @@ const filters = [
     { icon: <IconEggCrack />, label: "Vegan" }
 ]
 
-export const CookStorefront = () => {
+type Props = {
+    cookId: string;
+}
+
+export const CookStorefront = ({ cookId }: Props) => {
     const [active, setActive] = useState(0)
+    const { data, isLoading } = useGetCook({ cook_id: cookId, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
+
+    if (isLoading) {
+        return null;
+    }
+
     return (
         <section id="cook-storefront" className="relative isolate bg-white after:hidden after:md:block after:-z-10 after:absolute after:bg-red-2 after:size-67.5 after:rounded-full after:bottom-0 after:top-0 after:-translate-y-1/2 after:right-0 after:translate-x-1/2 after:filter after:blur-[300px] overflow-hidden">
             <Content>
@@ -66,11 +77,11 @@ export const CookStorefront = () => {
                     <div className="grid sm:grid-cols-4 gap-6">
                         <div className="grid gap-12.5 sm:col-span-3">
                             <div className="flex flex-col gap-4">
-                                <h2 className="font-semibold text-base text-grey-dark-0">Meals (23)</h2>
+                                <h2 className="font-semibold text-base text-grey-dark-0">Meals ({data?.data?.menu_list?.length})</h2>
                                 <div className="grid gap-4 sm:gap-6 grid-cols-[repeat(auto-fill,minmax(265px,1fr))]">
                                 {
-                                    Array.from({ length: 7 }).map((_, index) => (
-                                        <CuisineCard key={index} />
+                                    data?.data?.menu_list.map((cuisine, index) => (
+                                        <CuisineCard key={index} cuisine={cuisine} />
                                     ))
                                 }
                                 </div>
@@ -86,8 +97,8 @@ export const CookStorefront = () => {
                             </div>
                         </div>
                         <div className="grid gap-6 content-start">
-                            <StoreCard />
-                            <StoreAvailability />
+                            <StoreCard cookId={cookId} />
+                            <StoreAvailability cookId={cookId} />
                         </div>
                     </div>
                 </div>
