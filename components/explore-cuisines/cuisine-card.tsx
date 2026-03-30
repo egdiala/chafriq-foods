@@ -20,7 +20,7 @@ export const CuisineCard = ({ cuisine, onView }: Props) => {
     const items = useMemo(() => {
         const dishList = (cuisine?.dish_list || []).map((dish) => ({ icon: <IconStorefront />, label: dish.name }))
         return [
-            { icon: <IconBowlFood />, label: `${cuisine?.quantity_size} ${cuisine?.quantity_unit}${(cuisine?.quantity_size || 0) > 1 ? "s" : ""}` },
+            { icon: <IconBowlFood />, label: `${cuisine?.quantity_size} ${cuisine?.quantity_unit?.toLowerCase()}${(cuisine?.quantity_size || 0) > 1 ? "s" : ""}` },
             { icon: <IconHourglass />, label: formatHours(cuisine?.cooking_hour || 0) },
             (type != "vendor" ? { icon: <IconPath />, label: `${Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(cuisine?.distance || 0)}km away` } : {}),
             ...dishList

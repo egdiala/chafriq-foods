@@ -3,6 +3,7 @@ import { Content } from "../content"
 import { Button } from "../ui/button"
 import { IconCookingPot } from "../icons"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 const qualities = [
     {
@@ -50,9 +51,11 @@ export const QualityYouCanTrust = () => {
                             ))
                         }
                     </div>
-                    <Button className="[&>svg]:size-6!">
-                        <IconCookingPot />
-                        Order Food
+                    <Button className="[&>svg]:size-6!" asChild>
+                        <Link href="/meals">
+                            <IconCookingPot />
+                            Order Food
+                        </Link>
                     </Button>
                 </div>
             </Content>
