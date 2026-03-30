@@ -192,7 +192,7 @@ export const ViewCuisineDrawer = ({ cuisine, open, setOpen }: Props) => {
                     <DrawerClose asChild>
                         <Button variant="secondary">Go Back</Button>
                     </DrawerClose>
-                    <Button asChild><Link href="/vendor/storefront/edit/1">Edit Cuisine</Link></Button>
+                    <Button asChild><Link href={`/vendor/storefront/edit/${cuisine?.menu_id}`}>Edit Cuisine</Link></Button>
                 </DrawerFooter>
             </DrawerContent>
         </Drawer>

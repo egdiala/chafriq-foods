@@ -21,7 +21,7 @@ export const menuRouter = createTRPCRouter({
             });
         }
     }),
-    getSingleMenu: protectedProcedure.input(z.string().min(1, "Menu ID is required")).query(async ({ ctx, input }): Promise<{ status: string; data: GetSchedulesResponse[] }> => {
+    getSingleMenu: protectedProcedure.input(z.string().min(1, "Menu ID is required")).query(async ({ ctx, input }): Promise<{ status: string; data: GetSingleMenuResponse }> => {
         try {
             const response = await api.get(`cooks/accounts/menu-lists/${input}`, {
                 headers: {
