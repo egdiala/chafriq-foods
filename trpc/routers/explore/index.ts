@@ -1,7 +1,7 @@
 import { appendQueryParams } from "@/lib/utils";
 import { api, handleErrorMessage } from "@/trpc/helper";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
-import { exploreCookSchema, exploreCooksSchema, searchLocationsFormSchema } from "@/validations/explore";
+import { exploreCookSchema, exploreCooksSchema, exploreMealSchema, searchLocationsFormSchema } from "@/validations/explore";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 
@@ -84,10 +84,10 @@ export const exploreRouter = createTRPCRouter({
             });
         }
     }),
-    getMeal: baseProcedure.input(exploreCookSchema).query(async ({ input }): Promise<{ status: string; data: GetCookResponse }> => {
+    getMeal: baseProcedure.input(exploreMealSchema).query(async ({ input }): Promise<{ status: string; data: GetMealResponse }> => {
         try {
-            const { cook_id, ...rest } = input
-            const response = await api.get(appendQueryParams(`customers/requests/available-meals/${cook_id}`, rest));
+            const { meal_id, ...rest } = input
+            const response = await api.get(appendQueryParams(`customers/requests/available-meals/${meal_id}`, rest));
             return response.data;
         } catch (error) {
             throw new TRPCError({

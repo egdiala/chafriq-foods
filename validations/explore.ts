@@ -65,3 +65,12 @@ export const exploreCookSchema = z.object({
 })
 
 export type ExploreCookType = z.infer<typeof exploreCookSchema>;
+
+export const exploreMealSchema = z.object({
+    latitude: z.string().optional(),
+    longitude: z.string().optional(),
+    meal_id: z.string().optional(),
+    timezone: z.string().optional(),
+})
+
+export type ExploreMealType = z.infer<typeof exploreMealSchema>;

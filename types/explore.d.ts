@@ -93,3 +93,36 @@ interface GetMealsResponse {
     menu_content: string;
     distance?: number;
 }
+
+interface GetMealResponse {
+    cook_id: string;
+    menu_name: string;
+    quantity_size: number;
+    quantity_unit: string;
+    min_order: number;
+    menu_content: string;
+    menu_amount: number;
+    cooking_hour: number;
+    additional_note: string;
+    allegen_note: string;
+    status: 0 | 1;
+    createdAt: string | Date;
+    updatedAt: string | Date;
+    __v: number;
+    schedule_data: {
+        avail_type: 1 | 2;
+        day_week: number;
+        start_time: string;
+        end_time: string;
+        status: 0 | 1;
+        day_date: string | Date;
+    }[];
+    img_data: {
+        mime_type: string;
+        file_url: string;
+    }[];
+    menu_id: string;
+    rating: number;
+    allergy_list: string[];
+    allergy_trace: string[];
+}

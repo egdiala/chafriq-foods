@@ -1,10 +1,12 @@
 import { CuisineDetails } from "@/components/explore-cuisines/cuisine-details";
 import { SeeOtherCuisines } from "@/components/explore-cuisines/see-other-cuisines";
 
-export default function ExploreSingleCookPage() {
+export default async function ExploreSingleCookPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+
     return (
         <>
-            <CuisineDetails />
+            <CuisineDetails mealId={id} />
             <SeeOtherCuisines />
         </>
     );
