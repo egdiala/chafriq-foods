@@ -18,7 +18,10 @@ type Props = {
 }
 
 export const Menu = ({ className }: Props) => {
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState({
+        cuisine: null as GetMenuResponse | null,
+        isOpen: false
+    })
     const { data, isLoading } = useGetMenuList({})
     const [openDelete, setOpenDelete] = useState({
         cuisine: null as GetMenuResponse | null,
@@ -44,7 +47,7 @@ export const Menu = ({ className }: Props) => {
                     <div className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(260px,1fr))]">
                     {
                         Array.from({ length: 6 }).map((_, index) => (
-                            <div key={index} onClick={() => setOpen(true)}>
+                            <div key={index}>
                                 <Skeleton className="h-60" />
                             </div>
                         ))
@@ -61,7 +64,11 @@ export const Menu = ({ className }: Props) => {
                                 })}>
                                     <IconTrashSimple className="text-red-2" />
                                 </Button>
-                                <CuisineCard cuisine={menu} onView={() => setOpen(true)} />
+                                <CuisineCard cuisine={menu} onView={() => setOpen({
+                                        cuisine: menu,
+                                        isOpen: true
+                                    })}
+                                />
                             </div>
                         ))
                     }
@@ -79,7 +86,7 @@ export const Menu = ({ className }: Props) => {
             </CardContent>
         </Card>
         <DeleteCuisine open={openDelete.isOpen} cuisine={openDelete.cuisine} setOpen={setOpenDelete} />
-        <ViewCuisineDrawer open={open} setOpen={setOpen} />
+        <ViewCuisineDrawer open={open.isOpen} cuisine={open.cuisine} setOpen={setOpen} />
         </>
     )
 }

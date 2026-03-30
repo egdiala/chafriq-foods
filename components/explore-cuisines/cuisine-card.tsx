@@ -74,7 +74,7 @@ export const CuisineCard = ({ cuisine, onView }: Props) => {
                 }
                 </div>
                 <span className="font-medium text-lg text-grey-dark-2">
-                    {Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD" }).format(cuisine.menu_amount)}/{cuisine.quantity_unit.toLowerCase()}
+                    {Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format(cuisine.menu_amount)}/{cuisine.quantity_unit.toLowerCase()}
                 </span>
             </div>
         </Card>

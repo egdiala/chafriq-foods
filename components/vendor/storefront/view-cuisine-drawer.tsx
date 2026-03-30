@@ -1,21 +1,20 @@
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { cn, formatHours } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { IconHourglass } from "@/components/icons/icon-hourglass";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { IconBowlFood, IconCalendar, IconClockCountdown, IconCoins, IconCurrencyDollar, IconExternalLink } from "@/components/icons";
+import { IconBowlFood, IconCalendar, IconClockCountdown, IconCoins, IconCurrencyDollar } from "@/components/icons";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { Separator } from "@/components/ui/separator";
 
 type Props = {
     open: boolean;
-    setOpen: (value: boolean) => void;
+    cuisine: GetMenuResponse | null;
+    setOpen: ({ cuisine, isOpen }: { cuisine: GetMenuResponse | null; isOpen: boolean; }) => void;
 }
 
-export const ViewCuisineDrawer = ({ open, setOpen }: Props) => {
+export const ViewCuisineDrawer = ({ cuisine, open, setOpen }: Props) => {
     const viewportRef = useRef<HTMLDivElement | null>(null)
     const [isBottomVisible, setIsBottomVisible] = useState(true);
     
@@ -37,16 +36,35 @@ export const ViewCuisineDrawer = ({ open, setOpen }: Props) => {
             el.removeEventListener("scroll", handleScroll);
         };
     }, [viewportRef]);
+
+    const closeDialog = (v: boolean) => {
+        setOpen({ cuisine: null as unknown as GetMenuResponse, isOpen: v })
+    }
     return (
-        <Drawer direction="right" open={open} onOpenChange={setOpen}>
+        <Drawer direction="right" open={open} onOpenChange={closeDialog}>
             <DrawerContent>
-                <div className="group relative h-34 w-full rounded-t overflow-hidden">
+                <div className="group relative h-44 w-full rounded-t overflow-hidden">
                     <Carousel opts={{ loop: true }} className="w-full h-full">
                         <CarouselContent>
-                            {Array.from({ length: 5 }).map((_, index) => (
+                            {(cuisine?.image_data || []).map((media, index) => (
                             <CarouselItem key={index}>
                                 <div className="overflow-hidden aspect-video bg-orange-1">
-                                    <img src="https://images.unsplash.com/photo-1432139555190-58524dae6a55?q=80&w=2676&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="food" />
+                                {
+                                    media.mime_type.startsWith("image") ? (
+                                        <img src={media?.file_url} alt={media.image_id} className="object-cover object-center w-full" />
+                                    ): (
+                                        <video
+                                            autoPlay
+                                            loop
+                                            muted
+                                            playsInline
+                                            preload="auto"
+                                            className="h-full w-full object-cover"
+                                        >
+                                            <source src={media?.file_url} type={media.mime_type} />
+                                        </video>
+                                    )
+                                }
                                 </div>
                             </CarouselItem>
                             ))}
@@ -60,15 +78,30 @@ export const ViewCuisineDrawer = ({ open, setOpen }: Props) => {
                         <DrawerHeader className="px-0 pb-0">
                             <div className="flex items-center gap-3 w-full overflow-x-scroll">
                             {
-                                Array.from({ length: 5 }).map((_, index) => (
+                                (cuisine?.image_data || []).map((media, index) => (
                                     <div key={index} className="overflow-hidden w-13.5 h-11 rounded-lg bg-orange-1">
-                                        <img src="https://images.unsplash.com/photo-1432139555190-58524dae6a55?q=80&w=2676&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="food" className="object-cover object-center w-13.5 h-11" />
+                                    {
+                                        media.mime_type.startsWith("image") ? (
+                                            <img src={media.file_url} alt={media.image_id} className="object-cover object-center w-13.5 h-11" />
+                                        ): (
+                                            <video
+                                                autoPlay
+                                                loop
+                                                muted
+                                                playsInline
+                                                preload="auto"
+                                                className="w-13.5 h-11 object-cover"
+                                            >
+                                                <source src={media?.file_url} type={media.mime_type} />
+                                            </video>
+                                        )
+                                    }
                                     </div>
                                 ))
                             }
                             </div>
-                            <DrawerTitle className="font-semibold text-base text-grey-dark-0">Jollof Rice & Plantain</DrawerTitle>
-                            <DrawerDescription className="text-xs text-grey-dark-3">1 Jollof Rice, 1 Fried Chicken, 2 Beef Skewers, and 1 Plantain. </DrawerDescription>
+                            <DrawerTitle className="font-semibold text-base text-grey-dark-0">{cuisine?.menu_name}</DrawerTitle>
+                            <DrawerDescription className="text-xs text-grey-dark-3">{cuisine?.menu_content}</DrawerDescription>
                         </DrawerHeader>
 
                         <div className="flex flex-col p-3 gap-3 bg-grey-dark-4 rounded-xl">
@@ -77,7 +110,7 @@ export const ViewCuisineDrawer = ({ open, setOpen }: Props) => {
                                     <IconBowlFood /> Quantity
                                 </span>
                                 <span className="font-medium text-xs text-grey-dark-2">
-                                    1 Plate
+                                    {cuisine?.quantity_size} {cuisine?.quantity_unit}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between">
@@ -85,22 +118,22 @@ export const ViewCuisineDrawer = ({ open, setOpen }: Props) => {
                                     <IconClockCountdown /> Turn around time
                                 </span>
                                 <span className="font-medium text-xs text-grey-dark-2">
-                                    2hrs
+                                    {formatHours(cuisine?.cooking_hour || 0)}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="flex items-center gap-1 text-xs text-grey-dark-2 [&>svg]:text-orange-2 [&>svg]:size-3.5">
-                                    <IconCalendar /> Pickup Date
+                                    <IconCalendar /> Minimum order size
                                 </span>
                                 <span className="font-medium text-xs text-grey-dark-2">
-                                    23rd Feb, 2024
+                                    {cuisine?.min_order} {cuisine?.quantity_unit}
                                 </span>
                             </div>
                         </div>
                         
                         <div className="flex flex-col p-3 gap-2 bg-grey-dark-4 rounded-xl">
                             <span className="text-xs text-grey-dark-3 uppercase">Additional Note</span>
-                            <p className="text-xs text-grey-dark-2">Please make sure the steak is cooked medium-rare and add a side of garlic mashed potatoes. Also, I would love a fresh garden salad with the house dressing on the side. Thank you!</p>
+                            <p className="text-xs text-grey-dark-2">{cuisine?.additional_note}</p>
                         </div>
 
                         <div className="flex items-center flex-wrap gap-5">
@@ -109,14 +142,48 @@ export const ViewCuisineDrawer = ({ open, setOpen }: Props) => {
                                     <IconCurrencyDollar />
                                     Order Amount
                                 </div>
-                                <p className="text-sm font-medium text-grey-dark-2">$34.34</p>
+                                <p className="text-sm font-medium text-grey-dark-2">
+                                    {Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format(cuisine?.menu_amount || 0)}
+                                </p>
                             </div>
                             <div className="flex flex-col p-3 gap-2 bg-grey-dark-4 rounded-xl min-w-28 flex-1">
                                 <div className="text-xs text-grey-dark-2 [&>svg]:text-orange-2 [&>svg]:size-3.5 grid gap-1">
                                     <IconCoins />
                                     Commission
                                 </div>
-                                <p className="text-sm font-medium text-grey-dark-2">$30</p>
+                                <p className="text-sm font-medium text-grey-dark-2">$0</p>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-2 inset-ring-1 inset-ring-outline p-3 rounded-lg">
+                            <span className="font-medium text-sm text-grey-dark-0">Allergy Information</span>
+                            <div className="grid gap-3">
+                                <span className="text-xs text-grey-dark-2">Allergens that are ingredients in this cuisine</span>
+                                <div className="flex items-center gap-x-4 gap-y-2 flex-wrap"> 
+                                    {cuisine?.allegen_list?.map((item, i) => (
+                                        <div key={i} className="capitalize active:scale-98 inline-flex text-xs rounded-full px-3 py-1 inset-ring-1 inset-ring-grey-dark-4 bg-grey-dark-4 text-grey-dark-2">
+                                            {item.name}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <Separator />
+                            <div className="grid gap-3">
+                                <span className="text-xs text-grey-dark-2">May contain traces (cross-contamination possible)</span>
+                                <div className="flex items-center gap-x-4 gap-y-2 flex-wrap"> 
+                                    {cuisine?.allegen_trace?.map((item, i) => (
+                                        <div key={i} className="capitalize active:scale-98 inline-flex text-xs rounded-full px-3 py-1 inset-ring-1 inset-ring-grey-dark-4 bg-grey-dark-4 text-grey-dark-2">
+                                            {item.name}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <Separator />
+                            <div className="grid gap-3">
+                                <span className="text-xs text-grey-dark-3">Allergy Notes</span>
+                                <p className="text-xs text-grey-dark-2"> 
+                                    {cuisine?.allegen_note}
+                                </p>
                             </div>
                         </div>
                     </div>
