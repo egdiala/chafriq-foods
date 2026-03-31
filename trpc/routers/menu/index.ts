@@ -3,7 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { appendQueryParams } from "@/lib/utils";
 import { api, handleErrorMessage } from "@/trpc/helper";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
-import { createMenuFormSchema, getMenuListSchema } from "@/validations/menu";
+import { createMenuFormSchema, editMenuFormSchema, getMenuListSchema } from "@/validations/menu";
 
 export const menuRouter = createTRPCRouter({
     getMenuList: protectedProcedure.input(getMenuListSchema).query(async ({ ctx, input }): Promise<{ status: string; data: GetMenuResponse[] }> => {
@@ -51,9 +51,40 @@ export const menuRouter = createTRPCRouter({
             });
         }
     }),
+    editMenu: protectedProcedure.input(editMenuFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: CreateMenuResponse }> => {
+        try {
+            const { menu_id, ...payload } = input;
+            const response = await api.put(`cooks/accounts/menu-lists/${menu_id}`, payload, {
+                headers: {
+                    "Authorization": `Bearer ${ctx.accessToken}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: handleErrorMessage(error),
+            });
+        }
+    }),
     deleteMenu: protectedProcedure.input(z.string().min(1, "Schedule ID is required")).mutation(async ({ ctx, input }): Promise<{ status: string; data: CreateMenuResponse }> => {
         try {
             const response = await api.delete(`cooks/accounts/menu-lists/${input}`, {
+                headers: {
+                    "Authorization": `Bearer ${ctx.accessToken}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: handleErrorMessage(error),
+            });
+        }
+    }),
+    deleteMediaFile: protectedProcedure.input(z.string().min(1, "Menu ID is required")).mutation(async ({ ctx, input }): Promise<{ status: string; }> => {
+        try {
+            const response = await api.delete(`cooks/accounts/menu-files/${input}`, {
                 headers: {
                     "Authorization": `Bearer ${ctx.accessToken}`
                 }

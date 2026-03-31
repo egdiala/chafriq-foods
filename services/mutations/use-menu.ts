@@ -19,6 +19,23 @@ export const useCreateMenu = (fn?: (value: CreateMenuResponse) => void) => {
     );
 }
 
+export const useEditMenu = (fn?: (value: CreateMenuResponse) => void) => {
+    const trpc = useTRPC();
+    const queryClient = useQueryClient()
+    return useMutation(
+        trpc.menu.editMenu.mutationOptions({
+            onSuccess: async (data) => {
+                await queryClient.invalidateQueries({ queryKey: trpc.menu.getMenuList.queryKey() })
+                fn?.(data.data);
+                toast.success("Cuisine edited successfully")
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
 export const useUploadMenuMedia = (fn?: (value: unknown) => void) => {
     return useMutation({
         mutationFn: async (payload: { formData: FormData; menuId: string; }) => {
@@ -53,6 +70,23 @@ export const useDeleteMenu = (fn?: (value: unknown) => void) => {
                 await queryClient.invalidateQueries({ queryKey: trpc.menu.getMenuList.queryKey() })
                 fn?.(data.data);
                 toast.success("Cuisine deleted successfully")
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
+export const useDeleteMediaFile = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const queryClient = useQueryClient()
+    return useMutation(
+        trpc.menu.deleteMediaFile.mutationOptions({
+            onSuccess: async (data) => {
+                await queryClient.invalidateQueries({ queryKey: trpc.menu.getSingleMenu.queryKey() })
+                fn?.(data);
+                toast.success("File deleted successfully")
             },
             onError: (error) => {
                 toast.error(error.message || "Something went wrong");
