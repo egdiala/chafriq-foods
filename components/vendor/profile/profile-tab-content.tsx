@@ -16,7 +16,9 @@ import { AnimatePresence, motion } from "motion/react";
 import { ChangePassword } from "./change-password";
 
 export const ProfileTabContent = () => {
-    const { user } = useUser()
+    const { user: userObj } = useUser()
+    const user = userObj as VendorProfileResponse;
+    
     const { isCopied, copyToClipboard } = useClipboard({})
     const [openDeleteModal, setOpenDeleteModal] = useState(false)
     const [openBusinessModal, setOpenBusinessModal] = useState(false)

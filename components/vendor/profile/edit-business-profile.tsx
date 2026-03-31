@@ -20,7 +20,8 @@ type Props = {
 }
 
 export const EditBusinessProfile = ({ open, setOpen }: Props) => {
-    const { user } = useUser()
+    const { user: userObj } = useUser()
+    const user = userObj as VendorProfileResponse;
     const { data: dishList, isLoading: isLoadingDishList } = useDishList()
     const [searchValue, setSearchValue] = useState('');
     const trimmedSearchValue = searchValue.trim();

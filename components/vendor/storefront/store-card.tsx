@@ -15,7 +15,9 @@ type Props = {
 }
 
 export const StoreCard = ({ className }: Props) => {
-    const { user } = useUser()
+    const { user: userObj } = useUser()
+    const user = userObj as VendorProfileResponse;
+    
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [file, setFile] = useState<File>()
     const { mutateAsync, isPending } = useUploadBusinessLogo()

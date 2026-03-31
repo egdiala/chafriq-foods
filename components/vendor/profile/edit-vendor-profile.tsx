@@ -21,7 +21,9 @@ type Props = {
 }
 
 export const EditVendorProfile = ({ open, setOpen }: Props) => {
-    const { user } = useUser()
+    const { user: userObj } = useUser()
+    const user = userObj as VendorProfileResponse;
+    
     const { data: countryList, isLoading: isLoadingCountryList } = useCountryList()
 
     const [searchValue, setSearchValue] = useState("");
@@ -38,7 +40,7 @@ export const EditVendorProfile = ({ open, setOpen }: Props) => {
     const editProfileForm = useForm({
         defaultValues: {
             phone_number: `+${user?.phone_number}`,
-            gender: user?.gender || "",
+            gender: user?.gender as unknown as "male" | "female",
             year_exp: String(user?.year_exp || ""),
             home_address: user?.home_address || "",
             home_state: user?.home_state || "",
@@ -124,7 +126,7 @@ export const EditVendorProfile = ({ open, setOpen }: Props) => {
                                 return (
                                     <Field data-invalid={isInvalid}>
                                         <FieldLabel htmlFor={field.name}>Gender</FieldLabel>
-                                        <Select value={field.state.value} name={field.name} onValueChange={field.handleChange}>
+                                        <Select value={field.state.value} name={field.name} onValueChange={(v) => field.handleChange(v as unknown as "male" | "female")}>
                                             <SelectTrigger id={field.name} aria-invalid={isInvalid}>
                                                 <SelectValue placeholder="Select gender" />
                                             </SelectTrigger>

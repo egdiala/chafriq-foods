@@ -21,7 +21,7 @@ export const editVendorProfileFormSchema = z.object({
     home_city: z.string().min(1, "City is required"),
     home_zip: z.string().min(1, "Zip code is required"),
     phone_number: z.string().min(1, "Phone number is required"),
-    gender: z.string().min(1, "Gender is required"),
+    gender: z.enum(["male", "female"]),
     year_exp: z.string().min(1, "Years of experience is required"),
 })
 

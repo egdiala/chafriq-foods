@@ -32,7 +32,9 @@ export const VendorProfileContent = () => {
 }
 
 const ProfileCard = () => {
-    const { user } = useUser()
+    const { user: userObj } = useUser()
+    const user = userObj as VendorProfileResponse;
+    
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [file, setFile] = useState<File>()
     const { mutateAsync, isPending } = useUploadVendorAvatar()
