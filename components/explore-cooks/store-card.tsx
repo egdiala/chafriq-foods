@@ -15,7 +15,7 @@ export const StoreCard = ({ cookId }: Props) => {
             <div className="flex items-start justify-between">
                 <Avatar className="size-10 sm:size-24.5 outline-1 outline-white rounded-lg">
                     <AvatarImage src={data?.data?.business_logo} className="rounded-lg" />
-                    <AvatarFallback>SD</AvatarFallback>
+                    <AvatarFallback className="sm:text-2xl">{data?.data?.business_name?.split(" ")?.[0]?.at(0)}{data?.data?.business_name?.split(" ")?.[1]?.at(0)}</AvatarFallback>
                 </Avatar>
                 <span className="text-xs text-grey-dark-3">Last pickup: 23 hrs ago</span>
             </div>
