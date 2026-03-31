@@ -1,14 +1,20 @@
 "use client";
 
-import Link from "next/link"
-import { useForm } from "@tanstack/react-form-nextjs"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import Link from "next/link";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useForm } from "@tanstack/react-form-nextjs";
+import { useLoginCustomer } from "@/services/mutations/use-auth";
+import { loginVendorFormSchema } from "@/validations/vendor-auth";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 
 export const CustomerLoginContent = () => {
-
+    const { mutate, isPending } = useLoginCustomer()
+    const [showPassword, setShowPassword] = useState(false)
+    
     const customerLoginForm = useForm({
         defaultValues: {
             email: "",
@@ -16,10 +22,11 @@ export const CustomerLoginContent = () => {
             rememberMe: false
         },
         validators: {
-            // onSubmit: loginFormSchema
+            onSubmit: loginVendorFormSchema
         },
         onSubmit: async ({ value }) => {
-            console.log(value)
+            if (isPending) return;
+            mutate(value)
         },
     })
     
@@ -61,15 +68,24 @@ export const CustomerLoginContent = () => {
                         return (
                             <Field data-invalid={isInvalid}>
                                 <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                                <Input
-                                    type="text"
-                                    id={field.name}
-                                    name={field.name}
-                                    aria-invalid={isInvalid}
-                                    value={field.state.value}
-                                    onBlur={field.handleBlur}
-                                    onChange={(e) => field.handleChange(e.target.value)}
-                                />
+                                <div className="relative">
+                                    <Input
+                                        type={showPassword ? "text" : "password"}
+                                        id={field.name}
+                                        name={field.name}
+                                        aria-invalid={isInvalid}
+                                        value={field.state.value}
+                                        onBlur={field.handleBlur}
+                                        onChange={(e) => field.handleChange(e.target.value)}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute inset-y-0 right-2 text-grey-dark-2 [&>svg]:size-4"
+                                    >
+                                        {showPassword ? <EyeOff /> : <Eye />}
+                                    </button>
+                                </div>
                                 {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                             </Field>
                         )
@@ -95,7 +111,7 @@ export const CustomerLoginContent = () => {
             </FieldGroup>
 
             <div className="flex flex-col items-center gap-5">
-                <Button type="submit">Sign in</Button>
+                <Button type="submit" disabled={isPending}>Sign in</Button>
                 <Link href="/customer/forgot-password" className="font-medium text-sm text-grey-dark-0 hover:underline hover:underline-offset-1">Reset Password</Link>
                 <p className="text-xs text-grey-dark-3 text-center">By clicking Sign in you agree to the terms and conditions of using this service</p>
             </div>

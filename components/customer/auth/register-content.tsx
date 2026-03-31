@@ -1,14 +1,18 @@
 "use client";
 
-import { useState } from "react"
-import { AnimatePresence } from "motion/react"
-import { useForm } from "@tanstack/react-form-nextjs"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useForm, useStore } from "@tanstack/react-form-nextjs";
+import { PhoneInput } from "@/components/ui/phone-input";
+import { registerCustomerFormSchema } from "@/validations/customer-auth";
 import { VerifyEmailOnRegisterDialog } from "./verify-email-on-register-dialog";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { useRegisterCustomer } from "@/services/mutations/use-auth";
+import { Eye, EyeOff } from "lucide-react";
 
 
 export const CustomerRegisterContent = () => {
@@ -22,6 +26,8 @@ export const CustomerRegisterContent = () => {
 
 const PersonalInformation = () => {
     const [open, setOpen] = useState(false)
+    const { mutate, isPending } = useRegisterCustomer(() => setOpen(true))
+    const [showPassword, setShowPassword] = useState(false)
 
     const customerPersonalInfoForm = useForm({
         defaultValues: {
@@ -32,13 +38,19 @@ const PersonalInformation = () => {
             terms: false
         },
         validators: {
-            // onSubmit: loginFormSchema
+            onSubmit: registerCustomerFormSchema
         },
         onSubmit: async ({ value }) => {
-            console.log(value)
-            setOpen(true)
+            if (isPending) return;
+            const { phone_number, ...payload } = value;
+            mutate({
+                phone_number: phone_number?.replace(/^\+/, ""),
+                ...payload
+            })
         },
     })
+
+    const email = useStore(customerPersonalInfoForm.store, (state) => state.values.email)
     
     return (
         <>
@@ -101,15 +113,16 @@ const PersonalInformation = () => {
                                 const isInvalid = !field.state.meta.isValid
                                 return (
                                     <Field data-invalid={isInvalid}>
-                                        <FieldLabel htmlFor={field.name}>Phone (optional)</FieldLabel>
-                                        <Input
-                                            type="text"
+                                        <FieldLabel htmlFor={field.name}>Phone</FieldLabel>
+                                        <PhoneInput
+                                            placeholder="Enter a phone number"
                                             id={field.name}
                                             name={field.name}
                                             aria-invalid={isInvalid}
                                             value={field.state.value}
                                             onBlur={field.handleBlur}
-                                            onChange={(e) => field.handleChange(e.target.value)}
+                                            defaultCountry="AU"
+                                            onChange={(value) => field.handleChange(value)}
                                         />
                                         {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                     </Field>
@@ -122,15 +135,24 @@ const PersonalInformation = () => {
                                 return (
                                     <Field data-invalid={isInvalid}>
                                         <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                                        <Input
-                                            type="text"
-                                            id={field.name}
-                                            name={field.name}
-                                            aria-invalid={isInvalid}
-                                            value={field.state.value}
-                                            onBlur={field.handleBlur}
-                                            onChange={(e) => field.handleChange(e.target.value)}
-                                        />
+                                        <div className="relative">
+                                            <Input
+                                                type={showPassword ? "text" : "password"}
+                                                id={field.name}
+                                                name={field.name}
+                                                aria-invalid={isInvalid}
+                                                value={field.state.value}
+                                                onBlur={field.handleBlur}
+                                                onChange={(e) => field.handleChange(e.target.value)}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="absolute inset-y-0 right-2 text-grey-dark-2 [&>svg]:size-4"
+                                            >
+                                                {showPassword ? <EyeOff /> : <Eye />}
+                                            </button>
+                                        </div>
                                         {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                     </Field>
                                 )
@@ -163,6 +185,7 @@ const PersonalInformation = () => {
             </form>
             <VerifyEmailOnRegisterDialog
                 open={open}
+                email={email}
                 setOpen={setOpen}
             />
         </>

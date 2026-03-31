@@ -42,3 +42,26 @@ interface VendorProfileResponse {
     }[]
     cook_id: string;
 }
+
+interface CustomerProfileResponse {
+    full_name: string;
+    email: string;
+    avatar: string;
+    email_status: KycStatus;
+    phone_number: string;
+    country: string;
+    state: string;
+    city: string;
+    zipcode: string;
+    gender: "male" | "female" | "";
+    delivery_address: string;
+    account_status: AccountStatus;
+    suspend_reason: string;
+    alert_settings: {
+        orders: number;
+        promos: number;
+        platforms: number;
+    },
+    createdAt: Date | string;
+    customer_id: string;
+}

@@ -9,12 +9,12 @@ interface UserLocation {
 
 interface UserState {
   type: UserType | null;
-  user: VendorProfileResponse | null;
+  user: VendorProfileResponse | CustomerProfileResponse | null;
 
   location: UserLocation | null;
 
   updateType: (value: UserType | null) => void;
-  updateUser: (value: VendorProfileResponse | null) => void;
+  updateUser: (value: VendorProfileResponse | CustomerProfileResponse | null) => void;
 
   setLocation: (value: UserLocation | null) => void;
   clearLocation: () => void;
@@ -28,7 +28,7 @@ export const useUser = create<UserState>()(
       location: null,
 
       updateType: (value: UserType | null) => set(() => ({ type: value })),
-      updateUser: (value: VendorProfileResponse | null) => set(() => ({ user: value })),
+      updateUser: (value: VendorProfileResponse | CustomerProfileResponse | null) => set(() => ({ user: value })),
 
       setLocation: (value) =>
         set({

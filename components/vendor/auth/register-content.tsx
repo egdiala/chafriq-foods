@@ -643,7 +643,7 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
             </form>
             <VerifyEmailOnRegisterDialog
                 open={open}
-                email={email || "s.egdiala@gmail.com"}
+                email={email}
                 setOpen={(v) => {
                     setOpen(v)
                     nextStep()

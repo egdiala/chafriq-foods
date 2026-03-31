@@ -8,27 +8,29 @@ import { IconArrowDown, IconChefHat, IconCookingPot, IconForkKnife, IconHeadset,
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 export const CustomerProfileDropdown = () => {
-    const { user } = useUser()
+    const { user: userObj } = useUser()
     const [openLogout, setOpenLogout] = useState(false)
+
+    const user = userObj as CustomerProfileResponse;
     return (
         <>
         <DropdownMenu>
             <DropdownMenuTrigger className="hidden lg:flex items-center gap-1 p-1 bg-orange-5 rounded-full [&_svg]:text-grey-dark-3 data-[state=open]:[&_svg]:-rotate-180">
                 <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>{user?.first_name?.[0]}{user?.last_name?.[0]}</AvatarFallback>
+                    <AvatarImage src={user?.avatar} />
+                    <AvatarFallback>{user?.full_name?.split(" ")?.[0]?.at(0)}{user?.full_name?.split(" ")?.[1]?.at(0)}</AvatarFallback>
                 </Avatar>
-                <span className="font-medium text-sm text-grey-dark-2">{user?.first_name}</span>
+                <span className="font-medium text-sm text-grey-dark-2">{user?.full_name?.split(" ")?.[0]}</span>
                 <IconArrowDown className="transition-transform duration-200 ease-linear" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="p-2.5! w-50 origin-top-right space-y-2" align="end" sideOffset={8}>
                 <div className="flex items-center gap-2">
                     <Avatar size="lg">
-                        <AvatarImage src="https://github.com/shadcn.png" className="rounded-xl" />
-                        <AvatarFallback>{user?.first_name?.[0]}{user?.last_name?.[0]}</AvatarFallback>
+                        <AvatarImage src={user?.avatar} className="rounded-xl" />
+                        <AvatarFallback>{user?.full_name?.split(" ")?.[0]?.at(0)}{user?.full_name?.split(" ")?.[1]?.at(0)}</AvatarFallback>
                     </Avatar>
                     <div className="grid gap-px">
-                        <span className="font-medium text-sm text-grey-dark-1">{user?.first_name} {user?.last_name}</span>
+                        <span className="font-medium text-sm text-grey-dark-1">{user?.full_name}</span>
                         <div className="flex items-center px-1 gap-1 bg-orange-5 rounded-xl h-4.5 w-fit uppercase text-orange-2 text-[0.625rem] [&>svg]:size-3">
                             <IconCookingPot /> customer
                         </div>

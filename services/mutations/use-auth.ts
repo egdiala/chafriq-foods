@@ -2,6 +2,7 @@ import { useTRPC } from "@/trpc/client";
 import { toast } from 'sonner';
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
+import { useRouter } from "next/navigation";
 
 export const useRegisterVendor = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
@@ -99,6 +100,74 @@ export const useResetPasswordVendor = (fn?: (value: unknown) => void) => {
                     fn?.(data);
                     toast.success("Password reset successfully")
                 }
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
+export const useRegisterCustomer = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    return useMutation(
+        trpc.auth.customer.register.mutationOptions({
+            onSuccess: (data) => {
+                if (data.status) {
+                    fn?.(data);
+                    toast.success("Account created")
+                }
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
+export const useLoginCustomer = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const { handleLogin } = useAuth()
+    return useMutation(
+        trpc.auth.customer.login.mutationOptions({
+            onSuccess: (data) => {
+                if (data.status === "ok") {
+                    handleLogin(data.data, "customer")
+                    fn?.(data);
+                    toast.success("Login successful")
+                }
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
+export const useConfirmOtpCustomer = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const router = useRouter();
+    return useMutation(
+        trpc.auth.customer.confirmOtp.mutationOptions({
+            onSuccess: (data) => {
+                fn?.(data);
+                toast.success("Otp confirmed");
+                router.push("/customer/login")
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
+export const useResendOtpCustomer = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    return useMutation(
+        trpc.auth.customer.resendOtp.mutationOptions({
+            onSuccess: (data) => {
+                fn?.(data);
+                toast.success("Otp sent successfully")
             },
             onError: (error) => {
                 toast.error(error.message || "Something went wrong");

@@ -1,39 +1,67 @@
 "use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { useForm } from "@tanstack/react-form-nextjs"
+import Link from "next/link";
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { useCountdown } from "@/hooks/use-countdown";
+import { useForm } from "@tanstack/react-form-nextjs";
 import { Field, FieldError } from "@/components/ui/field"
+import { confirmOtpVendorFormSchema } from "@/validations/vendor-auth";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
+import { useConfirmOtpCustomer, useResendOtpCustomer } from "@/services/mutations/use-auth";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 type Props = {
     open: boolean;
+    email: string;
     setOpen: (v: boolean) => void;
 }
 
-export const VerifyEmailOnRegisterDialog = ({ open, setOpen }: Props) => {
+export const VerifyEmailOnRegisterDialog = ({ email, open, setOpen }: Props) => {
+    const { mutate: resend, isPending: isResending} = useResendOtpCustomer()
+    const { mutate: verifyOtp, isPending } = useConfirmOtpCustomer(() => {
+        setOpen(false)
+    })
+    const { seconds, isFinished, start, reset } = useCountdown({
+        initialSeconds: 30,
+    });
 
     const verifyEmailForm = useForm({
         defaultValues: {
-            code: ""
+            email,
+            otp_code: ""
         },
         listeners: {
             onChange: ({ formApi }) => {
-                const otpCode = formApi.getFieldValue("code")
-                if (otpCode && (otpCode.length === 6)) {
+                const otpCode = formApi.getFieldValue("otp_code")
+                if (otpCode && (otpCode.length === 4)) {
                     formApi.handleSubmit()
                 }
             },
         },
         validators: {
-            // onSubmit: loginFormSchema
+            onSubmit: confirmOtpVendorFormSchema
         },
         onSubmit: async ({ value }) => {
-            console.log(value)
-            setOpen(true)
+            if (isPending) return;
+            verifyOtp(value)
         },
     })
+
+    useEffect(() => {
+        if (open) {
+            reset(30);
+            start();
+        }
+    }, [open]);
+
+    const handleResend = () => {
+        if (!isFinished || isResending) return;
+
+        resend({ email, request_type: "register" });
+        reset(30);
+        start();
+    };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -46,19 +74,19 @@ export const VerifyEmailOnRegisterDialog = ({ open, setOpen }: Props) => {
                         <DialogTitle>Verify Your Email</DialogTitle>
                         <DialogDescription asChild>
                             <div className="flex flex-col items-start gap-1">
-                                <p>Enter the code sent to am *** **n@gmail.com</p>
+                                <p>Enter the code sent to {email}</p>
                                 <DialogClose asChild>
                                     <Button variant="link" size="link">Edit Email</Button>
                                 </DialogClose>
                             </div>
                         </DialogDescription>
                     </DialogHeader>
-                    <verifyEmailForm.Field name="code">
+                    <verifyEmailForm.Field name="otp_code">
                         {(field) => {
                             const isInvalid = !field.state.meta.isValid
                             return (
                                 <Field className="mb-6" data-invalid={isInvalid}>
-                                    <InputOTP id={field.name} name={field.name} value={field.state.value} onBlur={field.handleBlur} maxLength={6} onChange={field.handleChange}>
+                                    <InputOTP id={field.name} name={field.name} value={field.state.value} onBlur={field.handleBlur} maxLength={4} onChange={field.handleChange}>
                                         <InputOTPGroup>
                                             <InputOTPSlot index={0} />
                                         </InputOTPGroup>
@@ -71,12 +99,6 @@ export const VerifyEmailOnRegisterDialog = ({ open, setOpen }: Props) => {
                                         <InputOTPGroup>
                                             <InputOTPSlot index={3} />
                                         </InputOTPGroup>
-                                        <InputOTPGroup>
-                                            <InputOTPSlot index={4} />
-                                        </InputOTPGroup>
-                                        <InputOTPGroup>
-                                            <InputOTPSlot index={5} />
-                                        </InputOTPGroup>
                                     </InputOTP>
                                     {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                 </Field>
@@ -85,7 +107,9 @@ export const VerifyEmailOnRegisterDialog = ({ open, setOpen }: Props) => {
                     </verifyEmailForm.Field>
                     <DialogFooter className="gap-4">
                         <div className="flex items-center justify-center gap-1 text-sm text-grey-dark-3">Already have an account? <Link href="/customer/login" className="font-medium text-grey-dark-0 hover:underline hover:underline-offset-1">Sign in instead</Link></div>
-                        <Button type="submit" className="w-full">Resend Code in 28s</Button>
+                        <Button type="button" className="w-full" disabled={isResending || seconds > 0} onClick={handleResend}>
+                            {isResending ? "Sending..." : seconds > 0 ? `Resend Code in ${seconds}s` : "Resend Code"}
+                        </Button>
                     </DialogFooter>
                 </DialogContent>
             </form>

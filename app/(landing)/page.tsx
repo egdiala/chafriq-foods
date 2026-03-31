@@ -1,17 +1,13 @@
 import { Faq } from "@/components/landing/faq";
 import { Hero } from "@/components/landing/hero";
-import { StepsAway } from "@/components/landing/steps-away";
 import { DownloadOurApp } from "@/components/landing/download-our-app";
-import { EarnOnYourTerms } from "@/components/landing/earn-on-your-terms";
-import { QualityYouCanTrust } from "@/components/landing/quality-you-can-trust";
+import { HomeContent } from "@/components/landing/home-content";
 
 export default function HomePage() {
     return (
         <>
             <Hero />
-            <StepsAway />
-            <EarnOnYourTerms />
-            <QualityYouCanTrust />
+            <HomeContent />
             <DownloadOurApp />
             <Faq />
         </>

@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
         destination: "/vendor/storefront",
         permanent: false,
       },
+      {
+        source: "/customer",
+        destination: "/",
+        permanent: false,
+      },
     ]
   }
 };

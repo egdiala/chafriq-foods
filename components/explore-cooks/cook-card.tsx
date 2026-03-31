@@ -21,11 +21,11 @@ export const CookCard = ({ cook }: Props) => {
         <Card className="group hover:ring-orange-2 hover:bg-orange-5 relative">
             <Link href={`/cooks/${cook.cook_id}`} className="absolute inset-0 w-full h-full" />
             <CardContent className="isolate">
-                <div className="relative rounded-xl overflow-hidden aspect-video">
+                <div className="relative rounded-xl overflow-hidden aspect-video bg-orange-1">
                     {/* <Button variant="carousel" size="icon-xs" className="absolute top-2 right-2 z-10">
                         <IconFavorite />
                     </Button> */}
-                    <img src={cook.business_logo} alt={cook.business_name} className="object-cover h-full w-full" />
+                    {cook.business_logo && (<img src={cook.business_logo} alt={cook.business_name} className="object-cover h-full w-full" />)}
                 </div>
             </CardContent>
             <div className="flex flex-col gap-3 px-3 flex-1">

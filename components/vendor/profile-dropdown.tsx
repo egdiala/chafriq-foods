@@ -8,8 +8,10 @@ import { IconArrowDown, IconChefHat, IconCurrencyDollar, IconHeadset, IconSignOu
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 export const VendorProfileDropdown = () => {
-    const { user } = useUser()
+    const { user: userObj } = useUser()
     const [openLogout, setOpenLogout] = useState(false)
+
+    const user = userObj as VendorProfileResponse;
     return (
         <>
         <DropdownMenu>

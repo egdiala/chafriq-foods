@@ -38,10 +38,10 @@ export const useAuth = () => {
         })
 
         const [profile] = await Promise.all([
-            queryClient.fetchQuery(trpc.account[userType].getProfile.queryOptions()),
+            userType === "customer" ? queryClient.fetchQuery(trpc.account.customer.getProfile.queryOptions()) : queryClient.fetchQuery(trpc.account.vendor.getProfile.queryOptions()),
         ]);
 
-        if (profile.status === "ok") {
+        if ((profile as { status: string; data: VendorProfileResponse | CustomerProfileResponse }).status === "ok") {
             updateUser(profile.data)
             updateType(userType)
         }
