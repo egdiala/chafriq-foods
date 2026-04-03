@@ -12,18 +12,20 @@ import { useForm } from "@tanstack/react-form-nextjs";
 import { createMenuFormSchema } from "@/validations/menu";
 import { IconCloudArrowUp, IconTrashSimple } from "@/components/icons";
 import { Activity, useEffect, useMemo, useRef, useState } from "react";
-import { useDishList, useGetAllergies } from "@/services/queries/use-explore";
+import { useGetAllergies } from "@/services/queries/use-explore";
 import { useCreateMenu, useUploadMenuMedia } from "@/services/mutations/use-menu";
 import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field"
 import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxItem, ComboboxList, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox";
+import { useUser } from "@/context/use-user";
 
 const MAX_FILES = 5;
 
 export const VendorAddCuisineContent = () => {
     const router = useRouter()
+    const { user: userObj } = useUser()
+    const user = userObj as VendorProfileResponse;
     const { data, isLoading } = useGetAllergies()
     const [cuisineImages, setCuisineImages] = useState<File[]>([])
-    const { data: dishList, isLoading: isLoadingDishList } = useDishList()
 
     const [searchValue, setSearchValue] = useState('');
 
@@ -264,8 +266,7 @@ export const VendorAddCuisineContent = () => {
                                             <FieldLabel htmlFor={field.name}>Type of Cuisine</FieldLabel>
                                             <Combobox
                                                 multiple
-                                                disabled={isLoadingDishList}
-                                                items={dishList?.data || []}
+                                                items={user?.dish_data || []}
                                                 value={field.state.value}
                                                 autoHighlight
                                                 itemToStringLabel={(dish: string) => dish}
@@ -309,10 +310,10 @@ export const VendorAddCuisineContent = () => {
                                                             </span>
                                                             ) : item.length > 1 ? (
                                                             <span className="line-clamp-1 text-ellipsis">{item.map((itm) => {
-                                                                return dishList?.data?.find((dishItm) => dishItm.dish_type_id === itm)?.name
+                                                                return user?.dish_data?.find((dishItm) => dishItm.dish_type_id === itm)?.name
                                                             }).join(", ")}</span>
                                                             ) : (
-                                                            <span className="line-clamp-1 text-ellipsis">{dishList?.data?.find((itm) => itm.dish_type_id === item[0])?.name}</span>
+                                                            <span className="line-clamp-1 text-ellipsis">{user?.dish_data?.find((itm) => itm.dish_type_id === item[0])?.name}</span>
                                                             )}
                                                         </>
                                                         )}

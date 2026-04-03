@@ -10,7 +10,7 @@ import { useForm } from "@tanstack/react-form-nextjs";
 import { useGetSingleMenu } from "@/services/queries/use-menu";
 import { IconCloudArrowUp, IconTrashSimple } from "@/components/icons";
 import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
-import { useDishList, useGetAllergies } from "@/services/queries/use-explore";
+import { useGetAllergies } from "@/services/queries/use-explore";
 import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxItem, ComboboxList, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox";
 import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ import { DeleteMenuFile } from "./delete-menu-file";
 import { useEditMenu, useUploadMenuMedia } from "@/services/mutations/use-menu";
 import { useRouter } from "next/navigation";
 import { editMenuFormSchema } from "@/validations/menu";
+import { useUser } from "@/context/use-user";
 
 type Props = {
     cuisineId: string;
@@ -27,6 +28,8 @@ const MAX_FILES = 5;
 
 export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
     const router = useRouter()
+    const { user: userObj } = useUser()
+    const user = userObj as VendorProfileResponse;
     const [openDelete, setOpenDelete] = useState({
         id: "",
         isOpen: false
@@ -34,7 +37,6 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
     const { data, isLoading } = useGetSingleMenu(cuisineId)
     const [cuisineImages, setCuisineImages] = useState<File[]>([])
     const { data: allergies, isLoading: isLoadingAllergies } = useGetAllergies()
-    const { data: dishList, isLoading: isLoadingDishList } = useDishList()
 
     const [searchValue, setSearchValue] = useState('');
 
@@ -288,8 +290,7 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
                                                         <FieldLabel htmlFor={field.name}>Type of Cuisine</FieldLabel>
                                                         <Combobox
                                                             multiple
-                                                            disabled={isLoadingDishList}
-                                                            items={dishList?.data || []}
+                                                            items={user?.dish_data || []}
                                                             value={field.state.value}
                                                             autoHighlight
                                                             itemToStringLabel={(dish: string) => dish}
@@ -333,10 +334,10 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
                                                                         </span>
                                                                         ) : item.length > 1 ? (
                                                                         <span className="line-clamp-1 text-ellipsis">{item.map((itm) => {
-                                                                            return dishList?.data?.find((dishItm) => dishItm.dish_type_id === itm)?.name
+                                                                            return user?.dish_data?.find((dishItm) => dishItm.dish_type_id === itm)?.name
                                                                         }).join(", ")}</span>
                                                                         ) : (
-                                                                        <span className="line-clamp-1 text-ellipsis">{dishList?.data?.find((itm) => itm.dish_type_id === item[0])?.name}</span>
+                                                                        <span className="line-clamp-1 text-ellipsis">{user?.dish_data?.find((itm) => itm.dish_type_id === item[0])?.name}</span>
                                                                         )}
                                                                     </>
                                                                     )}

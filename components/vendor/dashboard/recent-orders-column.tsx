@@ -8,6 +8,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { ORDER_STATUS, ORDER_STATUS_CLASSES } from "../orders/order-card";
 import { VariantProps } from "class-variance-authority";
 import { dateToRender } from "@/lib/utils";
+import Link from "next/link";
 
 
 export const columns: ColumnDef<GetVendorOrderResponse>[] = [
@@ -16,13 +17,14 @@ export const columns: ColumnDef<GetVendorOrderResponse>[] = [
     header: "Cuisine",
     cell: ({ row }) => {
         const image = row.original.menu_img
+        const orderId = row.original.order_id
         const cuisine = row.getValue("menu_name") as GetVendorOrderResponse["menu_name"];
         return (
           <div className="flex items-center gap-1.5">
             <Avatar className="size-7">
               <AvatarImage src={image} alt="food" className="size-7 object-cover object-center" />
             </Avatar>
-            <span className="flex-1 line-clamp-1 text-ellipsis">{cuisine}</span>
+            <Link href={`/vendor/orders?order_id=${orderId}`} className="flex-1 line-clamp-1 text-ellipsis hover:underline">{cuisine}</Link>
           </div>
         )
     }

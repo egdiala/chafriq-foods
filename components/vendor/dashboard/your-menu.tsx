@@ -5,6 +5,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useGetMenuList } from "@/services/queries/use-menu";
+import Link from "next/link";
 
 type Props = {
     className?: string;
@@ -12,24 +13,7 @@ type Props = {
 
 export const YourMenu = ({ className }: Props) => {
     const { data, isLoading } = useGetMenuList({})
-    const foods = [
-        {
-            title: "Jollof Rice & Plantain",
-            description: "Pork, pineapple, and onions on corn tortillas"
-        },
-        {
-            title: "Pasta Primavera",
-            description: "Mixed seasonal vegetables and olive oil"
-        },
-        {
-            title: "Beef Stroganoff",
-            description: "Tender beef strips in creamy mushroom sauce"
-        },
-        {
-            title: "Vegetable Curry",
-            description: "Aromatic spices with mixed vegetables"
-        }
-    ]
+
     return (
         <div className={cn("flex flex-col gap-3 p-5 rounded-2xl inset-ring-1 inset-ring-outline", className)}>
             <h2 className="font-semibold text-base text-grey-dark-0">Your Menu</h2>
@@ -48,7 +32,7 @@ export const YourMenu = ({ className }: Props) => {
                     <>
                     {
                         data?.data?.slice(0, 4)?.map((menu) => (
-                            <div key={menu.menu_id} className="flex items-center gap-2 rounded-lg p-3 inset-ring-1 inset-ring-outline">
+                            <Link href={`/vendor/storefront?menu_id=${menu.menu_id}`} key={menu.menu_id} className="flex items-center gap-2 rounded-lg p-3 inset-ring-1 inset-ring-outline hover:inset-ring-orange-2">
                                 <div className="rounded-xl overflow-hidden size-9.5">
                                     <Avatar className="rounded-xl size-9.5">
                                         <AvatarImage src={menu.file_url} alt="food" className="rounded-xl size-9.5 object-cover object-center" />
@@ -64,7 +48,7 @@ export const YourMenu = ({ className }: Props) => {
                                     </div>
                                     <p className="text-xs text-grey-dark-3 line-clamp-1">{menu.menu_content}</p>
                                 </div>
-                            </div>
+                            </Link>
                         ))
                     }
                     </>

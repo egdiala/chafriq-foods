@@ -12,16 +12,14 @@ import { useGetMenuList } from "@/services/queries/use-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { IconBowlFood, IconTrashSimple } from "@/components/icons";
 import { DeleteCuisine } from "./delete-cuisine";
+import { useQueryState } from "nuqs";
 
 type Props = {
     className?: string;
 }
 
 export const Menu = ({ className }: Props) => {
-    const [open, setOpen] = useState({
-        cuisine: null as GetMenuResponse | null,
-        isOpen: false
-    })
+    const [menuId, setMenuId] = useQueryState('menu_id')
     const { data, isLoading } = useGetMenuList({})
     const [openDelete, setOpenDelete] = useState({
         cuisine: null as GetMenuResponse | null,
@@ -64,10 +62,7 @@ export const Menu = ({ className }: Props) => {
                                 })}>
                                     <IconTrashSimple className="text-red-2" />
                                 </Button>
-                                <CuisineCard cuisine={menu} onView={() => setOpen({
-                                        cuisine: menu,
-                                        isOpen: true
-                                    })}
+                                <CuisineCard cuisine={menu} onView={() => setMenuId(menu.menu_id)}
                                 />
                             </div>
                         ))
@@ -86,7 +81,7 @@ export const Menu = ({ className }: Props) => {
             </CardContent>
         </Card>
         <DeleteCuisine open={openDelete.isOpen} cuisine={openDelete.cuisine} setOpen={setOpenDelete} />
-        <ViewCuisineDrawer open={open.isOpen} cuisine={open.cuisine} setOpen={setOpen} />
+        <ViewCuisineDrawer menuId={menuId} setOpen={() => setMenuId(null)} />
         </>
     )
 }

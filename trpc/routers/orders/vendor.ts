@@ -23,7 +23,7 @@ export const vendorOrdersRouter = createTRPCRouter({
             });
         }
     }),
-    getOrder: protectedProcedure.input(z.string().min(1, "Order ID is required")).query(async ({ ctx, input }): Promise<{ status: string; data: VendorProfileResponse }> => {
+    getOrder: protectedProcedure.input(z.string().min(1, "Order ID is required")).query(async ({ ctx, input }): Promise<{ status: string; data: GetSingleVendorOrderResponse }> => {
         try {
             const response = await api.get(`cooks/accounts/order-lists/${input}`, {
                 headers: {

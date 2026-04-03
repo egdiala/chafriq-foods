@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react"
+import { useQueryState } from "nuqs"
 import { OrderCard } from "./order-card"
 import { OrderDetailsDrawer } from "./order-details-drawer"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -10,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { IconBowlSteam } from "@/components/icons";
 
 export const VendorOrdersContent = () => {
-    const [open, setOpen] = useState(false)
+    const [orderId, setOrderId] = useQueryState('order_id')
     const [openDialog, setOpenDialog] = useState(false)
 
     const { data, isLoading } = useGetOrders({ })
@@ -38,7 +39,7 @@ export const VendorOrdersContent = () => {
                         <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(280px,420px))]">
                         {
                             (newOrders.data as GetVendorOrderResponse[]).map((order) => (
-                                <OrderCard key={order?.item_id} order={order} view={() => setOpen(true)} />
+                                <OrderCard key={order?.item_id} order={order} view={() => setOrderId(order.order_id)} />
                             ))
                         }
                         </div>
@@ -69,7 +70,7 @@ export const VendorOrdersContent = () => {
                         <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(280px,420px))]">
                         {
                             (data.data as GetVendorOrderResponse[]).map((order) => (
-                                <OrderCard key={order?.item_id} order={order} view={() => setOpen(true)} />
+                                <OrderCard key={order?.item_id} order={order} view={() => setOrderId(order.order_id)} />
                             ))
                         }
                         </div>
@@ -85,7 +86,7 @@ export const VendorOrdersContent = () => {
                 }
                 </TabsContent>
             </Tabs>
-            <OrderDetailsDrawer open={open} setOpen={setOpen} onDispatched={setOpenDialog} />
+            <OrderDetailsDrawer orderId={orderId} setOpen={() => setOrderId(null)} onDispatched={setOpenDialog} />
             <UploadPickupImagesDialog open={openDialog} setOpen={setOpenDialog} />
         </>
     )
