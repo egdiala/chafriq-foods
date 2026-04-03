@@ -1,10 +1,17 @@
+"use client";
+
+import { IconBowlFood } from "@/components/icons";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { useGetMenuList } from "@/services/queries/use-menu";
 
 type Props = {
     className?: string;
 }
 
 export const YourMenu = ({ className }: Props) => {
+    const { data, isLoading } = useGetMenuList({})
     const foods = [
         {
             title: "Jollof Rice & Plantain",
@@ -27,20 +34,49 @@ export const YourMenu = ({ className }: Props) => {
         <div className={cn("flex flex-col gap-3 p-5 rounded-2xl inset-ring-1 inset-ring-outline", className)}>
             <h2 className="font-semibold text-base text-grey-dark-0">Your Menu</h2>
             {
-                foods.map((food, index) => (
-                    <div key={index} className="flex items-center gap-2 rounded-lg p-3 inset-ring-1 inset-ring-outline">
-                        <div className="rounded-xl overflow-hidden size-9.5">
-                            <img src="https://images.unsplash.com/photo-1432139555190-58524dae6a55?q=80&w=2676&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="food" className="size-14 object-cover object-center" />
-                        </div>
-                        <div className="grid gap-px flex-1">
-                            <div className="flex items-center gap-1">
-                                <span className="font-medium text-xs text-grey-dark-2 flex-1">{food.title}</span>
-                                <span className="font-medium text-xs text-grey-dark-2 text-right">$12.99/bowl</span>
+                isLoading ? (
+                    <div className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(260px,1fr))]">
+                    {
+                        Array.from({ length: 4 }).map((_, index) => (
+                            <div key={index}>
+                                <Skeleton className="h-15.5" />
                             </div>
-                            <p className="text-xs text-grey-dark-3">{food.description}</p>
-                        </div>
+                        ))
+                    }
                     </div>
-                ))
+                ) : (!isLoading && data && (data?.data.length > 0)) ? (
+                    <>
+                    {
+                        data?.data?.slice(0, 4)?.map((menu) => (
+                            <div key={menu.menu_id} className="flex items-center gap-2 rounded-lg p-3 inset-ring-1 inset-ring-outline">
+                                <div className="rounded-xl overflow-hidden size-9.5">
+                                    <Avatar className="rounded-xl size-9.5">
+                                        <AvatarImage src={menu.file_url} alt="food" className="rounded-xl size-9.5 object-cover object-center" />
+                                    </Avatar>
+                                </div>
+                                <div className="grid gap-px flex-1">
+                                    <div className="flex items-center gap-1">
+                                        <span className="font-medium text-xs text-grey-dark-2 flex-1">{menu.menu_name}</span>
+                                        <span className="font-medium text-xs text-grey-dark-2 text-right">
+                                            {Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format(menu?.menu_amount || 0)}
+                                            /{menu?.quantity_unit?.toLowerCase()}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-grey-dark-3 line-clamp-1">{menu.menu_content}</p>
+                                </div>
+                            </div>
+                        ))
+                    }
+                    </>
+                ) : (
+                    <div className="flex flex-col items-center w-full max-w-md text-center mx-auto py-24">
+                        <div className="bg-orange-5 rounded-full grid place-content-center size-9 inset-ring-1 inset-ring-orange-2/50 mb-4">
+                            <IconBowlFood className="size-4.5 text-orange-2" />
+                        </div>
+                        <span className="text-grey-dark-0 text-base font-semibold">Ready to start selling?</span>
+                        <p className="text-grey-dark-2 text-sm font-normal">Add your first cuisine to create your menu and let customers discover what you cook best.</p>
+                    </div>
+                )
             }
         </div>
     )

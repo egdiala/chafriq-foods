@@ -1,6 +1,10 @@
+"use client";
+
 import { IconStarFull, IconTrendingUp } from "@/components/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useUser } from "@/context/use-user";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -8,15 +12,18 @@ type Props = {
 }
 
 export const PlanCard = ({ className }: Props) => {
+    const { user: userObj } = useUser()
+    const user = userObj as VendorProfileResponse;
     return (
         <div className={cn("flex flex-col gap-3 p-5 rounded-2xl inset-ring-1 inset-ring-outline", className)}>
             <div className="flex items-center gap-3">
-                <div className="rounded-2xl overflow-hidden size-14">
-                    <img src="https://images.unsplash.com/photo-1432139555190-58524dae6a55?q=80&w=2676&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="food" className="size-14 object-cover object-center" />
-                </div>
+                <Avatar className="size-14 rounded-2xl">
+                    <AvatarImage src={user?.business_logo} className="rounded-2xl" />
+                    <AvatarFallback className="sm:text-2xl">{user?.business_name?.split(" ")?.[0]?.at(0)}{user?.business_name?.split(" ")?.[1]?.at(0)}</AvatarFallback>
+                </Avatar>
                 <div className="grid gap-px">
-                    <span className="font-semibold text-base text-grey-dark-0">Jollof Rice Kitchen</span>
-                    <div className="flex items-center gap-2 text-sm text-grey-dark-2 [&>svg]:text-yellow-2"><IconStarFull /> 4.5</div>
+                    <span className="font-semibold text-base text-grey-dark-0">{user?.business_name}</span>
+                    <div className="flex items-center gap-2 text-sm text-grey-dark-2 [&>svg]:text-yellow-2"><IconStarFull /> {(user?.rating || 0).toFixed(1)}</div>
                 </div>
             </div>
             <Separator />
