@@ -68,12 +68,12 @@ export const CuisineCard = ({ cuisine, onView }: Props) => {
                     )
                 }
             </CardContent>
-            <div className="flex flex-col gap-3 px-3">
+            <div className="flex flex-col flex-1 gap-3 px-3">
                 <CardHeader className="px-0">
                     <CardTitle>{cuisine?.menu_name}</CardTitle>
                     <CardDescription className="line-clamp-4">{cuisine?.menu_content}</CardDescription>
                 </CardHeader>
-                <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-start flex-1 gap-3 flex-wrap">
                 {
                     items.map((item, index) => (
                         <div key={index} className="flex items-center gap-1 text-xs text-grey-dark-2 [&>svg]:size-3.5 [&>svg]:text-orange-2">

@@ -3,6 +3,7 @@ import { IconForkKnife, IconMapPinLine } from "../icons"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { useMemo } from "react"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 
 type Props = {
     cook: GetCooksResponse
@@ -21,12 +22,12 @@ export const CookCard = ({ cook }: Props) => {
         <Card className="group hover:ring-orange-2 hover:bg-orange-5 relative">
             <Link href={`/cooks/${cook.cook_id}`} className="absolute inset-0 w-full h-full" />
             <CardContent className="isolate">
-                <div className="relative rounded-xl overflow-hidden aspect-video bg-orange-1">
-                    {/* <Button variant="carousel" size="icon-xs" className="absolute top-2 right-2 z-10">
-                        <IconFavorite />
-                    </Button> */}
-                    {cook.business_logo && (<img src={cook.business_logo} alt={cook.business_name} className="object-cover h-full w-full" />)}
-                </div>
+                <Avatar className="rounded-xl overflow-hidden aspect-video bg-orange-1 h-auto w-full after:border-transparent">
+                    <AvatarImage src={cook.business_logo || undefined} alt={cook.business_name} className="rounded-xl object-cover" />
+                    <AvatarFallback className="rounded-xl text-3xl md:text-4xl lg:text-5xl">
+                        {cook.business_name.split(" ")?.[0]?.[0]}{cook.business_name.split(" ")?.[1]?.[0]}
+                    </AvatarFallback>
+                </Avatar>
             </CardContent>
             <div className="flex flex-col gap-3 px-3 flex-1">
                 <CardHeader className="px-0">

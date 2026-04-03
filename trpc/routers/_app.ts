@@ -8,8 +8,10 @@ import { accountRouter } from "./account";
 import { schedulesRouter } from "./schedules";
 import { subscriptionRouter } from "./subscription";
 import { baseProcedure, createTRPCRouter } from "../init";
+import { adsRouter } from "./ads";
 
 export const appRouter = createTRPCRouter({
+  ads: adsRouter,
   auth: authRouter,
   account: accountRouter,
   explore: exploreRouter,
