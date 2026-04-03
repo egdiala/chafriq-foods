@@ -1,81 +1,88 @@
 "use client"
 
+import { format } from "date-fns";
 import { IconDot } from "@/components/icons/icon-dot";
-import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Badge, badgeVariants } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table"
+import { ORDER_STATUS, ORDER_STATUS_CLASSES } from "../orders/order-card";
+import { VariantProps } from "class-variance-authority";
+import { dateToRender } from "@/lib/utils";
 
 
-type OrderStatus = "pending" | "completed";
-
-export type Order = {
-  id: string;
-  cuisine: string;
-  quantity: number;
-  unit: string;
-  orderedAt: string;
-  pickupAt: string;
-  amount: number;
-  currency: string;
-  status: OrderStatus;
-  image: string;
-};
-
-export const columns: ColumnDef<Order>[] = [
+export const columns: ColumnDef<GetVendorOrderResponse>[] = [
   {
-    accessorKey: "cuisine",
+    accessorKey: "menu_name",
     header: "Cuisine",
     cell: ({ row }) => {
-        const cuisine = row.getValue("cuisine") as Order["cuisine"];
+        const image = row.original.menu_img
+        const cuisine = row.getValue("menu_name") as GetVendorOrderResponse["menu_name"];
         return (
-            <div className="flex items-center gap-1.5">
-                <div className="rounded-full overflow-hidden size-7!">
-                    <img
-                        src="https://images.unsplash.com/photo-1432139555190-58524dae6a55?q=80&w=2676&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="food"
-                        className="size-7 object-cover object-center"
-                    />
-                </div>
-                <span className="flex-1 line-clamp-1 text-ellipsis">{cuisine}</span>
-            </div>
+          <div className="flex items-center gap-1.5">
+            <Avatar className="size-7">
+              <AvatarImage src={image} alt="food" className="size-7 object-cover object-center" />
+            </Avatar>
+            <span className="flex-1 line-clamp-1 text-ellipsis">{cuisine}</span>
+          </div>
         )
     }
   },
   {
-    accessorKey: "quantity",
+    accessorKey: "quantity_size",
     header: "Quantity",
     cell: ({ row }) => {
-        const quantity = row.getValue("quantity") as Order["quantity"];
+        const quantity = row.getValue("quantity_size") as GetVendorOrderResponse["quantity_size"];
+        const unit = row.original.quantity_unit
         return (
-            <span className="flex-1 line-clamp-1 text-ellipsis">{quantity} plates</span>
+          <span className="flex-1 line-clamp-1 text-ellipsis">{quantity} {unit}{quantity === 1 ? "" : "s"}</span>
         )
     }
   },
   {
-    accessorKey: "orderedAt",
+    accessorKey: "createdAt",
     header: "Ordered Date",
+    cell: ({ row }) => {
+        const createdAt = row.getValue("createdAt") as GetVendorOrderResponse["createdAt"];
+        const date = dateToRender(createdAt as Date)
+        return (
+          <span className="flex-1 line-clamp-1 text-ellipsis">
+            {date} • {format(createdAt, "hh:mmaaa")}
+          </span>
+        )
+    }
   },
   {
-    accessorKey: "pickupAt",
+    accessorKey: "order_end_date",
     header: "Pickup Date",
+    cell: ({ row }) => {
+        const endDate = row.getValue("order_end_date") as GetVendorOrderResponse["order_end_date"];
+        const date = dateToRender(endDate as Date)
+        return (
+          <span className="flex-1 line-clamp-1 text-ellipsis">{date} • {format(endDate, "hh:mmaaa")}</span>
+        )
+    }
   },
   {
-    accessorKey: "amount",
+    accessorKey: "amount_total",
     header: "Amount",
     cell: ({ row }) => {
-        const amount = row.getValue("amount") as Order["amount"];
-        const currency = row.original.currency
+        const amount = row.getValue("amount_total") as GetVendorOrderResponse["amount_total"];
         return (
-            <span className="flex-1 line-clamp-1 text-ellipsis">{Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount)}</span>
+          <span className="flex-1 line-clamp-1 text-ellipsis">
+            {Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format(amount || 0)}
+          </span>
         )
     }
   },
   {
-    accessorKey: "status",
+    accessorKey: "order_status",
     header: "Status",
     cell: ({ row }) => {
-        const status = row.getValue("status") as Order["status"];
+        const status = row.getValue("order_status") as GetVendorOrderResponse["order_status"];
         return (
-            <Badge variant={status} className="[&>svg]:size-1.5!"><IconDot />{status}</Badge>
+            <Badge variant={ORDER_STATUS_CLASSES[status] as unknown as VariantProps<typeof badgeVariants>["variant"]} className="[&>svg]:size-1.5!">
+                <IconDot /> {ORDER_STATUS[status]}
+            </Badge>
         )
     }
   }

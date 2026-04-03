@@ -540,8 +540,10 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                                         field.handleChange(!!value)
                                                         if (value) {
                                                             vendorPersonalInfoForm.setFieldValue("business_address_id", (defaultValue as SearchLocationsResponse)?.name)
+                                                            setBusinessValue(defaultValue)
                                                         } else {
                                                             vendorPersonalInfoForm.setFieldValue("business_address_id", "")
+                                                            setBusinessValue(null)
                                                         }
                                                     }}
                                                     aria-label="Same as home address"

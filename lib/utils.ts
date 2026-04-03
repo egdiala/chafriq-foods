@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from "clsx"
-import { format, formatDuration, intervalToDuration, set } from "date-fns";
+import { format, formatDuration, intervalToDuration, isToday, isYesterday, set } from "date-fns";
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -106,4 +106,20 @@ export const formatHours = (hours: number) => {
   return formatDuration(duration, {
     format: ["hours", "minutes", "seconds"],
   });
+};
+
+export const normalizeTimelineDate = (dateString: string) => {
+  const [year, month, day] = dateString.slice(0, 10).split("-").map(Number);
+
+  return new Date(year, month - 1, day);
+};
+
+export const dateToRender = (value?: Date) => {
+  if (!value) return "";
+
+  const normalized = normalizeTimelineDate((value).toString());
+
+  if (isToday(normalized)) return "Today";
+  if (isYesterday(normalized)) return "Yesterday";
+  return format(normalized, "do MMM, yyyy");
 };
