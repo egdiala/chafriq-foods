@@ -47,10 +47,14 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
     const [searchValue, setSearchValue] = useState('');
     const trimmedSearchValue = searchValue.trim();
 
+    const [searchBusinessValue, setSearchBusinessValue] = useState('');
+    const trimmedBusinessValue = searchBusinessValue.trim();
+
     const abortControllerRef = useRef<AbortController | null>(null);
 
     const { data, isLoading, error } = useSearchLocations({ q: searchValue, country: "au" })
     const [defaultValue, setDefaultValue] = useState<SearchLocationsResponse | null>(null);
+    const [businessValue, setBusinessValue] = useState<SearchLocationsResponse | null>(null);
 
     const states = useMemo(() => {
         return countryList?.data?.[0]?.states?.filter((item) => item.type === "state") || []
@@ -83,7 +87,7 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
             if (isRegistering) return;
             const { business_address_id, is_home_address, home_address, phone_number, ...rest } = value
             mutate({
-                business_address_id: is_home_address ? defaultValue?.id as string : business_address_id,
+                business_address_id: is_home_address ? defaultValue?.id as string : businessValue?.id as string,
                 home_address: defaultValue?.name as string,
                 is_home_address,
                 phone_number: phone_number?.replace(/^\+/, ""),
@@ -107,7 +111,7 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
             return <Fragment>An error occurred</Fragment>;
         }
 
-        if (trimmedSearchValue === '') {
+        if ((trimmedSearchValue === '') || (trimmedBusinessValue === '')) {
             return selectedValue ? null : 'Start typing to search…';
         }
 
@@ -466,16 +470,58 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                     return (
                                         <Field data-invalid={isInvalid}>
                                             <FieldLabel htmlFor={field.name}>Business location (This would be shown to customers) </FieldLabel>
-                                            <Input
+                                            <Combobox
+                                                filter={null}
+                                                items={data?.data || []}
+                                                value={businessValue}
+                                                autoHighlight
+                                                readOnly={isHomeAddress}
+                                                itemToStringLabel={(address: SearchLocationsResponse) => address.name}
+                                                onValueChange={(value) => {
+                                                    setBusinessValue(value);
+                                                    setSearchBusinessValue('');
+                                                }}
+                                                onInputValueChange={(nextSearchValue, { reason }) => {
+                                                    setSearchBusinessValue(nextSearchValue);
+
+                                                    const controller = new AbortController();
+                                                    abortControllerRef.current?.abort();
+                                                    abortControllerRef.current = controller;
+
+                                                    if (nextSearchValue === '') {
+                                                        return;
+                                                    }
+
+                                                    if (reason === 'item-press') {
+                                                        return;
+                                                    }
+
+                                                    if (controller.signal.aborted) {
+                                                        return;
+                                                    }
+                                                }}
+                                            >
+                                            <ComboboxInput 
                                                 type="text"
                                                 id={field.name}
-                                                name={field.name}
-                                                aria-invalid={isInvalid}
-                                                value={field.state.value ?? ""}
-                                                onBlur={field.handleBlur}
-                                                readOnly={isHomeAddress}
+                                                name={field.name} 
+                                                aria-invalid={isInvalid}  
+                                                onBlur={field.handleBlur} 
+                                                placeholder="Search address..."
                                                 onChange={(e) => field.handleChange(e.target.value)}
                                             />
+                                            <ComboboxContent>
+                                                <ComboboxStatus>{getStatus()}</ComboboxStatus>
+                                                {/* <ComboboxEmpty>{getEmptyMessage()}</ComboboxEmpty> */}
+                                                <ComboboxList>
+                                                {(address) => (
+                                                    <ComboboxItem key={address.id} value={address}>
+                                                    {address.name}
+                                                    </ComboboxItem>
+                                                )}
+                                                </ComboboxList>
+                                            </ComboboxContent>
+                                            </Combobox>
                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                         </Field>
                                     )
