@@ -36,17 +36,22 @@ export const useAuth = () => {
             access_token: data.token as string,
             user_type: userType,
         })
-
+        console.log("🔥🔥🔥🔥🔥", "credentials set")
         const [profile] = await Promise.all([
             userType === "customer" ? queryClient.fetchQuery(trpc.account.customer.getProfile.queryOptions()) : queryClient.fetchQuery(trpc.account.vendor.getProfile.queryOptions()),
         ]);
+        console.log("🔥🔥🔥🔥🔥", "profile fetch initiated")
 
         if ((profile as { status: string; data: VendorProfileResponse | CustomerProfileResponse }).status === "ok") {
+            console.log("🔥🔥🔥🔥🔥", "profile fetched")
             updateUser(profile.data)
             updateType(userType)
+            console.log("🔥🔥🔥🔥🔥", "profile updated")
         }
 
+        console.log("🔥🔥🔥🔥🔥", `about to route /${userType}`)
         router.push(`/${userType}`)
+        console.log("🔥🔥🔥🔥🔥", `routed to /${userType}`)
     }
 
     return { logout: logoutUser, handleLogin, handleLogout }

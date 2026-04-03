@@ -80,7 +80,7 @@ export const columns: ColumnDef<GetVendorOrderResponse>[] = [
     cell: ({ row }) => {
         const status = row.getValue("order_status") as GetVendorOrderResponse["order_status"];
         return (
-            <Badge variant={ORDER_STATUS_CLASSES[status] as unknown as VariantProps<typeof badgeVariants>["variant"]} className="[&>svg]:size-1.5!">
+            <Badge variant={ORDER_STATUS_CLASSES[status] as unknown as VariantProps<typeof badgeVariants>["variant"]} className="capitalize [&>svg]:size-1.5!">
                 <IconDot /> {ORDER_STATUS[status]}
             </Badge>
         )

@@ -30,7 +30,7 @@ interface GetVendorOrderResponse {
     menu_img: string;
 }
 
-type OrderStatus = 1 | 2 | 3 | 4;
+type OrderStatus = 1 | 2 | 3 | 4 | 5;
 
 interface GetOrderStatusCountResponse {
     total_count: number;

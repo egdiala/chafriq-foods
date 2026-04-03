@@ -46,9 +46,9 @@ export const TopCards = ({ className }: Props) => {
         <>
         {
             isLoading ? (
-                <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(280px,420px))]">
+                <div className={cn("grid gap-4", className)} style={{ gridTemplateColumns: "repeat(auto-fill, minmax(164px, 1fr))" }}>
                 {
-                    Array.from({ length: 6 }).map((_, index) => (
+                    Array.from({ length: 5 }).map((_, index) => (
                         <div key={index}>
                             <Skeleton className="h-17" />
                         </div>
