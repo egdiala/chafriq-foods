@@ -4,7 +4,7 @@ import { useUser } from "@/context/use-user";
 import { ProfileTabContent } from "./profile-tab-content";
 import { SubscriptionTabContent } from "./subscription-tab-content";
 import { IconCheckmark, IconPencilSimple } from "@/components/icons";
-import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUploadVendorAvatar } from "@/services/mutations/use-account";
 import { useRef, useState } from "react";

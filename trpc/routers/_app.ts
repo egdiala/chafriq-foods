@@ -1,12 +1,13 @@
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
-import { baseProcedure, createTRPCRouter } from "../init";
 import { authRouter } from "./auth";
+import { menuRouter } from "./menu";
+import { ordersRouter } from "./orders";
 import { exploreRouter } from "./explore";
 import { accountRouter } from "./account";
 import { schedulesRouter } from "./schedules";
-import { menuRouter } from "./menu";
-import { ordersRouter } from "./orders";
+import { subscriptionRouter } from "./subscription";
+import { baseProcedure, createTRPCRouter } from "../init";
 
 export const appRouter = createTRPCRouter({
   auth: authRouter,
@@ -15,6 +16,7 @@ export const appRouter = createTRPCRouter({
   menu: menuRouter,
   orders: ordersRouter,
   schedules: schedulesRouter,
+  subscription: subscriptionRouter,
   hello: baseProcedure.query(() => {
     return {
       message: "Hello, world!",
