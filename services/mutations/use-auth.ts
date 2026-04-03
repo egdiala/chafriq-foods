@@ -27,14 +27,10 @@ export const useLoginVendor = (fn?: (value: unknown) => void) => {
     return useMutation(
         trpc.auth.vendor.login.mutationOptions({
             onSuccess: (data) => {
-                console.log("🔥🔥🔥🔥🔥", "logged in")
                 if (data.status === "ok") {
-                    console.log("🔥🔥🔥🔥🔥", "processing")
                     handleLogin(data.data, "vendor")
                     fn?.(data);
-                    console.log("🔥🔥🔥🔥🔥", "executed")
                     toast.success("Login successful")
-                    console.log("🔥🔥🔥🔥🔥", "toasted")
                 }
             },
             onError: (error) => {
