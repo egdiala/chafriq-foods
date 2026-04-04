@@ -103,7 +103,7 @@ const TopCards = () => {
         ]
     }, [activePlan])
 
-    if (!user?.plan_data) {
+    if (!user?.plan_data?.plansub_id) {
         return null
     }
 
