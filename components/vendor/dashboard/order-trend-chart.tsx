@@ -3,24 +3,17 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { IconFilter } from "@/components/icons"
+import { useReports } from "@/services/queries/use-reports"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useMemo, useState } from "react"
+import { buildChartData, generateYears } from "@/lib/chart"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { getYear } from "date-fns"
 
-const chartData = [
-  { month: "January", desktop: 73 },
-  { month: "February", desktop: 73 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 186 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-  { month: "July", desktop: 186 },
-  { month: "August", desktop: 214 },
-  { month: "September", desktop: 209 },
-  { month: "October", desktop: 305 },
-  { month: "November", desktop: 237 },
-  { month: "December", desktop: 305 },
-]
+const years = generateYears(2000);
 
 const chartConfig = {
   desktop: {
@@ -34,12 +27,43 @@ type Props = {
 }
 
 export const OrderTrendChart = ({ className }: Props) => {
+    const [selectedYear, setSelectedYear] = useState(getYear(new Date()));
+    const { data, isLoading } = useReports({ timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, year: selectedYear.toString() })
+
+    const chartData = useMemo(() => {
+        return buildChartData((data?.data as ReportsStatisticsResponse)?.order_trend || [])
+    },[data?.data])
+
+    if (isLoading) {
+        return (
+            <Skeleton className={cn("h-56", className)} />
+        )
+    }
     return (
         <Card className={cn("py-4", className)}>
             <CardHeader className="px-4">
                 <div className="flex items-center justify-between">
                     <CardTitle>Order Trend</CardTitle>
-                    <Button variant="secondary" size="icon-sm"><IconFilter /></Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="secondary" size="icon-sm">
+                                <IconFilter />
+                            </Button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent className="min-w-20 max-h-96 bg-white" align="end">
+                            {years.map((year) => (
+                            <DropdownMenuItem
+                                key={year}
+                                onClick={() => setSelectedYear(year)}
+                                className={cn(selectedYear === year ? "bg-accent font-medium" : "")}
+                            >
+                                {year}
+                            </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    
                 </div>
             </CardHeader>
             <CardContent className="px-4">
@@ -50,6 +74,7 @@ export const OrderTrendChart = ({ className }: Props) => {
                         margin={{
                             left: 12,
                             right: 12,
+                            top: 10
                         }}
                     >
                         <CartesianGrid horizontal={false} vertical={false} />
@@ -79,8 +104,9 @@ export const OrderTrendChart = ({ className }: Props) => {
                             </linearGradient>
                         </defs>
                         <Area
-                            dataKey="desktop"
-                            type="natural"
+                            dataKey="total_count"
+                            name="Total count"
+                            type="monotone"
                             fill="url(#fillDesktop)"
                             fillOpacity={0.13}
                             stroke="var(--color-desktop)"

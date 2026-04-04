@@ -18,7 +18,7 @@ export const PlanCard = ({ className }: Props) => {
     const { user: userObj } = useUser()
     const user = userObj as VendorProfileResponse;
     
-    const { data, isLoading } = useGetSubscription({ request_type: "2", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
+    const { data } = useGetSubscription({ request_type: "2", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
 
     const freePlan = (data?.data as SubscriptionSetupResponse[])?.find((plan) => plan.monthly_cost === 0)
     return (
