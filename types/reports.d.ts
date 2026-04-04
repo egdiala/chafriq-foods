@@ -20,6 +20,8 @@ interface ReportsStatisticsResponse {
     top_meals: {
         menu_name: string;
         total_count: number;
+        file_url: string;
+        menu_id: string;
     }[];
     fulfillment: {
         completed_pct: number;
