@@ -28,7 +28,7 @@ export const Header = () => {
                         }
                     </Link>
                     <div className="flex items-center justify-end gap-5">
-                        <Button type="button" size="icon-big" variant={isWhite ? "secondary-dark" : "secondary"}>
+                        <Button type="button" size={type === null ? "icon-big" : "icon-lg"} variant={isWhite ? "secondary-dark" : "secondary"}>
                             <IconShoppingCart />
                         </Button>
                         <div className="md:flex items-center gap-5 hidden">
