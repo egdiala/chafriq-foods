@@ -21,7 +21,7 @@ export type ConfirmOtpType = {
 }
 
 export const vendorAuthRouter = createTRPCRouter({
-    register: baseProcedure.input(registerVendorFormSchema).mutation(async ({ input }): Promise<RegisterApiResponse> => {
+    register: baseProcedure.input(registerVendorFormSchema).mutation(async ({ input }): Promise<{ status: string; data: RegisterApiResponse | { otp_code: string; }}> => {
         try {
             const { terms, is_home_address, ...payload } = input
             const response = await api.post("cooks/auths/register", payload);

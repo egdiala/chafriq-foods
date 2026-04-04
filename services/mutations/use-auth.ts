@@ -9,7 +9,7 @@ export const useRegisterVendor = (fn?: (value: unknown) => void) => {
     return useMutation(
         trpc.auth.vendor.register.mutationOptions({
             onSuccess: (data) => {
-                if (data.id) {
+                if (data.status === "ok") {
                     fn?.(data);
                     toast.success("Account created")
                 }
