@@ -53,6 +53,7 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
     const abortControllerRef = useRef<AbortController | null>(null);
 
     const { data, isLoading, error } = useSearchLocations({ q: searchValue, country: "au" })
+    const { data: businessLocations, isLoading: isLoadingBusinessLocations, error: businessLocationsError } = useSearchLocations({ q: searchBusinessValue, country: "au" })
     const [defaultValue, setDefaultValue] = useState<SearchLocationsResponse | null>(null);
     const [businessValue, setBusinessValue] = useState<SearchLocationsResponse | null>(null);
 
@@ -111,11 +112,33 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
             return <Fragment>An error occurred</Fragment>;
         }
 
-        if ((trimmedSearchValue === '') || (trimmedBusinessValue === '')) {
+        if (trimmedSearchValue === '') {
             return selectedValue ? null : 'Start typing to search…';
         }
 
         if (data?.data.length === 0) {
+            return `No matches for "${trimmedSearchValue}".`;
+        }
+
+        return null;
+    }
+
+    function getBusinessStatus() {
+        if (isLoadingBusinessLocations) {
+            return (
+                <Fragment><Spinner />Searching…</Fragment>
+            );
+        }
+
+        if (businessLocationsError) {
+            return <Fragment>An error occurred</Fragment>;
+        }
+
+        if (trimmedBusinessValue === '') {
+            return selectedValue ? null : 'Start typing to search…';
+        }
+
+        if (businessLocations?.data.length === 0) {
             return `No matches for "${trimmedSearchValue}".`;
         }
 
@@ -511,7 +534,7 @@ const PersonalInformation = ({ nextStep }: { nextStep: () => void; }) => {
                                                 onChange={(e) => field.handleChange(e.target.value)}
                                             />
                                             <ComboboxContent>
-                                                <ComboboxStatus>{getStatus()}</ComboboxStatus>
+                                                <ComboboxStatus>{getBusinessStatus()}</ComboboxStatus>
                                                 {/* <ComboboxEmpty>{getEmptyMessage()}</ComboboxEmpty> */}
                                                 <ComboboxList>
                                                 {(address) => (
