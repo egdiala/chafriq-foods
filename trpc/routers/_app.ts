@@ -9,6 +9,7 @@ import { schedulesRouter } from "./schedules";
 import { subscriptionRouter } from "./subscription";
 import { baseProcedure, createTRPCRouter } from "../init";
 import { adsRouter } from "./ads";
+import { reportsRouter } from "./reporting";
 
 export const appRouter = createTRPCRouter({
   ads: adsRouter,
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   explore: exploreRouter,
   menu: menuRouter,
   orders: ordersRouter,
+  reports: reportsRouter,
   schedules: schedulesRouter,
   subscription: subscriptionRouter,
   hello: baseProcedure.query(() => {

@@ -29,9 +29,11 @@ export * from "./icon-globe";
 export * from "./icon-ham-menu";
 export * from "./icon-headset";
 export * from "./icon-map-pin-line";
+export * from "./icon-package"
 export * from "./icon-path";
 export * from "./icon-pencil-simple";
 export * from "./icon-phone";
+export * from "./icon-repeat";
 export * from "./icon-rss-simple";
 export * from "./icon-setup";
 export * from "./icon-shopping-cart";

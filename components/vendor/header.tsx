@@ -13,7 +13,7 @@ export const VendorHeader = () => {
         { icon: <IconChartLine />, text: "Dashboard", href: "/vendor" },
         { icon: <IconBowlSteam />, text: "Orders", href: "/vendor/orders" },
         { icon: <IconStorefront />, text: "Storefront", href: "/vendor/storefront" },
-        { icon: <IconChartBar />, text: "Reporting", href: "/vendor/report" },
+        { icon: <IconChartBar />, text: "Reporting", href: "/vendor/reporting" },
     ]
     return (
         <nav className="lg:rounded-3xl bg-white lg:border-b-0 border-b border-b-outline">
