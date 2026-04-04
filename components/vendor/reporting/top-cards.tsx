@@ -11,7 +11,7 @@ type Props = {
 }
 
 export const TopCards = ({ className }: Props) => {
-    const { data, isLoading } = useReports({ timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
+    const { data, isLoading } = useReports({ request_type: "1", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
     const reportStats = data?.data as ReportsStatisticsResponse;
 
     const cards = useMemo(() => {

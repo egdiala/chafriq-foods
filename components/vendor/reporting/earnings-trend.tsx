@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button"
 import { IconFilter } from "@/components/icons"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useReports } from "@/services/queries/use-reports"
-import { buildChartData, generateYears } from "@/lib/chart"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { buildEarningsData, generateYears } from "@/lib/chart"
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -26,12 +26,12 @@ type Props = {
     className?: string;
 }
 
-export const OrderTrendChart = ({ className }: Props) => {
+export const EarningsTrendChart = ({ className }: Props) => {
     const [selectedYear, setSelectedYear] = useState(getYear(new Date()));
-    const { data, isLoading } = useReports({ request_type: "2", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, year: selectedYear.toString() })
+    const { data, isLoading } = useReports({ request_type: "3", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, year: selectedYear.toString() })
 
     const chartData = useMemo(() => {
-        return buildChartData((data?.data as ReportsStatisticsResponse)?.order_trend || [])
+        return buildEarningsData((data?.data as ReportsStatisticsResponse)?.earnings_trend || [])
     },[data?.data])
 
     if (isLoading) {
@@ -43,7 +43,7 @@ export const OrderTrendChart = ({ className }: Props) => {
         <Card className={cn("py-4", className)}>
             <CardHeader className="px-4">
                 <div className="flex items-center justify-between">
-                    <CardTitle>Order Trend</CardTitle>
+                    <CardTitle>Earnings Trend</CardTitle>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="secondary" size="icon-sm">
@@ -67,16 +67,11 @@ export const OrderTrendChart = ({ className }: Props) => {
             </CardHeader>
             <CardContent className="px-4">
                 <ChartContainer config={chartConfig} className="w-full max-h-56">
-                    <AreaChart
+                    <BarChart
                         accessibilityLayer
                         data={chartData}
-                        margin={{
-                            left: 12,
-                            right: 12,
-                            top: 10
-                        }}
                     >
-                        <CartesianGrid horizontal={false} vertical={false} />
+                        <CartesianGrid vertical={false} />
                         <XAxis
                             dataKey="month"
                             tickLine={false}
@@ -88,36 +83,14 @@ export const OrderTrendChart = ({ className }: Props) => {
                             cursor={false}
                             content={<ChartTooltipContent indicator="line" />}
                         />
-                        <defs>
-                            <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-                                <stop
-                                offset="5%"
-                                stopColor="var(--color-desktop)"
-                                stopOpacity={0.8}
-                                />
-                                <stop
-                                offset="95%"
-                                stopColor="var(--color-desktop)"
-                                stopOpacity={0.1}
-                                />
-                            </linearGradient>
-                        </defs>
-                        <Area
+                        <Bar
                             dataKey="total_count"
-                            name="Total count"
-                            type="monotone"
-                            fill="url(#fillDesktop)"
-                            fillOpacity={0.13}
-                            stroke="var(--color-desktop)"
-                            strokeWidth={1.5}
-                            activeDot={{
-                                r: 4,
-                                fill: "var(--color-orange-2)",
-                                stroke: "var(--color-white)",
-                                strokeWidth: 2,
-                            }}
+                            name="Total earnings"
+                            fill="var(--color-desktop)"
+                            radius={0}
+                            barSize={4}
                         />
-                    </AreaChart>
+                    </BarChart>
                 </ChartContainer>
             </CardContent>
         </Card>

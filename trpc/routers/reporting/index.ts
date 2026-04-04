@@ -4,7 +4,7 @@ import { api, handleErrorMessage } from "@/trpc/helper";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { getVendorReportsSchema } from "@/validations/reporting";
 
-type ReportsRes = ReportsStatisticsResponse;
+type ReportsRes = ReportsStatisticsResponse | ReportsStatisticsResponse["order_trend"] | ReportsStatisticsResponse["kpi"];
 
 export const reportsRouter = createTRPCRouter({
     getReports: protectedProcedure.input(getVendorReportsSchema).query(async ({ ctx, input }): Promise<{ status: string; data: ReportsRes }> => {
