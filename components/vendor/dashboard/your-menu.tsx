@@ -2,6 +2,7 @@
 
 import { IconBowlFood } from "@/components/icons";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useGetMenuList } from "@/services/queries/use-menu";
@@ -53,12 +54,13 @@ export const YourMenu = ({ className }: Props) => {
                     }
                     </>
                 ) : (
-                    <div className="flex flex-col items-center w-full max-w-md text-center mx-auto py-24">
+                    <div className="flex flex-col items-center w-full max-w-md text-center mx-auto py-12">
                         <div className="bg-orange-5 rounded-full grid place-content-center size-9 inset-ring-1 inset-ring-orange-2/50 mb-4">
                             <IconBowlFood className="size-4.5 text-orange-2" />
                         </div>
                         <span className="text-grey-dark-0 text-base font-semibold">Ready to start selling?</span>
                         <p className="text-grey-dark-2 text-sm font-normal">Add your first cuisine to create your menu and let customers discover what you cook best.</p>
+                        <Button size="default" className="mt-4" asChild><Link href="/vendor/storefront/add">Add Cuisine</Link></Button>
                     </div>
                 )
             }

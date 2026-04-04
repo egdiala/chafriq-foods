@@ -1,21 +1,23 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import { useQueryState } from "nuqs";
+import { useRef, useState } from "react";
 import { useUser } from "@/context/use-user";
+import { Spinner } from "@/components/ui/spinner";
 import { ProfileTabContent } from "./profile-tab-content";
 import { SubscriptionTabContent } from "./subscription-tab-content";
 import { IconCheckmark, IconPencilSimple } from "@/components/icons";
+import { useUploadVendorAvatar } from "@/services/mutations/use-account";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useUploadVendorAvatar } from "@/services/mutations/use-account";
-import { useRef, useState } from "react";
-import { Spinner } from "@/components/ui/spinner";
-import { cn } from "@/lib/utils";
 
 export const VendorProfileContent = () => {
+    const [tab, setOrderId] = useQueryState('tab')
     return (
         <div className="flex flex-col gap-8">
             <ProfileCard />
-            <Tabs defaultValue="profile">
+            <Tabs defaultValue={tab || "profile"} onValueChange={setOrderId}>
                 <TabsList>
                     <TabsTrigger value="profile">Profile</TabsTrigger>
                     <TabsTrigger value="subscription">Subscription</TabsTrigger>

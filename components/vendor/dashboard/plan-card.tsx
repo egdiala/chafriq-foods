@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/context/use-user";
 import { cn } from "@/lib/utils";
+import { useGetSubscription } from "@/services/queries/use-subscription";
 import { format } from "date-fns";
+import Link from "next/link";
 
 type Props = {
     className?: string;
@@ -15,6 +17,10 @@ type Props = {
 export const PlanCard = ({ className }: Props) => {
     const { user: userObj } = useUser()
     const user = userObj as VendorProfileResponse;
+    
+    const { data, isLoading } = useGetSubscription({ request_type: "2", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
+
+    const freePlan = (data?.data as SubscriptionSetupResponse[])?.find((plan) => plan.monthly_cost === 0)
     return (
         <div className={cn("flex flex-col gap-3 p-5 rounded-2xl inset-ring-1 inset-ring-outline", className)}>
             <div className="flex items-center gap-3">
@@ -27,23 +33,23 @@ export const PlanCard = ({ className }: Props) => {
                     <div className="flex items-center gap-2 text-sm text-grey-dark-2 [&>svg]:text-yellow-2"><IconStarFull /> {(user?.rating || 0).toFixed(1)}</div>
                 </div>
             </div>
-            {
-                user?.plan_data && (
-                    <>
-                        <Separator />
-                        <div className="flex items-center gap-3">
-                            <div className="grid gap-px flex-1">
-                                <span className="font-semibold text-base text-grey-dark-0">{user?.plan_data?.plan_name}</span>
-                                <p className="text-xs text-grey-dark-3">Expiry: {format(user?.plan_data?.expiry_date as Date, "do MMM, yyyy")}</p>
-                            </div>
-                            <Button size="sm" variant="secondary" className="font-medium h-8.5">
+            <Separator />
+            <div className="flex items-center gap-3">
+                <div className="grid gap-px flex-1">
+                    <span className="font-semibold text-base text-grey-dark-0">{user?.plan_data?.plan_name || freePlan?.plan_name}</span>
+                    {user?.plan_data?.expiry_date && (<p className="text-xs text-grey-dark-3">Expiry: {format(user?.plan_data?.expiry_date as Date, "do MMM, yyyy")}</p>)}
+                </div>
+                {
+                    !user?.plan_data?.plansub_id && (
+                        <Button size="sm" variant="secondary" className="font-medium h-8.5" asChild>
+                            <Link href="/vendor/profile?tab=subscription">
                                 <IconTrendingUp />
                                 Upgrade Now
-                            </Button>
-                        </div>
-                    </>
-                )
-            }
+                            </Link>
+                        </Button>
+                    )
+                }
+            </div>
         </div>
     )
 }
