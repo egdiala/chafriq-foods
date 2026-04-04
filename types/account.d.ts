@@ -41,6 +41,13 @@ interface VendorProfileResponse {
         dish_type_id: string;
     }[]
     cook_id: string;
+    plan_data?: {
+        plansub_id: string;
+        status: number;
+        plan_name: string;
+        plansetup_id: string;
+        expiry_date: Date | string;
+    }
 }
 
 interface CustomerProfileResponse {

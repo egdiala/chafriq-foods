@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Logout } from "./logout";
 import { useUser } from "@/context/use-user";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { IconArrowDown, IconChefHat, IconCurrencyDollar, IconHeadset, IconSignOut, IconUser } from "../icons";
+import { IconArrowDown, IconChefHat, IconHeadset, IconSignOut, IconUser } from "../icons";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 export const VendorProfileDropdown = () => {
@@ -44,12 +44,12 @@ export const VendorProfileDropdown = () => {
                             View Profile
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="[&>svg]:text-orange-2 not-data-[variant=destructive]:focus:**:text-orange-2!" asChild>
+                    {/* <DropdownMenuItem className="[&>svg]:text-orange-2 not-data-[variant=destructive]:focus:**:text-orange-2!" asChild>
                         <Link href="/vendor/payout">
                             <IconCurrencyDollar />
                             Payout
                         </Link>
-                    </DropdownMenuItem>
+                    </DropdownMenuItem> */}
                     <DropdownMenuItem className="[&>svg]:text-orange-2 not-data-[variant=destructive]:focus:**:text-orange-2!">
                         <IconHeadset />
                         Support

@@ -1,74 +1,33 @@
 import { cn } from "@/lib/utils"
-import { useState } from "react"
+import { format } from "date-fns"
+import { useMemo, useState } from "react"
+import { useUser } from "@/context/use-user"
+import { CheckoutForm } from "./checkout-form"
+import { loadStripe } from "@stripe/stripe-js"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
+import { Spinner } from "@/components/ui/spinner"
 import { DataTable } from "@/components/data-table"
 import { Skeleton } from "@/components/ui/skeleton"
+import { columns } from "./billing-history-columns"
+import { StripeElementWrapper } from "./stripe-element-wrapper"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
-import { type BillingHistory, columns } from "./billing-history-columns"
 import { useGetSubscription } from "@/services/queries/use-subscription"
+import { useInitSubscription } from "@/services/mutations/use-subscription"
 import { IconCalendar, IconCurrencyDollar, IconDot } from "@/components/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 
-export const billingHistory: BillingHistory[] = [
-  {
-    id: "LMNOP9876543",
-    date: "2025-08-15",
-    description: "Payout",
-    amount: 250,
-    status: "paid",
-  },
-  {
-    id: "ABCDEF123456",
-    date: "2025-08-18",
-    description: "Payout",
-    amount: 75,
-    status: "pending",
-  },
-  {
-    id: "GHIJKL987654",
-    date: "2025-08-20",
-    description: "Refund Processed",
-    amount: 200,
-    status: "pending",
-  },
-  {
-    id: "QRSTUV123456",
-    date: "2025-08-25",
-    description: "Payout",
-    amount: 500,
-    status: "pending",
-  },
-  {
-    id: "MNPQRST789012",
-    date: "2025-08-30",
-    description: "Payout",
-    amount: 300,
-    status: "pending",
-  },
-  {
-    id: "UVWXY1234567",
-    date: "2025-09-05",
-    description: "Payout",
-    amount: 100,
-    status: "pending",
-  },
-  {
-    id: "XYZ12345678",
-    date: "2025-08-01",
-    description: "Payout",
-    amount: 150,
-    status: "pending",
-  },
-];
 
 export const SubscriptionTabContent = () => {
+    const { data } = useGetSubscription({ request_type: "1", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
+    const { data: count } = useGetSubscription({ request_type: "1", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, component: "count" })
+
     const table = useReactTable({
-        data: billingHistory,
+        data: (data?.data || []) as SubscriptionPlanResponse[],
         columns,
         getCoreRowModel: getCoreRowModel(),
-        getRowId: row => row.id,
+        getRowId: row => row.plansub_id,
     })
     return (
         <>
@@ -98,20 +57,13 @@ export const SubscriptionTabContent = () => {
                                 <PaginationItem>
                                     <PaginationPrevious href="#" />
                                 </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">1</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#" isActive>
-                                        2
-                                    </PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">3</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
+                                {
+                                    Array.from({ length: (count?.data as SubscriptionPlanCountResponse)?.total }).map((_, index) => (
+                                        <PaginationItem key={index}>
+                                            <PaginationLink href="#">{index+1}</PaginationLink>
+                                        </PaginationItem>
+                                    ))
+                                }
                                 <PaginationItem>
                                     <PaginationNext href="#" />
                                 </PaginationItem>
@@ -125,25 +77,36 @@ export const SubscriptionTabContent = () => {
 }
 
 const TopCards = () => {
-    const { data, isLoading } = useGetSubscription({ request_type: "1", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, component: "count" })
+    const { user: userObj } = useUser()
+
+    const user = userObj as VendorProfileResponse;
+    const { data, isLoading } = useGetSubscription({ request_type: "1", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
     
-    const topCards = [
-        {
-            title: "Plan",
-            description: "Plan 1",
-            icon: <IconCurrencyDollar />
-        },
-        {
-            title: "Last Payment Date",
-            description: "12th Dec, 2024",
-            icon: <IconCalendar />
-        },
-        {
-            title: "Expiry Date",
-            description: "12th Jan, 2025",
-            icon: <IconCalendar />
-        },
-    ]
+    const activePlan = (data?.data as unknown as SubscriptionPlanResponse[])
+    const topCards = useMemo(() => {
+        return [
+            {
+                title: "Plan",
+                description: activePlan?.[0]?.plan_name || "",
+                icon: <IconCurrencyDollar />
+            },
+            {
+                title: "Last Payment Date",
+                description: activePlan?.[0]?.start_date ? format(activePlan?.[0]?.start_date, "do MMM, yyyy") : "",
+                icon: <IconCalendar />
+            },
+            {
+                title: "Expiry Date",
+                description: activePlan?.[0]?.expiry_date ? format(activePlan?.[0]?.expiry_date, "do MMM, yyyy") : "",
+                icon: <IconCalendar />
+            },
+        ]
+    }, [activePlan])
+
+    if (!user?.plan_data) {
+        return null
+    }
+
     return (
         <>
         {
@@ -180,7 +143,11 @@ const TopCards = () => {
 }
 
 const PlanCards = () => {
+    const { user: userObj } = useUser()
+
+    const user = userObj as VendorProfileResponse;
     const [isYearly, setIsYearly] = useState(false)
+    const { mutate, isPending, variables, data: paymentData } = useInitSubscription()
     const { data, isLoading } = useGetSubscription({ request_type: "2", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
     return (
         <>
@@ -204,39 +171,69 @@ const PlanCards = () => {
                     </div>
                     <div className="grid sm:grid-cols-2 gap-4 w-full">
                     {
-                        (data?.data as SubscriptionSetupResponse[]).map((plan, index) => (
-                            <div key={index} className={cn("flex flex-col gap-3 sm:gap-4 p-3 sm:p-5 rounded-xl", plan.plan_name.toLowerCase() === "starter" ? "bg-orange-5" : "inset-ring-1 inset-ring-outline")}>
-                                <div className="flex items-center sm:items-start justify-between sm:justify-start sm:flex-col gap-4 [&_button]:font-medium [&_button]:text-sm [&_button]:sm:w-full">
-                                    <div className="grid gap-1 sm:gap-2">
-                                        <h2 className="text-xs sm:text-sm font-medium text-grey-dark-0">{plan.plan_name}</h2>
-                                        <span className="font-sora text-base sm:text-2xl text-grey-dark-2 tabular-nums">
-                                            {Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(isYearly ? plan.yearly_cost : plan.monthly_cost)}
-                                        </span>
+                        (data?.data as SubscriptionSetupResponse[]).map((plan, index) => {
+                            const isActivePlan = plan.plansetup_id === user.plan_data?.plansetup_id;
+                            return (
+                                <div key={index} className={cn("flex flex-col gap-3 sm:gap-4 p-3 sm:p-5 rounded-xl", plan.plan_name.toLowerCase() === "starter" ? "bg-orange-5" : "inset-ring-1 inset-ring-outline")}>
+                                    <div className="flex flex-1 items-center sm:items-start justify-between sm:justify-start sm:flex-col gap-4 [&_button]:font-medium [&_button]:text-sm [&_button]:sm:w-full">
+                                        <div className="grid gap-1 sm:gap-2">
+                                            <h2 className="text-xs sm:text-sm font-medium text-grey-dark-0">{plan.plan_name}</h2>
+                                            <span className="font-sora text-base sm:text-2xl text-grey-dark-2 tabular-nums">
+                                                {Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(isYearly ? plan.yearly_cost : plan.monthly_cost)}
+                                            </span>
+                                        </div>
+                                        <>
+                                        {
+                                            (plan.plan_name.toLowerCase() !== "freemium") ? (
+                                                <Button 
+                                                    type="button" size="sm" disabled={isPending && (plan.plansetup_id === variables.plansetup_id)}
+                                                    onClick={() => isActivePlan ? {} : mutate({ plansetup_id: plan.plansetup_id, duration_type: !isYearly ? "monthly" : "yearly"})}
+                                                    className={cn(isActivePlan ? "hover:after:translate-y-full sm:w-full active:scale-100" : "")}
+                                                    asChild={isActivePlan}
+                                                >
+                                                    {
+                                                        (isActivePlan) ? (
+                                                            <div>Current Plan</div>
+                                                        ) : (
+                                                            <>
+                                                                Upgrade Now
+                                                                {(isPending) && (<Spinner className="sm:absolute right-4 size-5" />)}
+                                                            </>
+                                                        )
+                                                    }
+                                                </Button>
+                                            ) : (
+                                                <>
+                                                {
+                                                    !user.plan_data?.plansub_id && (
+                                                        <Button 
+                                                            variant="secondary" size="sm" 
+                                                            className="hover:after:translate-y-full hover:text-orange-2 sm:w-full active:scale-100" asChild
+                                                        >
+                                                            <div>Current Plan</div>
+                                                        </Button>          
+                                                    )
+                                                }
+                                                </>
+                                            )
+                                        }
+                                        </>
                                     </div>
-                                    <>
+                                    <ul>
                                     {
-                                        (plan.plan_name.toLowerCase() === "starter") ? (
-                                            <Button size="sm">Upgrade Now</Button>
-                                        ) : (
-                                            <Button variant="secondary" size="sm" className="hover:after:translate-y-full hover:text-orange-2 sm:w-full active:scale-100" asChild><div>Current Plan</div></Button>
-                                        )
+                                        plan.description.map((benefit, n) => (
+                                            <li key={n} className="mb-2 last:mb-0">
+                                                <div className="flex items-start gap-2">
+                                                    <IconDot className="text-orange-2 mt-1" />
+                                                    <span className="flex-1 text-xs text-grey-dark-2">{benefit}</span>
+                                                </div>
+                                            </li>
+                                        ))
                                     }
-                                    </>
+                                    </ul>
                                 </div>
-                                <ul>
-                                {
-                                    plan.description.map((benefit, n) => (
-                                        <li key={n} className="mb-2 last:mb-0">
-                                            <div className="flex items-start gap-2">
-                                                <IconDot className="text-orange-2 mt-1" />
-                                                <span className="flex-1 text-xs text-grey-dark-2">{benefit}</span>
-                                            </div>
-                                        </li>
-                                    ))
-                                }
-                                </ul>
-                            </div>
-                        ))
+                            )
+                        })
                     }
                     </div>
                 </div>
@@ -244,6 +241,29 @@ const PlanCards = () => {
                 null
             )
         }
+        
+        {paymentData && <StripePayment data={paymentData.data} />}
         </>
     )
 }
+
+interface IStripePayment {
+  data: InitSubscriptionResponse;
+}
+
+const StripePayment = ({ data }: IStripePayment) => {
+  const { app_secret, client_secret, payment_id } = data;
+  const stripePromise = loadStripe(app_secret);
+
+  return (
+    <StripeElementWrapper
+      client_secret={client_secret}
+      stripePromise={stripePromise}
+    >
+      <CheckoutForm
+        transactionId={payment_id}
+        secret={client_secret}
+      />
+    </StripeElementWrapper>
+  );
+};

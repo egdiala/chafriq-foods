@@ -6,6 +6,7 @@ import { DataTable } from "@/components/data-table";
 import { useGetOrders } from "@/services/queries/use-orders";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {
     className?: string;
@@ -20,6 +21,13 @@ export const RecentOrders = ({ className }: Props) => {
         getCoreRowModel: getCoreRowModel(),
         getRowId: row => row.item_id,
     })
+
+    if (isLoadingNewOrders) {
+        return (
+            <Skeleton className={cn("py-4 h-48 rounded-2xl", className)} />
+        )
+    }
+
     return (
         <Card className={cn("py-4", className)}>
             <CardHeader className="px-4">

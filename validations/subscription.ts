@@ -55,3 +55,10 @@ export const getSubscriptionFormSchema = z.object({
   });
 
 export type GetSubscriptionFormType = z.infer<typeof getSubscriptionFormSchema>;
+
+export const initSubscriptionFormSchema = z.object({
+  plansetup_id: z.string().min(1, "Plan ID is required"),
+  duration_type: z.enum(["monthly", "yearly"])
+})
+
+export type InitSubscriptionFormType = z.infer<typeof initSubscriptionFormSchema>;

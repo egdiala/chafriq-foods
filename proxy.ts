@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const protectedVendorRoutes = ["/vendor", "/vendor/orders", "/vendor/payout", "/vendor/profile", "/vendor/storefront"];
+const protectedVendorRoutes = ["/vendor", "/vendor/orders", "/vendor/reporting", "/vendor/profile", "/vendor/storefront"];
 const protectedCustomerRoutes = ["/customer", "/customer/profile", "/customer/orders",]
 const unProtectedRoutes = ["/login", "/register", "/forgot-password", "/reset-password"]
 const landingRoutes = ["/", "/contact-us", "/privacy-policy", "/terms-and-conditions"]

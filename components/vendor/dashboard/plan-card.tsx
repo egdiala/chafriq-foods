@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/context/use-user";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 
 type Props = {
     className?: string;
@@ -26,17 +27,23 @@ export const PlanCard = ({ className }: Props) => {
                     <div className="flex items-center gap-2 text-sm text-grey-dark-2 [&>svg]:text-yellow-2"><IconStarFull /> {(user?.rating || 0).toFixed(1)}</div>
                 </div>
             </div>
-            <Separator />
-            <div className="flex items-center gap-3">
-                <div className="grid gap-px flex-1">
-                    <span className="font-semibold text-base text-grey-dark-0">Plan 1</span>
-                    <p className="text-xs text-grey-dark-3">Expiry: 23rd Feb, 2027</p>
-                </div>
-                <Button size="sm" variant="secondary" className="font-medium h-8.5">
-                    <IconTrendingUp />
-                    Upgrade Now
-                </Button>
-            </div>
+            {
+                user?.plan_data && (
+                    <>
+                        <Separator />
+                        <div className="flex items-center gap-3">
+                            <div className="grid gap-px flex-1">
+                                <span className="font-semibold text-base text-grey-dark-0">{user?.plan_data?.plan_name}</span>
+                                <p className="text-xs text-grey-dark-3">Expiry: {format(user?.plan_data?.expiry_date as Date, "do MMM, yyyy")}</p>
+                            </div>
+                            <Button size="sm" variant="secondary" className="font-medium h-8.5">
+                                <IconTrendingUp />
+                                Upgrade Now
+                            </Button>
+                        </div>
+                    </>
+                )
+            }
         </div>
     )
 }
