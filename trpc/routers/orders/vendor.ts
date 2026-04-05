@@ -3,7 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { appendQueryParams } from "@/lib/utils";
 import { api, handleErrorMessage } from "@/trpc/helper";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
-import { cancelVendorOrderStatusSchema, getVendorOrdersFormSchema, updateVendorOrderStatusSchema } from "@/validations/vendor-order";
+import { getVendorOrdersFormSchema, updateVendorOrderStatusSchema } from "@/validations/vendor-order";
 
 type GeneralOrderRes = GetOrderStatusCountResponse | GetVendorOrderResponse[]
 
@@ -38,7 +38,7 @@ export const vendorOrdersRouter = createTRPCRouter({
             });
         }
     }),
-    updateOrderStatus: protectedProcedure.input(updateVendorOrderStatusSchema).query(async ({ ctx, input }): Promise<{ status: string; data: VendorProfileResponse }> => {
+    updateOrderStatus: protectedProcedure.input(updateVendorOrderStatusSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: VendorProfileResponse }> => {
         try {
             const { order_id, ...payload } = input;
             const response = await api.put(`cooks/accounts/order-lists/${order_id}`, payload, {
@@ -53,21 +53,5 @@ export const vendorOrdersRouter = createTRPCRouter({
                 message: handleErrorMessage(error),
             });
         }
-    }),
-    cancelOrder: protectedProcedure.input(cancelVendorOrderStatusSchema).query(async ({ ctx, input }): Promise<{ status: string; data: VendorProfileResponse }> => {
-        try {
-            const { order_id, ...payload } = input;
-            const response = await api.patch(`cooks/accounts/order-lists/${order_id}`, payload, {
-                headers: {
-                    "Authorization": `Bearer ${ctx.accessToken}`
-                }
-            });
-            return response.data;
-        } catch (error) {
-            throw new TRPCError({
-                code: "INTERNAL_SERVER_ERROR",
-                message: handleErrorMessage(error),
-            });
-        }
-    }),
+    })
 });

@@ -1,21 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PUT(req: NextRequest, ctx: RouteContext<'/api/vendor/upload-menu-files/[menu_id]'>) {
-    const { menu_id } = await ctx.params
+export async function PUT(req: NextRequest, ctx: RouteContext<'/api/vendor/upload-order-files/[order_id]'>) {
+    const { order_id } = await ctx.params
     const formData = await req.formData();
 
     const files = formData.getAll("file") as File[];
 
-    if (!menu_id) {
-        return NextResponse.json({ error: "Menu ID is required" }, { status: 400 });
+    if (!order_id) {
+        return NextResponse.json({ error: "Order ID is required" }, { status: 400 });
     }
 
     if (!files || files.length === 0) {
         return NextResponse.json({ error: "At least one file is required" }, { status: 400 });
     }
 
-    if (files.length > 5) {
-        return NextResponse.json({ error: "Max 5 files allowed" }, { status: 400 });
+    if (files.length > 4) {
+        return NextResponse.json({ error: "Max 4 files allowed" }, { status: 400 });
     }
 
     const backendFormData = new FormData();
@@ -26,9 +26,9 @@ export async function PUT(req: NextRequest, ctx: RouteContext<'/api/vendor/uploa
 
     try {
         const response = await fetch(
-            `${process.env.BACKEND_API_URL}/cooks/accounts/menu-files/${menu_id}`,
+            `${process.env.BACKEND_API_URL}/cooks/accounts/order-lists/${order_id}`,
             {
-                method: "PUT",
+                method: "PATCH",
                 headers: {
                     Authorization: `Bearer ${req.cookies.get("access_token")?.value}`,
                 },
