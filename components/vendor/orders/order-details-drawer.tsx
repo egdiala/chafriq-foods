@@ -9,21 +9,25 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { IconBowlFood, IconCalendar, IconClockCountdown, IconCoins, IconCurrencyDollar, IconExternalLink } from "@/components/icons";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { useGetOrder } from "@/services/queries/use-orders";
-import { format } from "date-fns";
+import { differenceInHours, format } from "date-fns";
 import { ORDER_STATUS, ORDER_STATUS_CLASSES } from "./order-card";
 import { VariantProps } from "class-variance-authority";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUpdateVendorOrderStatus } from "@/services/mutations/use-orders";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 type Props = {
     orderId: string | null;
     setOpen: (value: boolean) => void;
     onDispatched: (value: boolean) => void;
+    onCancel: () => void;
 }
 
-export const OrderDetailsDrawer = ({ onDispatched, orderId, setOpen }: Props) => {
+export const OrderDetailsDrawer = ({ onCancel, onDispatched, orderId, setOpen }: Props) => {
     const { data, isLoading } = useGetOrder(orderId || "")
     const viewportRef = useRef<HTMLDivElement | null>(null)
     const [isBottomVisible, setIsBottomVisible] = useState(true);
+    const { mutate, isPending } = useUpdateVendorOrderStatus(() => setOpen(false))
     
     useEffect(() => {
         const el = viewportRef.current;
@@ -43,6 +47,9 @@ export const OrderDetailsDrawer = ({ onDispatched, orderId, setOpen }: Props) =>
             el.removeEventListener("scroll", handleScroll);
         };
     }, [viewportRef]);
+
+    const start = new Date(data?.data?.order_start_date || new Date());
+    const end = new Date(data?.data?.order_end_date || new Date());
     return (
         <Drawer direction="right" open={!!orderId} onOpenChange={setOpen}>
             <DrawerContent>
@@ -127,14 +134,14 @@ export const OrderDetailsDrawer = ({ onDispatched, orderId, setOpen }: Props) =>
                                             <IconCoins />
                                             Commission
                                         </div>
-                                        <p className="text-sm font-medium text-grey-dark-2">$0</p>
+                                        <p className="text-sm font-medium text-grey-dark-2">{Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format(data?.data?.platform_fee?.amount || 0)}</p>
                                     </div>
                                     <div className="flex flex-col p-3 gap-2 bg-grey-dark-4 rounded-xl min-w-28 flex-1">
                                         <div className="text-xs text-grey-dark-2 [&>svg]:text-orange-2 [&>svg]:size-3.5 grid gap-1">
                                             <IconHourglass />
                                             Time left
                                         </div>
-                                        <p className="text-sm font-medium text-grey-dark-2">0 mins</p>
+                                        <p className="text-sm font-medium text-grey-dark-2">{formatHours(differenceInHours(end, start))}</p>
                                     </div>
                                 </div>
 
@@ -155,7 +162,48 @@ export const OrderDetailsDrawer = ({ onDispatched, orderId, setOpen }: Props) =>
                                             </div>
                                             <a href={`tel:${data?.data?.receiver_phone}`} className="text-xs text-grey-dark-2">{data?.data?.receiver_phone}</a>
                                         </div>
-                                    </div>
+                                        </div>
+                                        {
+                                            data?.data?.order_status === 1 && (
+                                                <Button type="button" variant="link" size="default" onClick={onCancel}>
+                                                    Cancel Order
+                                                </Button>
+                                            )
+                                        }
+                                        {
+                                            data?.data && (data?.data?.order_images?.length > 0) ? (
+                                                <Carousel opts={{ loop: true }} className="relative w-full">
+                                                    <CarouselContent>
+                                                        {(data?.data?.order_images).map((media, index) => (
+                                                        <CarouselItem key={index}>
+                                                            <div className="rounded-xl overflow-hidden aspect-video bg-orange-1">
+                                                                {
+                                                                    media.mime_type.startsWith("image") ? (
+                                                                        <img src={media?.file_url} alt={media?.image_id} className="object-cover object-center w-full" />
+                                                                    ): (
+                                                                        <video
+                                                                            autoPlay
+                                                                            loop
+                                                                            muted
+                                                                            playsInline
+                                                                            preload="auto"
+                                                                            className="h-full w-full object-cover"
+                                                                        >
+                                                                            <source src={media?.file_url} type={media?.mime_type} />
+                                                                        </video>
+                                                                    )
+                                                                }
+                                                            </div>
+                                                        </CarouselItem>
+                                                        ))}
+                                                    </CarouselContent>
+                                                    <CarouselPrevious className="start-4" />
+                                                    <CarouselNext className="end-4" />
+                                                </Carousel>
+                                            ) : (
+                                                null
+                                            )
+                                        }
                                 </div>
                             </div>
                         </ScrollArea>
@@ -165,7 +213,16 @@ export const OrderDetailsDrawer = ({ onDispatched, orderId, setOpen }: Props) =>
                     <DrawerClose asChild>
                         <Button variant="secondary">Go Back</Button>
                     </DrawerClose>
-                    <Button type="button" onClick={() => onDispatched(true)}>Accept Order</Button>
+                    {
+                        (data?.data?.order_status === 1) ? (
+                            <Button type="button" disabled={isPending} onClick={() => mutate({ order_id: orderId as string, status: "2" })}>Start Order</Button>
+                        ) : (data?.data?.order_status === 2) ? (
+                            <Button type="button" disabled={isPending} onClick={() => mutate({ order_id: orderId as string, status: "3" })}>Mark as Done</Button>  
+                        ) : ((data?.data?.order_status === 3) && (data?.data?.order_images?.length === 0)) ? (
+                            <Button type="button" disabled={isPending} onClick={() => onDispatched(true)}>Add Images</Button>  
+                        ) : null
+                    }
+                    
                 </DrawerFooter>
             </DrawerContent>
         </Drawer>

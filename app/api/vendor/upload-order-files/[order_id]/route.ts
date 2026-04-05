@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PUT(req: NextRequest, ctx: RouteContext<'/api/vendor/upload-order-files/[order_id]'>) {
+export async function PATCH(req: NextRequest, ctx: RouteContext<'/api/vendor/upload-order-files/[order_id]'>) {
     const { order_id } = await ctx.params
     const formData = await req.formData();
 
@@ -35,7 +35,7 @@ export async function PUT(req: NextRequest, ctx: RouteContext<'/api/vendor/uploa
                 body: backendFormData,
             }
         );
-
+        
         const data = await response.json();
 
         return NextResponse.json(data, {

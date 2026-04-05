@@ -19,3 +19,32 @@ export const useUpdateVendorOrderStatus = (fn?: (value: unknown) => void) => {
         })
     );
 }
+
+export const useUploadVendorOrderFiles = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async (payload: { formData: FormData; orderId: string; }) => {
+            const res = await fetch(`/api/vendor/upload-order-files/${payload.orderId}`, {
+                method: "PATCH",
+                body: payload.formData,
+            });
+
+            if (!res.ok) {
+                const error = await res.json();
+                throw new Error(error?.error || "Upload failed");
+            }
+
+            return res.json();
+        },
+        onSuccess: async (data) => {
+            await queryClient.invalidateQueries({ queryKey: trpc.orders.vendor.getOrders.queryKey() })
+            await queryClient.invalidateQueries({ queryKey: trpc.orders.vendor.getOrder.queryKey() })
+            fn?.(data);
+            toast.success("Files uploaded successfully");
+        },
+        onError: (error) => {
+            toast.error(error.message || "Something went wrong");
+        },
+    });
+}

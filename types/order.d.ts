@@ -79,6 +79,11 @@ interface GetSingleVendorOrderResponse {
     order_start_date: string | Date;
     order_end_date: string | Date;
     order_status: OrderStatus;
+    order_images: {
+        mime_type: string;
+        file_url: string;
+        image_id: string;
+    }[];
     customer_rating_count: number;
     customer_rating_comment: string;
     platform_fee: {

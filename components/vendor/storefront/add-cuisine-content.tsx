@@ -58,8 +58,6 @@ export const VendorAddCuisineContent = () => {
     })
 
     const { mutate: uploadMedia, isPending: isUploadingMedia } = useUploadMenuMedia((res) => {
-        console.log(res)
-
         router.push("/vendor/storefront")
     })
     const { mutate, isPending } = useCreateMenu(async (response) => {

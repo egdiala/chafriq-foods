@@ -9,10 +9,12 @@ import { UploadPickupImagesDialog } from "./upload-pickup-images-dialog";
 import { useGetOrders } from "@/services/queries/use-orders";
 import { Skeleton } from "@/components/ui/skeleton";
 import { IconBowlSteam } from "@/components/icons";
+import { CancelOrder } from "./cancel-order";
 
 export const VendorOrdersContent = () => {
     const [orderId, setOrderId] = useQueryState('order_id')
     const [openDialog, setOpenDialog] = useState(false)
+    const [openCancelDialog, setOpenCancelDialog] = useState(false)
 
     const { data, isLoading } = useGetOrders({ })
     const { data: newOrders, isLoading: isLoadingNewOrders } = useGetOrders({ status: "1" })
@@ -86,8 +88,20 @@ export const VendorOrdersContent = () => {
                 }
                 </TabsContent>
             </Tabs>
-            <OrderDetailsDrawer orderId={orderId} setOpen={() => setOrderId(null)} onDispatched={setOpenDialog} />
-            <UploadPickupImagesDialog open={openDialog} setOpen={setOpenDialog} />
+            <CancelOrder orderId={orderId} open={openCancelDialog} setOpen={setOpenCancelDialog} />
+            <OrderDetailsDrawer
+                orderId={orderId}
+                setOpen={() => setOrderId(null)}
+                onDispatched={setOpenDialog}
+                onCancel={() => {
+                    setOpenDialog(false)
+                    setOpenCancelDialog(true)
+                }}
+            />
+            <UploadPickupImagesDialog orderId={orderId} open={openDialog} setOpen={(v) => {
+                setOpenDialog(v)
+                setOrderId(null)
+            }} />
         </>
     )
 }
