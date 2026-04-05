@@ -10,6 +10,7 @@ export * from "./icon-chart-line";
 export * from "./icon-checkmark";
 export * from "./icon-chef-hat";
 export * from "./icon-clock-countdown";
+export * from "./icon-close";
 export * from "./icon-cloud-arrow-up";
 export * from "./icon-coins";
 export * from "./icon-cooking-pot";
@@ -28,6 +29,9 @@ export * from "./icon-gavel";
 export * from "./icon-globe";
 export * from "./icon-ham-menu";
 export * from "./icon-headset";
+export * from "./icon-hourglass";
+export * from "./icon-lock";
+export * from "./icon-mail-open";
 export * from "./icon-map-pin-line";
 export * from "./icon-package"
 export * from "./icon-path";

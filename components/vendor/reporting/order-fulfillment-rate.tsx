@@ -49,7 +49,7 @@ export const OrderFulfillmentRate = ({ className }: Props) => {
 
     if (isLoading) {
         return (
-            <Skeleton className={cn("h-56", className)} />
+            <Skeleton className={cn("grid min-h-56", className)} />
         )
     }
     

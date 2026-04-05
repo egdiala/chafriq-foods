@@ -4,6 +4,7 @@ import { EarningsTrendChart } from "./earnings-trend";
 import { TopSellingMeals } from "./top-selling-meals";
 import { OrderFulfillmentRate } from "./order-fulfillment-rate";
 import { OrderTrendChart } from "../dashboard/order-trend-chart";
+import { RatingTrendChart } from "./rating-trend";
 
 export const VendorReportingContent = () => {
     return (
@@ -18,6 +19,7 @@ export const VendorReportingContent = () => {
                 <OrderFulfillmentRate />
                 <AveragePrepTime />
             </div>
+            <RatingTrendChart />
         </div>
     )
 }

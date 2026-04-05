@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { IconFilter } from "@/components/icons"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useReports } from "@/services/queries/use-reports"
-import { buildChartData, generateYears } from "@/lib/chart"
+import { buildRatingsData, generateYears } from "@/lib/chart"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
@@ -26,24 +26,24 @@ type Props = {
     className?: string;
 }
 
-export const OrderTrendChart = ({ className }: Props) => {
+export const RatingTrendChart = ({ className }: Props) => {
     const [selectedYear, setSelectedYear] = useState(getYear(new Date()));
-    const { data, isLoading } = useReports({ request_type: "2", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, year: selectedYear.toString() })
+    const { data, isLoading } = useReports({ request_type: "7", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, year: selectedYear.toString() })
 
     const chartData = useMemo(() => {
-        return buildChartData((data?.data as ReportsStatisticsResponse)?.order_trend || [])
+        return buildRatingsData((data?.data as ReportsStatisticsResponse)?.rating_trend || [])
     },[data?.data])
 
     if (isLoading) {
         return (
-            <Skeleton className={cn("h-56", className)} />
+            <Skeleton className={cn("grid min-h-56", className)} />
         )
     }
     return (
         <Card className={cn("py-4", className)}>
             <CardHeader className="px-4">
                 <div className="flex items-center justify-between">
-                    <CardTitle>Order Trend</CardTitle>
+                    <CardTitle>Customer Rating Trend</CardTitle>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="secondary" size="icon-sm">

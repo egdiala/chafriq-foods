@@ -36,7 +36,7 @@ export const EarningsTrendChart = ({ className }: Props) => {
 
     if (isLoading) {
         return (
-            <Skeleton className={cn("h-56", className)} />
+            <Skeleton className={cn("grid min-h-56", className)} />
         )
     }
     return (
@@ -66,7 +66,7 @@ export const EarningsTrendChart = ({ className }: Props) => {
                 </div>
             </CardHeader>
             <CardContent className="px-4">
-                <ChartContainer config={chartConfig} className="w-full max-h-56">
+                <ChartContainer config={chartConfig} className="w-full max-h-67.5">
                     <BarChart
                         accessibilityLayer
                         data={chartData}

@@ -20,25 +20,29 @@ export const TopCards = ({ className }: Props) => {
                 icon: <IconCookingPot />,
                 title: "Total Orders",
                 value: reportStats?.kpi?.total_orders,
-                trend: reportStats?.kpi?.total_orders_change
+                trend: reportStats?.kpi?.total_orders_change,
+                asAgainst: "vs last 30 days"
             },
             {
                 icon: <IconCurrencyDollar />,
                 title: "Total Earnings",
                 value: Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2, minimumFractionDigits: 0 }).format(reportStats?.kpi?.total_earnings),
-                trend: reportStats?.kpi?.total_earnings_change
+                trend: reportStats?.kpi?.total_earnings_change,
+                asAgainst: "vs last month"
             },
             {
                 icon: <IconPackage />,
                 title: "Avg Order Value",
                 value: Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2, minimumFractionDigits: 0 }).format(reportStats?.kpi?.avg_order_value),
-                trend: reportStats?.kpi?.avg_order_value_change
+                trend: reportStats?.kpi?.avg_order_value_change,
+                asAgainst: "vs last month"
             },
             {
                 icon: <IconRepeat />,
                 title: "Repeat Customers",
                 value: reportStats?.kpi?.repeat_customers,
-                trend: reportStats?.kpi?.repeat_customers_change
+                trend: reportStats?.kpi?.repeat_customers_change,
+                asAgainst: "vs last month"
             },
         ]
     }, [reportStats?.kpi?.avg_order_value, reportStats?.kpi?.avg_order_value_change, reportStats?.kpi?.repeat_customers, reportStats?.kpi?.repeat_customers_change, reportStats?.kpi?.total_earnings, reportStats?.kpi?.total_earnings_change, reportStats?.kpi?.total_orders, reportStats?.kpi?.total_orders_change])
@@ -68,8 +72,9 @@ export const TopCards = ({ className }: Props) => {
                                         <p className="font-semibold text-sm text-grey-dark-2">{card.value}</p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-1 pl-10s">
+                                <div className="flex items-center gap-1 pl-10">
                                     <Badge variant="completed"><IconExternalLink /> {card.trend.toFixed(1)}%</Badge>
+                                    <span className="text-xs text-grey-dark-3">{card.asAgainst}</span>
                                 </div>
                             </div>
                         ))

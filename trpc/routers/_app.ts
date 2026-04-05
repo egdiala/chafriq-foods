@@ -10,6 +10,7 @@ import { subscriptionRouter } from "./subscription";
 import { baseProcedure, createTRPCRouter } from "../init";
 import { adsRouter } from "./ads";
 import { reportsRouter } from "./reporting";
+import { notificationsRouter } from "./notifications";
 
 export const appRouter = createTRPCRouter({
   ads: adsRouter,
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   account: accountRouter,
   explore: exploreRouter,
   menu: menuRouter,
+  notifications: notificationsRouter,
   orders: ordersRouter,
   reports: reportsRouter,
   schedules: schedulesRouter,

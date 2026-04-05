@@ -24,7 +24,7 @@ export const AveragePrepTime = ({ className }: Props) => {
 
     if (isLoading) {
         return (
-            <Skeleton className={cn("h-56", className)} />
+            <Skeleton className={cn("grid min-h-56", className)} />
         )
     }
     
@@ -56,7 +56,10 @@ export const AveragePrepTime = ({ className }: Props) => {
             </CardHeader>
             <CardContent className="px-4 flex flex-col flex-1">
                 <div className="flex flex-col flex-1">
-                    <span className="text-6xl">{formatHours((data?.data as ReportsStatisticsResponse)?.avg_prep_time?.minutes/60)}</span>
+                    <div className="flex items-baseline gap-0.5 text-6xl font-extralight">
+                        <span>{formatHours((data?.data as ReportsStatisticsResponse)?.avg_prep_time?.minutes / 60).split(" ")?.[0]}</span>
+                        <span className="text-xs font-normal text-grey-dark-3">{formatHours((data?.data as ReportsStatisticsResponse)?.avg_prep_time?.minutes / 60).split(" ")?.[1]}</span>
+                    </div>
                 </div>
                 <div className="flex items-center gap-1">
                     <Badge variant="completed"><IconExternalLink /> {(data?.data as ReportsStatisticsResponse)?.avg_prep_time?.change_pct.toFixed(1)}%</Badge>

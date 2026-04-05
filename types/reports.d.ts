@@ -34,5 +34,8 @@ interface ReportsStatisticsResponse {
         minutes: number;
         change_pct: number;
     },
-    rating_trend: []
+    rating_trend: {
+        month: string | Date;
+        avg_rating: number;
+    }[];
 }
