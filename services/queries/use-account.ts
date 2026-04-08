@@ -22,3 +22,12 @@ export const useVendorProfile = (config?: TRPCQueryKeyWithoutPrefix) => {
 
     return { data, ...res }
 }
+
+export const useGetVendorDocument = (documentType: VendorDocumentType, config?: TRPCQueryKeyWithoutPrefix) => {
+    const trpc = useTRPC();
+    return useQuery({
+        ...trpc.account.vendor.getDocument.queryOptions(documentType),
+        enabled: !!documentType,
+        ...config,
+    });
+}

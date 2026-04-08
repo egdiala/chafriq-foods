@@ -13,6 +13,7 @@ import { publicLiabilityFormSchema, stateApprovalEvidenceFormSchema } from "@/va
 import { useUser } from "@/context/use-user"
 import { Badge } from "@/components/ui/badge"
 import { IconExternalLink } from "@/components/icons"
+import { useGetVendorDocument } from "@/services/queries/use-account"
 
 export const DocumentsTabContent = () => {
     return (
@@ -509,17 +510,7 @@ const Others = () => {
                                     />
                                 </Field>
                             ) : (
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-sm text-grey-dark-1 font-medium">Insurance Certificate</span>
-                                        <Badge variant={user?.document_data?.insurance_cert?.status === 0 ? "pending" : "completed"}>
-                                            {user?.document_data?.insurance_cert?.status === 0 ? "Pending" : "Verified"}
-                                        </Badge> 
-                                    </div>
-                                    <Button variant="tertiary" size="icon-sm" asChild>
-                                        <a href={user?.document_data?.insurance_cert?.file_link} target="_blank"><IconExternalLink /></a>
-                                    </Button>
-                                </div>
+                                <DocumentRow documentData={user?.document_data} documentType="insurance_cert" />
                             )
                         }
                         {
@@ -537,17 +528,7 @@ const Others = () => {
                                     />
                                 </Field>
                             ) : (
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-sm text-grey-dark-1 font-medium">Insurance Certificate</span>
-                                        <Badge variant={user?.document_data?.food_safety_cert?.status === 0 ? "pending" : "completed"}>
-                                            {user?.document_data?.food_safety_cert?.status === 0 ? "Pending" : "Verified"}
-                                        </Badge> 
-                                    </div>
-                                    <Button variant="tertiary" size="icon-sm" asChild>
-                                        <a href={user?.document_data?.food_safety_cert?.file_link} target="_blank"><IconExternalLink /></a>
-                                    </Button>
-                                </div>
+                                <DocumentRow documentData={user?.document_data} documentType="food_safety_cert" />
                             )
                         }
                         {
@@ -565,17 +546,7 @@ const Others = () => {
                                     />
                                 </Field>
                             ) : (
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-sm text-grey-dark-1 font-medium">Insurance Certificate</span>
-                                        <Badge variant={user?.document_data?.business_cert?.status === 0 ? "pending" : "completed"}>
-                                            {user?.document_data?.business_cert?.status === 0 ? "Pending" : "Verified"}
-                                        </Badge> 
-                                    </div>
-                                    <Button variant="tertiary" size="icon-sm" asChild>
-                                        <a href={user?.document_data?.business_cert?.file_link} target="_blank"><IconExternalLink /></a>
-                                    </Button>
-                                </div>
+                                <DocumentRow documentData={user?.document_data} documentType="business_cert" />
                             )
                         }
                         {
@@ -593,22 +564,35 @@ const Others = () => {
                                     />
                                 </Field>
                             ) : (
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-sm text-grey-dark-1 font-medium">Insurance Certificate</span>
-                                        <Badge variant={user?.document_data?.govt_id?.status === 0 ? "pending" : "completed"}>
-                                            {user?.document_data?.govt_id?.status === 0 ? "Pending" : "Verified"}
-                                        </Badge> 
-                                    </div>
-                                    <Button variant="tertiary" size="icon-sm" asChild>
-                                        <a href={user?.document_data?.govt_id?.file_link} target="_blank"><IconExternalLink /></a>
-                                    </Button>
-                                </div>
+                                <DocumentRow documentData={user?.document_data} documentType="govt_id" />
                             )
                         }
                     </div>
                 </FieldGroup>
             </FieldSet>
+        </div>
+    )
+}
+
+type DocumentRowProps = {
+    documentData: VendorProfileResponse["document_data"]
+    documentType: VendorDocumentType;
+}
+
+const DocumentRow = ({ documentData, documentType }: DocumentRowProps) => {
+    const { data } = useGetVendorDocument(documentType)
+
+    return (
+        <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+                <span className="text-sm text-grey-dark-1 font-medium">Insurance Certificate</span>
+                <Badge variant={documentData?.[documentType]?.status === 0 ? "pending" : "completed"}>
+                    {documentData?.[documentType]?.status === 0 ? "Pending" : "Verified"}
+                </Badge> 
+            </div>
+            <Button variant="tertiary" size="icon-sm" asChild>
+                <a href={documentData?.[documentType]?.file_link} target="_blank"><IconExternalLink /></a>
+            </Button>
         </div>
     )
 }

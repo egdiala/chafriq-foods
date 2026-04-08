@@ -46,6 +46,6 @@ jobs:
 
             # Install Node.js dependencies and build the project
             npm install --legacy-peer-deps
-            npm run build
+            sudo npm run build
             pm2 reload $pm2Name || pm2 start "npm run startProd" --name $pm2Name
           EOF
