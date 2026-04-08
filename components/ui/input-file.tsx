@@ -3,7 +3,7 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "./button"
 
-function InputFile({ className, ...props }: React.ComponentProps<"input">) {
+function InputFile({ className, selectedFile, ...props }: React.ComponentProps<"input"> & { selectedFile: File | undefined; }) {
     const ref = React.useRef<HTMLInputElement>(null)
 
     const handleClick = () => ref.current?.click();
@@ -23,7 +23,7 @@ function InputFile({ className, ...props }: React.ComponentProps<"input">) {
                 )}
                 {...props}
             />
-            <span className="text-xs font-normal text-grey-dark-3">{(props?.value as unknown as File)?.name || "Select a file"}</span>
+            <span className="text-xs font-normal text-grey-dark-3">{(selectedFile as unknown as File)?.name || "Select a file"}</span>
             <Button variant="link" size="link" type="button">Select File</Button>
         </div>
     )

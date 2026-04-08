@@ -47,6 +47,7 @@ export * from "./icon-storefront";
 export * from "./icon-toggle-left";
 export * from "./icon-trash-simple";
 export * from "./icon-trending-up";
+export * from './icon-triangle-warning';
 export * from "./icon-trip";
 export * from "./icon-user";
 export * from "./social";

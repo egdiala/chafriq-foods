@@ -11,6 +11,7 @@ import { IconCheckmark, IconPencilSimple } from "@/components/icons";
 import { useUploadVendorAvatar } from "@/services/mutations/use-account";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DocumentsTabContent } from "./documents-tab-content";
 
 export const VendorProfileContent = () => {
     const [tab, setOrderId] = useQueryState('tab')
@@ -20,10 +21,14 @@ export const VendorProfileContent = () => {
             <Tabs defaultValue={tab || "profile"} onValueChange={setOrderId}>
                 <TabsList>
                     <TabsTrigger value="profile">Profile</TabsTrigger>
+                    <TabsTrigger value="documents">Documents</TabsTrigger>
                     <TabsTrigger value="subscription">Subscription</TabsTrigger>
                 </TabsList>
                 <TabsContent value="profile" className="grid md:grid-cols-2 gap-x-4 sm:gap-x-10 gap-y-4 sm:gap-y-8">
                     <ProfileTabContent />
+                </TabsContent>
+                <TabsContent value="documents" className="grid gap-6">
+                    <DocumentsTabContent />
                 </TabsContent>
                 <TabsContent value="subscription" className="grid gap-6">
                     <SubscriptionTabContent />

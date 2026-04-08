@@ -115,3 +115,31 @@ export const useDeleteVendorProfile = (fn?: (value: unknown) => void) => {
         })
     );
 }
+
+export const useUploadVendorDocuments = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async (payload: { formData: FormData; documentType: VendorDocumentType; }) => {
+            const res = await fetch(`/api/vendor/upload-documents/${payload.documentType}`, {
+                method: "POST",
+                body: payload.formData,
+            });
+
+            if (!res.ok) {
+                const error = await res.json();
+                throw new Error(error?.error || "Upload failed");
+            }
+
+            return res.json();
+        },
+        onSuccess: async (data) => {
+            await queryClient.invalidateQueries({ queryKey: trpc.account.vendor.getProfile.queryKey() })
+            fn?.(data);
+            toast.success("Document updated successfully")
+        },
+        onError: (error) => {
+            toast.error(error.message || "Something went wrong");
+        },
+    });
+}

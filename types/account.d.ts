@@ -50,6 +50,8 @@ interface VendorProfileResponse {
     }
 }
 
+type VendorDocumentType = "state_approval" | "pub_insurance" | "insurance_cert" | "food_safety_cert" | "business_cert" | "govt_id";
+
 interface CustomerProfileResponse {
     full_name: string;
     email: string;

@@ -59,11 +59,13 @@ export const useForgotPasswordVendor = (fn?: (value: unknown) => void) => {
 
 export const useConfirmOtpVendor = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
+    const { handleLogin } = useAuth()
     return useMutation(
         trpc.auth.vendor.confirmOtp.mutationOptions({
             onSuccess: (data) => {
                 if (data.status === "ok") {
                     fn?.(data);
+                    handleLogin(data.data, "vendor")
                     toast.success("Otp confirmed")
                 }
             },

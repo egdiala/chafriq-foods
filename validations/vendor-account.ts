@@ -66,3 +66,18 @@ export const changePasswordVendorFormSchema = z.object({
 });
 
 export type ChangePasswordVendorFormType = z.infer<typeof changePasswordVendorFormSchema>;
+
+export const stateApprovalEvidenceFormSchema = z.object({
+  file: z.string().min(1, "State Approval Evidence is required"),
+  issuer: z.string().min(1, "Issuer is required"),
+  issuer_num: z.string().min(1, "Issuer Number is required"),
+  expiry_date: z.date().min(1, "Expiry Date is required"),
+})
+
+export const publicLiabilityFormSchema = z.object({
+  file: z.string().min(1, "State Approval Evidence is required"),
+  issuer: z.string().min(1, "Issuer is required"),
+  issuer_num: z.string().min(1, "Issuer Number is required"),
+  expiry_date: z.date().min(1, "Expiry Date is required"),
+  coverage_amount: z.string().min(1, "Coverage amount is required")
+})
