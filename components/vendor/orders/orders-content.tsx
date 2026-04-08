@@ -50,8 +50,8 @@ export const VendorOrdersContent = () => {
                             <div className="bg-orange-5 rounded-full grid place-content-center size-9 inset-ring-1 inset-ring-orange-2/50 mb-4">
                                 <IconBowlSteam className="size-4.5 text-orange-2" />
                             </div>
-                            <span className="text-grey-dark-0 text-base font-semibold">Ready to start selling?</span>
-                            <p className="text-grey-dark-2 text-sm font-normal">Add your first cuisine to create your menu and let customers discover what you cook best.</p>
+                            <span className="text-grey-dark-0 text-base font-semibold">No new orders yet</span>
+                            <p className="text-grey-dark-2 text-sm font-normal">When customers place new orders, they’ll appear here for you to review and prepare.</p>
                         </div>
                     )
                 }
@@ -81,8 +81,8 @@ export const VendorOrdersContent = () => {
                             <div className="bg-orange-5 rounded-full grid place-content-center size-9 inset-ring-1 inset-ring-orange-2/50 mb-4">
                                 <IconBowlSteam className="size-4.5 text-orange-2" />
                             </div>
-                            <span className="text-grey-dark-0 text-base font-semibold">Ready to start selling?</span>
-                            <p className="text-grey-dark-2 text-sm font-normal">Add your first cuisine to create your menu and let customers discover what you cook best.</p>
+                            <span className="text-grey-dark-0 text-base font-semibold">You haven’t received any orders yet</span>
+                            <p className="text-grey-dark-2 text-sm font-normal">All your orders will appear here once customers start placing them.</p>
                         </div>
                     )
                 }
