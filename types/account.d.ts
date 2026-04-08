@@ -32,15 +32,16 @@ interface VendorProfileResponse {
         orders: number;
         promos: number;
         platform_updates: number;
-    },
+    };
     last_login_at: number;
     createdAt: Date | string;
     dish_data: {
         _id: string;
         name: string;
         dish_type_id: string;
-    }[]
+    }[];
     cook_id: string;
+    document_data?: Record<VendorDocumentType, VendorDocumentData>;
     plan_data?: {
         plansub_id: string;
         status: number;
@@ -48,6 +49,14 @@ interface VendorProfileResponse {
         plansetup_id: string;
         expiry_date: Date | string;
     }
+}
+
+type VendorDocumentData = {
+    createdAt: string | Date;
+    file_link: string;
+    status: 0 | 1;
+    issuer?: string;
+    number?: string;
 }
 
 type VendorDocumentType = "state_approval" | "pub_insurance" | "insurance_cert" | "food_safety_cert" | "business_cert" | "govt_id";

@@ -14,8 +14,7 @@ export async function POST(req: NextRequest, ctx: RouteContext<'/api/vendor/uplo
         return NextResponse.json({ error: "At least one file is required" }, { status: 400 });
     }
 
-    const backendFormData = new FormData();
-    backendFormData.append("file", file);
+    console.log("🔥🔥🔥🔥🔥", formData)
 
     try {
         const response = await fetch(
@@ -25,11 +24,14 @@ export async function POST(req: NextRequest, ctx: RouteContext<'/api/vendor/uplo
                 headers: {
                     Authorization: `Bearer ${req.cookies.get("access_token")?.value}`,
                 },
-                body: backendFormData,
+                body: formData,
             }
         );
 
+        console.log("🔥🔥🔥🔥🔥", response)
         const data = await response.json();
+
+        console.log("🔥🔥🔥🔥🔥", data)
 
         return NextResponse.json(data, {
             status: response.status,

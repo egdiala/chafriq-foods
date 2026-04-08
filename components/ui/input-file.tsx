@@ -2,8 +2,9 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "./button"
+import { Spinner } from "./spinner";
 
-function InputFile({ className, selectedFile, ...props }: React.ComponentProps<"input"> & { selectedFile: File | undefined; }) {
+function InputFile({ className, selectedFile, isLoading, ...props }: React.ComponentProps<"input"> & { isLoading?: boolean; selectedFile?: File | undefined; }) {
     const ref = React.useRef<HTMLInputElement>(null)
 
     const handleClick = () => ref.current?.click();
@@ -24,7 +25,9 @@ function InputFile({ className, selectedFile, ...props }: React.ComponentProps<"
                 {...props}
             />
             <span className="text-xs font-normal text-grey-dark-3">{(selectedFile as unknown as File)?.name || "Select a file"}</span>
-            <Button variant="link" size="link" type="button">Select File</Button>
+            <Button variant="link" size="link" type="button" disabled={isLoading}>
+                {(isLoading) ? (<Spinner className="absolute right-4 size-5" />) : "Select File"}
+            </Button>
         </div>
     )
 }
