@@ -54,7 +54,7 @@ interface VendorProfileResponse {
 type VendorDocumentData = {
     createdAt: string | Date;
     file_link: string;
-    status: 0 | 1;
+    status: 0 | 1 | 2;
     issuer?: string;
     number?: string;
 }

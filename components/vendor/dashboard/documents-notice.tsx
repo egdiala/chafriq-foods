@@ -15,8 +15,9 @@ export const DocumentsNotice = ({ className }: Props) => {
     const user = userObj as VendorProfileResponse;
 
     const shouldUpload = Object.values(user?.document_data || {})?.length < 6;
+    const isAllVerified = Object.values(user?.document_data || {})?.every((item) => item.status === 1);
 
-    if (!shouldUpload) {
+    if (!shouldUpload && isAllVerified) {
         return null;
     }
 

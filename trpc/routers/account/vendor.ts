@@ -52,7 +52,7 @@ export const vendorAccountRouter = createTRPCRouter({
             });
         }
     }),
-    getDocument: protectedProcedure.input(z.string().min(1, "Document type is required")).query(async ({ ctx, input }): Promise<{ status: string; data: VendorProfileResponse }> => {
+    getDocument: protectedProcedure.input(z.string().min(1, "Document type is required")).query(async ({ ctx, input }): Promise<{ status: string; data: { file_link: string; } }> => {
         try {
             const response = await api.get(`cooks/accounts/documents?document_type=${input}`, {
                 headers: {

@@ -12,12 +12,12 @@ import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from
 import { publicLiabilityFormSchema, stateApprovalEvidenceFormSchema } from "@/validations/vendor-account"
 import { useUser } from "@/context/use-user"
 import { Badge } from "@/components/ui/badge"
-import { IconExternalLink } from "@/components/icons"
+import { IconDot, IconExternalLink } from "@/components/icons"
 import { useGetVendorDocument } from "@/services/queries/use-account"
 
 export const DocumentsTabContent = () => {
     return (
-        <div className="flex flex-col gap-12.5 w-full">
+        <div className="flex flex-col gap-6 w-full">
             <div className="flex flex-col gap-1">
                 <h1 className="uppercase font-medium text-xs text-neu">Almost there!</h1>
                 <p className="text-grey-dark-3 text-xs">We need a bit more information to complete your profile.</p>
@@ -85,7 +85,7 @@ const StateApprovalEvidence = () => {
     return (
         <>
         {
-            !user?.document_data?.state_approval?.file_link ? (
+            ((!user?.document_data?.state_approval?.file_link) || (user?.document_data?.state_approval?.status === 2)) ? (
                 <form className="flex flex-col gap-4 justify-between inset-ring-1 inset-ring-outline p-5 rounded-xl" onSubmit={(e) => {
                     e.preventDefault()
                     stateApprovalForm.handleSubmit()
@@ -214,10 +214,10 @@ const StateApprovalEvidence = () => {
                         </stateApprovalForm.Subscribe>
                     </div>
                 </form>
-            ) : (user?.document_data?.state_approval?.status === 0) ? (
-                <div className="flex flex-col gap-4 justify-between inset-ring-1 inset-ring-outline p-5 rounded-xl">pending verification</div>
             ) : (
-                <div className="flex flex-col gap-4 justify-between inset-ring-1 inset-ring-outline p-5 rounded-xl">Verified</div>
+                <div className="flex flex-col gap-4 justify-between inset-ring-1 inset-ring-outline p-5 rounded-xl">
+                    <DocumentRow documentData={user?.document_data} documentType="state_approval" label="State Approval Evidence" />
+                </div>
             )
         }
         </>
@@ -277,7 +277,7 @@ const PublicLiabilityInsurance = () => {
     return (
         <>
         {
-            !user?.document_data?.pub_insurance?.file_link ? (
+            ((!user?.document_data?.pub_insurance?.file_link) || (user?.document_data?.pub_insurance?.status === 2)) ? (
                 <form className="flex flex-col gap-4 justify-between inset-ring-1 inset-ring-outline p-5 rounded-xl" onSubmit={(e) => {
                     e.preventDefault()
                     publicLiabilityForm.handleSubmit()
@@ -364,10 +364,15 @@ const PublicLiabilityInsurance = () => {
                                                     type="text"
                                                     id={field.name}
                                                     name={field.name}
+                                                    pattern="[0-9]*"
                                                     aria-invalid={isInvalid}
                                                     value={field.state.value}
                                                     onBlur={field.handleBlur}
-                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                    onChange={(e) => {
+                                                        const raw = e.target.value.match(/^\d+/)?.[0] || "";
+                                                        const normalized = raw === "" ? "" : raw === "0" ? "0" : raw.replace(/^0+/, "");
+                                                        field.handleChange(normalized)
+                                                    }}
                                                 />
                                                 {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                             </Field>
@@ -429,10 +434,10 @@ const PublicLiabilityInsurance = () => {
                         </publicLiabilityForm.Subscribe>
                     </div>
                 </form>
-            ) : (user?.document_data?.pub_insurance?.status === 0) ? (
-                <div className="flex flex-col gap-4 justify-between inset-ring-1 inset-ring-outline p-5 rounded-xl">pending verification</div>
-            ) : (
-                <div className="flex flex-col gap-4 justify-between inset-ring-1 inset-ring-outline p-5 rounded-xl">Verified</div>
+            ) :  (
+                <div className="flex flex-col gap-4 justify-between inset-ring-1 inset-ring-outline p-5 rounded-xl">
+                    <DocumentRow documentData={user?.document_data} documentType="pub_insurance" label="Public Liability Insurance" /> 
+                </div>
             )
         }
         </>
@@ -496,7 +501,7 @@ const Others = () => {
                 <FieldGroup>
                     <div className="grid lg:grid-cols-2 gap-5">
                         {
-                            !user?.document_data?.insurance_cert?.file_link ? (
+                            ((!user?.document_data?.insurance_cert?.file_link) || (user?.document_data?.insurance_cert?.status === 2)) ? (
                                 <Field>
                                     <FieldLabel htmlFor="insurance_cert">Insurance Certificate</FieldLabel>
                                     <InputFile
@@ -510,11 +515,11 @@ const Others = () => {
                                     />
                                 </Field>
                             ) : (
-                                <DocumentRow documentData={user?.document_data} documentType="insurance_cert" />
+                                <DocumentRow documentData={user?.document_data} documentType="insurance_cert" label="Insurance Certificate" />
                             )
                         }
                         {
-                            !user?.document_data?.food_safety_cert?.file_link ? (
+                            ((!user?.document_data?.food_safety_cert?.file_link) || (user?.document_data?.food_safety_cert?.status === 2)) ? (
                                 <Field>
                                     <FieldLabel htmlFor="food_safety_cert">Food Safety Training Evidence</FieldLabel>
                                     <InputFile
@@ -528,11 +533,11 @@ const Others = () => {
                                     />
                                 </Field>
                             ) : (
-                                <DocumentRow documentData={user?.document_data} documentType="food_safety_cert" />
+                                <DocumentRow documentData={user?.document_data} documentType="food_safety_cert" label="Food Safety Training Evidence" />
                             )
                         }
                         {
-                            !user?.document_data?.business_cert?.file_link ? (
+                            ((!user?.document_data?.business_cert?.file_link) || (user?.document_data?.business_cert?.status === 2)) ? (
                                 <Field>
                                     <FieldLabel htmlFor="business_cert">Business Document - If any</FieldLabel>
                                     <InputFile
@@ -546,11 +551,11 @@ const Others = () => {
                                     />
                                 </Field>
                             ) : (
-                                <DocumentRow documentData={user?.document_data} documentType="business_cert" />
+                                <DocumentRow documentData={user?.document_data} documentType="business_cert" label="Business Document" />
                             )
                         }
                         {
-                            !user?.document_data?.govt_id?.file_link ? (
+                            ((!user?.document_data?.govt_id?.file_link) || (user?.document_data?.govt_id?.status === 2)) ? (
                                 <Field>
                                     <FieldLabel htmlFor="govt_id">Government Issue ID ( Must match the personal full name provided )</FieldLabel>
                                     <InputFile
@@ -564,7 +569,7 @@ const Others = () => {
                                     />
                                 </Field>
                             ) : (
-                                <DocumentRow documentData={user?.document_data} documentType="govt_id" />
+                                <DocumentRow documentData={user?.document_data} documentType="govt_id" label="Government Issue ID" />
                             )
                         }
                     </div>
@@ -577,21 +582,34 @@ const Others = () => {
 type DocumentRowProps = {
     documentData: VendorProfileResponse["document_data"]
     documentType: VendorDocumentType;
+    label: string;
 }
 
-const DocumentRow = ({ documentData, documentType }: DocumentRowProps) => {
-    const { data } = useGetVendorDocument(documentType)
+const DocumentRow = ({ documentData, documentType, label }: DocumentRowProps) => {
+    const { data, isLoading } = useGetVendorDocument(documentType)
 
     return (
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-                <span className="text-sm text-grey-dark-1 font-medium">Insurance Certificate</span>
-                <Badge variant={documentData?.[documentType]?.status === 0 ? "pending" : "completed"}>
+                <span className="text-sm text-grey-dark-1 font-medium">{label}</span>
+                <Badge variant={documentData?.[documentType]?.status === 0 ? "pending" : "completed"} className="[&>svg]:size-1.5!">
+                    <IconDot />
                     {documentData?.[documentType]?.status === 0 ? "Pending" : "Verified"}
                 </Badge> 
             </div>
             <Button variant="tertiary" size="icon-sm" asChild>
-                <a href={documentData?.[documentType]?.file_link} target="_blank"><IconExternalLink /></a>
+                {
+                    isLoading ? (
+                        <div>
+                            <Spinner />
+                        </div>
+                    ) : (!isLoading && data && data.data.file_link) ? (
+                        <a href={data.data.file_link} target="_blank">
+                            <IconExternalLink />
+                        </a>
+                    ) : null
+                }
+                
             </Button>
         </div>
     )
