@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 import { IconBowlFood, IconBowlSteam, IconCookingPot, IconCurrencyDollar, IconStarFull } from "../icons";
 import { Minus, Plus } from "lucide-react";
 import { IconHourglass } from "../icons/icon-hourglass";
-import { useGetCook, useGetMeal } from "@/services/queries/use-explore";
+import { useGetCook, useGetMeal, useGetRatings } from "@/services/queries/use-explore";
 import { Spinner } from "../ui/spinner";
 import { formatHours } from "@/lib/utils";
 
@@ -23,12 +23,13 @@ type Props = {
 }
 
 export const CuisineDetails = ({ mealId }: Props) => {
+    const { data: cookRatings, isLoading: isLoadingCookRatings } = useGetRatings({ menu_id: mealId })
     const { data, isLoading } = useGetMeal({ meal_id: mealId, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
     const { data: cookData, isLoading: isLoadingCook } = useGetCook({ cook_id: data?.data?.cook_id || "", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
     return (
         <section id="cuisine-details" className="relative bg-white overflow-hidden">
             {
-                (isLoading || isLoadingCook) ? (
+                (isLoading || isLoadingCook || isLoadingCookRatings) ? (
                     <div className="flex flex-col justify-center h-[50dvh]">
                         <Spinner className="size-5 mx-auto" />
                     </div>
@@ -214,10 +215,10 @@ export const CuisineDetails = ({ mealId }: Props) => {
                                     </div>
                                     <Separator />
                                     <div className="flex flex-col gap-8">
-                                        <h2 className="font-semibold text-xl text-grey-dark-0">Reviews & Ratings (15)</h2>
+                                        <h2 className="font-semibold text-xl text-grey-dark-0">Reviews & Ratings ({cookRatings?.data.length})</h2>
                                         {
-                                            Array.from({ length: 4 }).map((_, index) => (
-                                                <RatingsAndReview key={index} />
+                                            cookRatings?.data.map((ratingData, index) => (
+                                                <RatingsAndReview rating={ratingData} key={index} />
                                             ))
                                         }
                                     </div>

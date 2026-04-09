@@ -126,3 +126,10 @@ interface GetMealResponse {
     allergy_list: string[];
     allergy_trace: string[];
 }
+
+interface GetRatingResponse {
+    customer_rating_count: number;
+    customer_rating_comment: string;
+    customer_rating_at: string | Date;
+    full_name: string;
+}

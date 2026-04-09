@@ -8,8 +8,8 @@ import { StoreCard } from "./store-card";
 import { Separator } from "../ui/separator";
 import { RatingsAndReview } from "./ratings-and-review";
 import { StoreAvailability } from "./store-availability";
-import { useGetCook } from "@/services/queries/use-explore";
 import { CuisineCard } from "../explore-cuisines/cuisine-card";
+import { useGetCook, useGetRatings } from "@/services/queries/use-explore";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../ui/input-group";
 import { IconArrowDown, IconForkKnife, IconGlobe, IconClockCountdown, IconEggCrack, IconSetup } from "../icons"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
@@ -27,9 +27,10 @@ type Props = {
 
 export const CookStorefront = ({ cookId }: Props) => {
     const [active, setActive] = useState(0)
+    const { data: cookRatings, isLoading: isLoadingCookRatings } = useGetRatings({ cook_id: cookId })
     const { data, isLoading } = useGetCook({ cook_id: cookId, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
 
-    if (isLoading) {
+    if (isLoading || isLoadingCookRatings) {
         return null;
     }
 
@@ -88,10 +89,10 @@ export const CookStorefront = ({ cookId }: Props) => {
                             </div>
                             <Separator />
                             <div className="flex flex-col gap-8">
-                                <h2 className="font-semibold text-base text-grey-dark-0">Reviews & Ratings (15)</h2>
+                                <h2 className="font-semibold text-base text-grey-dark-0">Reviews & Ratings ({cookRatings?.data.length})</h2>
                                 {
-                                    Array.from({ length: 4 }).map((_, index) => (
-                                        <RatingsAndReview key={index} />
+                                    cookRatings?.data?.map((ratingData, index) => (
+                                        <RatingsAndReview rating={ratingData} key={index} />
                                     ))
                                 }
                             </div>

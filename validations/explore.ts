@@ -74,3 +74,13 @@ export const exploreMealSchema = z.object({
 })
 
 export type ExploreMealType = z.infer<typeof exploreMealSchema>;
+
+export const getRatingsSchema = z.object({
+    cook_id: z.string().optional(),
+    menu_id: z.string().optional(),
+    page: z.string().optional(),
+    item_per_page: z.string().optional(),
+    component: z.enum(["count"]).optional()
+})
+
+export type GetRatingsType = z.infer<typeof getRatingsSchema>;

@@ -1,5 +1,5 @@
 import { useTRPC } from "@/trpc/client";
-import { ExploreCooksType, ExploreCookType, ExploreMealType, SearchLocationsFormType } from "@/validations/explore";
+import { ExploreCooksType, ExploreCookType, ExploreMealType, GetRatingsType, SearchLocationsFormType } from "@/validations/explore";
 import { useQuery } from "@tanstack/react-query";
 import { type TRPCQueryKeyWithoutPrefix } from "@trpc/tanstack-react-query";
 
@@ -66,6 +66,14 @@ export const useGetMeal = (params: ExploreMealType, config?: TRPCQueryKeyWithout
     return useQuery({
         ...trpc.explore.getMeal.queryOptions(params),
         enabled: !!params.meal_id,
+        ...config,
+    });
+}
+
+export const useGetRatings = (params: GetRatingsType, config?: TRPCQueryKeyWithoutPrefix) => {
+    const trpc = useTRPC();
+    return useQuery({
+        ...trpc.explore.getRatings.queryOptions(params),
         ...config,
     });
 }

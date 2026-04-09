@@ -1,9 +1,8 @@
 import { appendQueryParams } from "@/lib/utils";
 import { api, handleErrorMessage } from "@/trpc/helper";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
-import { exploreCookSchema, exploreCooksSchema, exploreMealSchema, searchLocationsFormSchema } from "@/validations/explore";
+import { exploreCookSchema, exploreCooksSchema, exploreMealSchema, getRatingsSchema, searchLocationsFormSchema } from "@/validations/explore";
 import { TRPCError } from "@trpc/server";
-import z from "zod";
 
 export const exploreRouter = createTRPCRouter({
     searchLocations: baseProcedure.input(searchLocationsFormSchema).query(async ({ input }): Promise<{ status: string; data: SearchLocationsResponse[] }> => {
@@ -88,6 +87,17 @@ export const exploreRouter = createTRPCRouter({
         try {
             const { meal_id, ...rest } = input
             const response = await api.get(appendQueryParams(`customers/requests/available-meals/${meal_id}`, rest));
+            return response.data;
+        } catch (error) {
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: handleErrorMessage(error),
+            });
+        }
+    }),
+    getRatings: baseProcedure.input(getRatingsSchema).query(async ({ input }): Promise<{ status: string; data: GetRatingResponse[] }> => {
+        try {
+            const response = await api.post("customers/requests/rating-lists", input);
             return response.data;
         } catch (error) {
             throw new TRPCError({
