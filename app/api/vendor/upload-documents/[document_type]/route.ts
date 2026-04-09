@@ -14,8 +14,6 @@ export async function POST(req: NextRequest, ctx: RouteContext<'/api/vendor/uplo
         return NextResponse.json({ error: "At least one file is required" }, { status: 400 });
     }
 
-    console.log("🔥🔥🔥🔥🔥", formData)
-
     try {
         const response = await fetch(
             `${process.env.BACKEND_API_URL}/cooks/accounts/documents?document_type=${document_type}`,
@@ -28,10 +26,7 @@ export async function POST(req: NextRequest, ctx: RouteContext<'/api/vendor/uplo
             }
         );
 
-        console.log("🔥🔥🔥🔥🔥", response)
         const data = await response.json();
-
-        console.log("🔥🔥🔥🔥🔥", data)
 
         return NextResponse.json(data, {
             status: response.status,

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface UseClipboardOptions {
     timeout?: number;
@@ -10,7 +11,7 @@ export function useClipboard({ timeout = 2000 }: UseClipboardOptions) {
 
     const copyToClipboard = useCallback(async (text: string) => {
         if (!navigator.clipboard) {
-            console.warn("Clipboard API not available");
+            toast.info("Clipboard API not available");
             return false;
         }
 

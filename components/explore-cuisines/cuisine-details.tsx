@@ -16,8 +16,6 @@ import { useGetCook, useGetMeal, useGetRatings } from "@/services/queries/use-ex
 import { Spinner } from "../ui/spinner";
 import { formatHours } from "@/lib/utils";
 
-const MAIN_ALLERGIES = ["peanuts", "tree nuts", "milk (dairy)", "egg", "wheat/grain", "soy", "fish", "shellfish", "sesame"]
-
 type Props = {
     mealId: string;
 }
