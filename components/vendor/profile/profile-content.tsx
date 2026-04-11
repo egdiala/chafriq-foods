@@ -7,11 +7,12 @@ import { useUser } from "@/context/use-user";
 import { Spinner } from "@/components/ui/spinner";
 import { ProfileTabContent } from "./profile-tab-content";
 import { SubscriptionTabContent } from "./subscription-tab-content";
-import { IconCheckmark, IconPencilSimple } from "@/components/icons";
+import { IconPencilSimple } from "@/components/icons";
 import { useUploadVendorAvatar } from "@/services/mutations/use-account";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DocumentsTabContent } from "./documents-tab-content";
+import { KycStatusBadge } from "../kyc-status-badge";
 
 export const VendorProfileContent = () => {
     const [tab, setOrderId] = useQueryState('tab')
@@ -87,10 +88,7 @@ const ProfileCard = () => {
                         </div>
                         <div className="grid">
                             <h1 className="text-sm sm:text-2xl font-semibold sm:font-extrabold text-grey-dark-0">{user?.first_name} {user?.last_name}</h1>
-                            <div className="flex items-center gap-1 bg-success-light text-xs text-success h-5 px-2 w-fit rounded-full">
-                                <IconCheckmark />
-                                <span className="line-clamp-1">ID Verified</span>
-                            </div>
+                            <KycStatusBadge status={user?.kyc_status} />
                         </div>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-3 sm:gap-10">

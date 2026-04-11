@@ -4,10 +4,11 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useUser } from "@/context/use-user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { IconCheckmark, IconMapPinLine, IconPencilSimple, IconStarFull } from "@/components/icons";
+import { IconMapPinLine, IconPencilSimple, IconStarFull } from "@/components/icons";
 import { useRef, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useUploadBusinessLogo } from "@/services/mutations/use-account";
+import { KycStatusBadge } from "../kyc-status-badge";
 
 
 type Props = {
@@ -67,10 +68,7 @@ export const StoreCard = ({ className }: Props) => {
                         </div>
                         <div className="space-y-1">
                             <h1 className="text-sm sm:text-2xl font-semibold sm:font-extrabold text-grey-dark-0">{user?.business_name}</h1>
-                            <div className="flex items-center gap-1 bg-success-light text-xs text-success h-5 px-2 w-fit rounded-full">
-                                <IconCheckmark />
-                                <span className="line-clamp-1">ID Verified</span>
-                            </div>
+                            <KycStatusBadge status={user?.kyc_status} />
                             <div className="sm:hidden flex items-center gap-2 text-sm text-grey-dark-2 [&>svg]:text-yellow-2"><IconStarFull /> {user?.rating?.toFixed(1) || 0}</div>
                         </div>
                     </div>

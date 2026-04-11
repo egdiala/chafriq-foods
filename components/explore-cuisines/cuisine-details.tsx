@@ -211,15 +211,21 @@ export const CuisineDetails = ({ mealId }: Props) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <Separator />
-                                    <div className="flex flex-col gap-8">
-                                        <h2 className="font-semibold text-xl text-grey-dark-0">Reviews & Ratings ({cookRatings?.data.length})</h2>
-                                        {
-                                            cookRatings?.data.map((ratingData, index) => (
-                                                <RatingsAndReview rating={ratingData} key={index} />
-                                            ))
-                                        }
-                                    </div>
+                                    {
+                                        ((cookRatings?.data || []).length > 0) && (
+                                            <>
+                                            <Separator />
+                                            <div className="flex flex-col gap-8">
+                                                <h2 className="font-semibold text-xl text-grey-dark-0">Reviews & Ratings ({cookRatings?.data.length})</h2>
+                                                {
+                                                    cookRatings?.data.map((ratingData, index) => (
+                                                        <RatingsAndReview rating={ratingData} key={index} />
+                                                    ))
+                                                }
+                                            </div>
+                                            </>
+                                        )
+                                    }
                                 </div>
                                 <div className="grid gap-6 content-start">
                                     <StoreCard cookId={data?.data?.cook_id || ""} />
