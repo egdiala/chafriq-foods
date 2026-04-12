@@ -1,29 +1,49 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Content } from "../content";
-import { Separator } from "../ui/separator";
-import { StoreCard } from "../explore-cooks/store-card";
-import { RatingsAndReview } from "../explore-cooks/ratings-and-review";
-import { StoreAvailability } from "../explore-cooks/store-availability";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 import { Button } from "../ui/button";
-import { IconBowlFood, IconBowlSteam, IconCookingPot, IconCurrencyDollar, IconStarFull } from "../icons";
-import { Minus, Plus } from "lucide-react";
-import { IconHourglass } from "../icons/icon-hourglass";
-import { useGetCook, useGetMeal, useGetRatings } from "@/services/queries/use-explore";
 import { Spinner } from "../ui/spinner";
 import { formatHours } from "@/lib/utils";
+import { Minus, Plus } from "lucide-react";
+import { Separator } from "../ui/separator";
+import { StoreCard } from "../explore-cooks/store-card";
+import { IconHourglass } from "../icons/icon-hourglass";
+import { RatingsAndReview } from "../explore-cooks/ratings-and-review";
+import { StoreAvailability } from "../explore-cooks/store-availability";
+import { useGetCook, useGetMeal, useGetRatings } from "@/services/queries/use-explore";
+import { IconBowlFood, IconBowlSteam, IconCookingPot, IconCurrencyDollar, IconStarFull } from "../icons";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
+import { OrderFoodDialog } from "./order-food-dialog";
 
 type Props = {
     mealId: string;
 }
 
 export const CuisineDetails = ({ mealId }: Props) => {
+    const [open, setOpen] = useState(false)
     const { data: cookRatings, isLoading: isLoadingCookRatings } = useGetRatings({ menu_id: mealId })
     const { data, isLoading } = useGetMeal({ meal_id: mealId, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
     const { data: cookData, isLoading: isLoadingCook } = useGetCook({ cook_id: data?.data?.cook_id || "", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
+    const [quantity, setQuantity] = useState(1)
+
+    const increment = () => {
+        setQuantity((qty) => qty + 1);
+    }
+
+    const decrease = () => {
+        if (quantity === (data?.data?.min_order || 1)) return;
+        setQuantity((qty) => qty - 1)
+    }
+
+    useEffect(() => {
+        if (data) {
+            setQuantity(data?.data?.min_order)
+        }
+    }, [data])
+
     return (
         <section id="cuisine-details" className="relative bg-white overflow-hidden">
             {
@@ -157,13 +177,15 @@ export const CuisineDetails = ({ mealId }: Props) => {
 
                                             <div className="grid gap-7 sm:gap-8 content-start w-full sm:max-w-74">
                                                 <div className="flex items-center gap-1 p-1 w-full sm:max-w-52.5 inset-ring-1 inset-ring-outline rounded-full">
-                                                    <Button size="icon-sm" variant="secondary"><Minus /></Button>
+                                                    <Button size="icon-sm" variant="secondary" type="button" disabled={quantity === (data?.data?.min_order || 1)} onClick={decrease}><Minus /></Button>
                                                     <div className="flex items-center justify-center h-10 flex-1 rounded-full bg-input-field">
-                                                        <span className="text-center text-sm text-grey-dark-0">1 plate</span>
+                                                            <span className="text-center text-sm text-grey-dark-0">
+                                                                {quantity} {data?.data?.quantity_unit.toLowerCase()}{quantity === 1 ? "" : "s"}
+                                                            </span>
                                                     </div>
-                                                    <Button size="icon-sm" variant="secondary"><Plus /></Button>
+                                                    <Button size="icon-sm" variant="secondary" type="button" onClick={increment}><Plus /></Button>
                                                 </div>
-                                                <Button><IconCookingPot className="size-6" /> Order Cuisine</Button>
+                                                <Button type="button" onClick={() => setOpen(true)}><IconCookingPot className="size-6" /> Order Cuisine</Button>
                                             </div>
                                         </div>
                                     </div>
@@ -236,6 +258,7 @@ export const CuisineDetails = ({ mealId }: Props) => {
                     </Content>
                 )
             }
+            <OrderFoodDialog quantity={quantity} meal={data?.data} open={open} setOpen={setOpen} />
         </section>
     )
 }

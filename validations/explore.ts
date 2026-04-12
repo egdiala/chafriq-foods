@@ -31,7 +31,7 @@ export const exploreCooksSchema = z.object({
     // latitude ↔ longitude dependency
     if (data.latitude && !data.longitude) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         message: "longitude is required when latitude is provided",
         path: ["longitude"],
       });
@@ -39,7 +39,7 @@ export const exploreCooksSchema = z.object({
 
     if (data.longitude && !data.latitude) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         message: "latitude is required when longitude is provided",
         path: ["latitude"],
       });
@@ -48,7 +48,7 @@ export const exploreCooksSchema = z.object({
     // order_date → timezone dependency
     if (data.order_date && !data.timezone) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         message: "timezone is required when order_date is provided",
         path: ["timezone"],
       });

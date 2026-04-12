@@ -191,3 +191,37 @@ export const useUploadCustomerAvatar = (fn?: (value: unknown) => void) => {
         },
     });
 }
+
+export const useChangeCustomerPassword = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const { handleLogout } = useAuth()
+    return useMutation(
+        trpc.account.customer.changePassword.mutationOptions({
+            onSuccess: async (data) => {
+                fn?.(data);
+                toast.success("Password updated successfully")
+                handleLogout("/customer/login")
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
+export const useCustomerVendorProfile = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const { handleLogout } = useAuth()
+    return useMutation(
+        trpc.account.customer.deleteProfile.mutationOptions({
+            onSuccess: async (data) => {
+                fn?.(data);
+                toast.success("Account deleted successfully")
+                handleLogout("/customer/login")
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}

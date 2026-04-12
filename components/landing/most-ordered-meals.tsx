@@ -9,7 +9,7 @@ import { ArrowRight } from "lucide-react";
 import { Spinner } from "../ui/spinner";
 
 export const MostOrderedMeals = () => {
-    const { data, isLoading } = useGetMeals({})
+    const { data, isLoading } = useGetMeals({ req_type: "2" })
     return (
         <section id="see-other-cooks" className="relative isolate bg-white overflow-hidden">
             <Content>

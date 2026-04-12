@@ -19,3 +19,11 @@ export const useGetOrder = (id: string, config?: TRPCQueryKeyWithoutPrefix) => {
         ...config,
     });
 }
+
+export const useGetCart = (config?: TRPCQueryKeyWithoutPrefix) => {
+    const trpc = useTRPC();
+    return useQuery({
+        ...trpc.orders.customer.getCart.queryOptions(),
+        ...config,
+    });
+}

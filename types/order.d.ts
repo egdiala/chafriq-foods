@@ -100,3 +100,30 @@ interface GetSingleVendorOrderResponse {
     order_id: string;
     menu_img: string;
 }
+
+interface GetCartResponse {
+    _id: null;
+    cart_id: string;
+    receiver_name: string;
+    receiver_phone: string;
+    pickup_note: string;
+    data: GetCartItemResponse[];
+}
+
+interface GetCartItemResponse {
+    menu_id: string;
+    quantity_size: number;
+    order_date: string | Date;
+    order_start_date: string | Date;
+    order_end_date: string | Date;
+    timezone: string;
+    file_url: string;
+    menu_name: string;
+    menu_content: string;
+    quantity_unit: string;
+    item_min_order: number;
+    item_quantity_size: number;
+    item_cooking_hour: number;
+    item_quantity_amount: string;
+    order_amount: number;
+}

@@ -12,6 +12,8 @@ import { cn } from "@/lib/utils";
 import { useUpdateCustomerProfile, useUploadCustomerAvatar } from "@/services/mutations/use-account";
 import { useRef, useState } from "react";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
+import { ChangePassword } from "./change-password";
+import { DeleteAccount } from "./delete-account";
 
 export const CustomerProfileContent = () => {
     const { user: userObj } = useUser()
@@ -44,10 +46,10 @@ export const CustomerProfileContent = () => {
     return (
         <div className="flex flex-col gap-8">
             <h1 className="font-extrabold text-2xl font-sora">Profile</h1>
-            <div className="grid items-start gap-8 grid-cols-12">
-                <div className="grid p-4 gap-5 rounded-xl bg-grey-dark-4 col-span-3">
-                    <div className="relative rounded-lg sm:rounded-2xl outline-1 outline-orange-2 overflow-hidden size-10 sm:size-23.5">
-                        <Avatar className="size-10 sm:size-23.5 rounded-lg sm:rounded-2xl">
+            <div className="grid items-start gap-8 lg:grid-cols-12">
+                <div className="flex lg:flex-col items-center lg:items-start p-4 gap-3 lg:gap-5 rounded-xl bg-grey-dark-4 lg:col-span-3">
+                    <div className="relative rounded-lg sm:rounded-2xl outline-1 outline-orange-2 overflow-hidden size-11 sm:size-23.5">
+                        <Avatar className="size-11 sm:size-23.5 rounded-lg sm:rounded-2xl">
                             <AvatarImage src={user?.avatar || preview} className="rounded-lg sm:rounded-2xl" />
                             <AvatarFallback className={cn(isPending && "text-orange-5", "rounded-lg sm:rounded-2xl uppercase text-xl")}>{user?.full_name?.[0]?.[0]}{user?.full_name?.[1]?.[0]}</AvatarFallback>
                         </Avatar>
@@ -68,17 +70,17 @@ export const CustomerProfileContent = () => {
                         <p className="font-medium text-grey-dark-2 text-sm">{user?.gender}</p>
                     </div>
                 </div>
-                <div className="grid gap-6 col-span-9">
-                    <div className="flex items-center justify-between p-5 gap-4 rounded-xl bg-grey-dark-4">
+                <div className="flex flex-col gap-6 lg:col-span-9">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-5 gap-4 rounded-xl bg-grey-dark-4 w-full">
                         <div className="flex flex-col">
-                            <span className="text-xs text-grey-dark-2">Email</span>
-                            <p className="font-medium text-sm text-grey-dark-2">{user?.email}</p>
+                            <span className="text-2xs md:text-xs text-grey-dark-2">Email</span>
+                            <p className="font-medium text-xs md:text-sm text-grey-dark-2">{user?.email}</p>
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-xs text-grey-dark-2">Phone</span>
-                            <p className="font-medium text-sm text-grey-dark-2">{formatPhoneNumberIntl(`+${user?.phone_number}` as string)}</p>
+                            <span className="text-2xs md:text-xs text-grey-dark-2">Phone</span>
+                            <p className="font-medium text-xs md:text-sm text-grey-dark-2">{formatPhoneNumberIntl(`+${user?.phone_number}` as string)}</p>
                         </div>
-                        <Button type="button" variant="tertiary" size="smallest" onClick={() => setOpenPersonalModal(true)}>
+                        <Button type="button" variant="tertiary" size="smallest" className="w-fit" onClick={() => setOpenPersonalModal(true)}>
                             <IconPencilSimple />Edit
                         </Button>
                     </div>
@@ -157,6 +159,8 @@ export const CustomerProfileContent = () => {
                     </Card>
                 </div>
             </div>
+            <DeleteAccount open={openDeleteModal} setOpen={setOpenDeleteModal} />
+            <ChangePassword open={openChangePasswordModal} setOpen={setOpenChangePasswordModal} />
         </div>
     )
 }

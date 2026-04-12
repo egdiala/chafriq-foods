@@ -7,9 +7,10 @@ import { Button } from "../ui/button"
 import { useMemo, useState } from "react"
 import { useUser } from "@/context/use-user"
 import { usePathname } from "next/navigation"
-import { IconClose, IconHamMenu, IconShoppingCart, LogoWithText, LogoWithTextWhite } from "../icons"
-import { CustomerProfileDropdown } from "../customer/profile-dropdown";
 import { VendorProfileDropdown } from "../vendor/profile-dropdown";
+import { CustomerProfileDropdown } from "../customer/profile-dropdown";
+import { IconClose, IconHamMenu, LogoWithText, LogoWithTextWhite } from "../icons"
+import { ShoppingCartLink } from "../customer/header";
 
 export const Header = () => {
     const { type } = useUser()
@@ -30,9 +31,7 @@ export const Header = () => {
                         }
                     </Link>
                     <div className="flex items-center justify-end gap-5">
-                        <Button type="button" size={type === null ? "icon-big" : "icon-lg"} variant={isWhite ? "secondary-dark" : "secondary"}>
-                            <IconShoppingCart />
-                        </Button>
+                        <ShoppingCartLink />
                         <div className="md:flex items-center gap-5 hidden">
                             {
                                 type === "customer" ? (
@@ -55,7 +54,7 @@ export const Header = () => {
                                 )
                             }
                         </div>
-                        <Button type="button" size="icon-big" className={cn("flex md:hidden", openDrawer ? "z-50" : "")} onClick={() => setOpenDrawer((prev) => !prev)}>
+                        <Button type="button" size={type === null ? "icon-big" : "icon-lg"} className={cn("flex lg:hidden", openDrawer ? "z-50" : "")} onClick={() => setOpenDrawer((prev) => !prev)}>
                             {openDrawer ? (<IconClose />) : (<IconHamMenu />)}
                         </Button>
                     </div>

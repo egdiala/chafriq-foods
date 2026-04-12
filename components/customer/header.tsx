@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 import { CustomerProfileDropdown } from "./profile-dropdown";
 import { Logout } from "../vendor/logout";
 import { CustomerNotificationsDropdown } from "./notifications-dropdown";
+import { useGetCart } from "@/services/queries/use-orders";
+import { useUser } from "@/context/use-user";
 
 export const CustomerHeader = () => {
     const [openDrawer, setOpenDrawer] = useState(false)
@@ -30,9 +32,7 @@ export const CustomerHeader = () => {
                         <LogoWithText />
                     </Link>
                     <div className="flex items-center justify-end gap-5">
-                        <Button type="button" size="icon-lg" variant="secondary">
-                            <IconShoppingCart />
-                        </Button>
+                        <ShoppingCartLink />
                         <CustomerNotificationsDropdown />
                         <CustomerProfileDropdown />
                         <Button type="button" size="icon-lg" className={cn("flex lg:hidden", openDrawer ? "z-50" : "")} onClick={() => setOpenDrawer((prev) => !prev)}>
@@ -84,5 +84,23 @@ export const CustomerHeader = () => {
         </div>
         <Logout open={openLogout} setOpen={setOpenLogout} />
         </>
+    )
+}
+
+export const ShoppingCartLink = () => {
+    const { type } = useUser()
+    const { data } = useGetCart()
+
+    if (type !== "customer") {
+        return null;
+    }
+
+    return (
+        <div className="relative">
+            <span className="absolute -top-0.5 -right-0.5 z-1 text-xs font-medium text-white rounded-full bg-error p-px px-1.5">{data?.data?.length}</span>
+            <Button type="button" size="icon-lg" variant="secondary">
+                <IconShoppingCart />
+            </Button>
+        </div>
     )
 }
