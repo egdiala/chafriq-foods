@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Content } from "../content";
 import { Button } from "../ui/button";
 import { type RouteType } from "next/dist/lib/load-custom-routes";
-import { IconBell, IconChefHat, IconClose, IconForkKnife, IconHamMenu, IconHeadset, IconShoppingCart, IconSignOut, IconUser, LogoWithText } from "../icons";
+import { IconChefHat, IconClose, IconForkKnife, IconHamMenu, IconHeadset, IconShoppingCart, IconSignOut, IconUser, LogoWithText } from "../icons";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { CustomerProfileDropdown } from "./profile-dropdown";
