@@ -127,7 +127,7 @@ const TopCards = () => {
                         <div key={index} className="flex items-center gap-3 p-3 sm:p-5 inset-ring-1 inset-ring-outline first:inset-ring-grey-dark-4 rounded-lg flex-1 first:bg-grey-dark-4 first:hidden sm:first:flex">
                             <div className="grid place-content-center-safe size-8 bg-orange-5 text-orange-2 [&>svg]:size-4 rounded-xl">{card.icon}</div>
                             <div className="grid gap-1">
-                                <span className="text-[0.625rem] sm:text-xs text-grey-dark-2">{card.title}</span>
+                                <span className="text-2xs sm:text-xs text-grey-dark-2">{card.title}</span>
                                 <p className="text-xs sm:text-sm text-grey-dark-0">{card.description}</p>
                             </div>
                         </div>

@@ -18,3 +18,20 @@ export const useReadVendorNotification = (fn?: (value: unknown) => void) => {
         })
     );
 }
+
+export const useReadCustomerNotification = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const queryClient = useQueryClient()
+    return useMutation(
+        trpc.notifications.customer.readNotification.mutationOptions({
+            onSuccess: async (data) => {
+                await queryClient.invalidateQueries({ queryKey: trpc.notifications.customer.getNotifications.queryKey() })
+                fn?.(data.data);
+                toast.success("Notification read successfully")
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}

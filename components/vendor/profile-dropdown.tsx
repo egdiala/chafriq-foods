@@ -31,7 +31,7 @@ export const VendorProfileDropdown = () => {
                     </Avatar>
                     <div className="grid gap-px">
                         <span className="font-medium text-sm text-grey-dark-1">{user?.first_name} {user?.last_name}</span>
-                        <div className="flex items-center px-1 gap-1 bg-orange-5 rounded-xl h-4.5 w-fit uppercase text-orange-2 text-[0.625rem] [&>svg]:size-3">
+                        <div className="flex items-center px-1 gap-1 bg-orange-5 rounded-xl h-4.5 w-fit uppercase text-orange-2 text-2xs [&>svg]:size-3">
                             <IconChefHat /> cook
                         </div>
                     </div>

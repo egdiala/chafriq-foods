@@ -31,7 +31,7 @@ export const CustomerProfileDropdown = () => {
                     </Avatar>
                     <div className="grid gap-px">
                         <span className="font-medium text-sm text-grey-dark-1">{user?.full_name}</span>
-                        <div className="flex items-center px-1 gap-1 bg-orange-5 rounded-xl h-4.5 w-fit uppercase text-orange-2 text-[0.625rem] [&>svg]:size-3">
+                        <div className="flex items-center px-1 gap-1 bg-orange-5 rounded-xl h-4.5 w-fit uppercase text-orange-2 text-2xs [&>svg]:size-3">
                             <IconCookingPot /> customer
                         </div>
                     </div>
@@ -39,7 +39,7 @@ export const CustomerProfileDropdown = () => {
                 <DropdownMenuSeparator className="mx-px" />
                 <DropdownMenuGroup className="mt-2">
                     <DropdownMenuItem className="[&>svg]:text-orange-2 not-data-[variant=destructive]:focus:**:text-orange-2!" asChild>
-                        <Link href="/vendor/profile">
+                        <Link href="/customer/profile">
                             <IconUser />
                             Profile
                         </Link>
@@ -51,7 +51,7 @@ export const CustomerProfileDropdown = () => {
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="[&>svg]:text-orange-2 not-data-[variant=destructive]:focus:**:text-orange-2!" asChild>
-                        <Link href="/meals">
+                        <Link href="/cooks">
                             <IconChefHat />
                             Explore Cooks
                         </Link>

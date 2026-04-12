@@ -3,7 +3,8 @@ import { TRPCError } from "@trpc/server";
 import { api, handleErrorMessage } from "@/trpc/helper";
 
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
-import { changePasswordVendorFormSchema, deleteVendorFormSchema, updateVendorProfileFormSchema } from "@/validations/vendor-account";
+import { changePasswordVendorFormSchema, deleteVendorFormSchema } from "@/validations/vendor-account";
+import { updateCustomerProfileFormSchema } from "@/validations/customer-account";
 
 export const customerAccountRouter = createTRPCRouter({
     getProfile: protectedProcedure.query(async ({ ctx }): Promise<{ status: string; data: CustomerProfileResponse }> => {
@@ -21,21 +22,21 @@ export const customerAccountRouter = createTRPCRouter({
             });
         }
     }),
-    // updateProfile: protectedProcedure.input(updateVendorProfileFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: CustomerProfileResponse }> => {
-    //     try {
-    //         const response = await api.post("customers/accounts", input, {
-    //             headers: {
-    //                 "Authorization": `Bearer ${ctx.accessToken}`
-    //             }
-    //         });
-    //         return response.data;
-    //     } catch (error) {
-    //         throw new TRPCError({
-    //             code: "INTERNAL_SERVER_ERROR",
-    //             message: handleErrorMessage(error),
-    //         });
-    //     }
-    // }),
+    updateProfile: protectedProcedure.input(updateCustomerProfileFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: CustomerProfileResponse }> => {
+        try {
+            const response = await api.post("customers/accounts", input, {
+                headers: {
+                    "Authorization": `Bearer ${ctx.accessToken}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: handleErrorMessage(error),
+            });
+        }
+    }),
     changePassword: protectedProcedure.input(changePasswordVendorFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: CustomerProfileResponse }> => {
         try {
             const response = await api.put("customers/accounts", input, {

@@ -9,3 +9,11 @@ export const useGetVendorNotifications = (config?: TRPCQueryKeyWithoutPrefix) =>
         ...config,
     });
 }
+
+export const useGetCustomerNotifications = (config?: TRPCQueryKeyWithoutPrefix) => {
+    const trpc = useTRPC();
+    return useQuery({
+        ...trpc.notifications.customer.getNotifications.queryOptions(),
+        ...config,
+    });
+}

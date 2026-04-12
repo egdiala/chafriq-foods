@@ -279,7 +279,7 @@ export const EditBusinessProfile = ({ open, setOpen }: Props) => {
                                                 field.handleChange(normalized);
                                             }}
                                         />
-                                        <FieldDescription className="text-[0.625rem] text-grey-dark-3">
+                                        <FieldDescription className="text-2xs text-grey-dark-3">
                                             Set how far in distance a customer can request for service. Up to 100 km
                                         </FieldDescription>
                                         {isInvalid && (<FieldError errors={field.state.meta.errors} />)}

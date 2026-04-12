@@ -162,14 +162,14 @@ export const ProfileTabContent = () => {
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col gap-1">
                             <span className="font-medium text-xs text-grey-dark-2">Order Distance</span>
-                            <p className="text-[0.625rem] text-grey-dark-3">Set how far in distance a customer can request for service. Up to 100 km</p>
+                            <p className="text-2xs text-grey-dark-3">Set how far in distance a customer can request for service. Up to 100 km</p>
                         </div>
                         <span className="font-medium text-xs text-grey-dark-2">{user?.order_distance || "0"}km</span>
                     </div>
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col gap-1">
                             <span className="font-medium text-xs text-grey-dark-2">Auto accept Orders</span>
-                            <p className="text-[0.625rem] text-grey-dark-3">The system would auto accept orders when requested by a customer</p>
+                            <p className="text-2xs text-grey-dark-3">The system would auto accept orders when requested by a customer</p>
                         </div>
                         <Button size="default" variant="secondary" className="font-medium text-sm rounded-lg after:bg-orange-5 hover:text-orange-2" asChild>
                             <div>
@@ -190,7 +190,7 @@ export const ProfileTabContent = () => {
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col gap-1">
                             <span className="font-medium text-xs text-grey-dark-2">Reset Password</span>
-                            <p className="text-[0.625rem] text-grey-dark-3">This would reset your account login password</p>
+                            <p className="text-2xs text-grey-dark-3">This would reset your account login password</p>
                         </div>
                         <Button type="button" variant="tertiary" size="small" className="font-medium" onClick={() => setOpenChangePasswordModal(true)}>
                             <IconLock className="size-4" /> Reset Password
@@ -199,7 +199,7 @@ export const ProfileTabContent = () => {
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col gap-1">
                             <span className="font-medium text-xs text-grey-dark-2">Delete Account</span>
-                            <p className="text-[0.625rem] text-grey-dark-3">This would remove your organisation details and irreversible.</p>
+                            <p className="text-2xs text-grey-dark-3">This would remove your organisation details and irreversible.</p>
                         </div>
                         <Button type="button" variant="tertiary" size="small" className="font-medium" onClick={() => setOpenDeleteModal(true)}>
                             <IconTrashSimple className="size-4" /> Delete Account

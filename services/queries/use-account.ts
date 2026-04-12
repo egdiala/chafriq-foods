@@ -31,3 +31,22 @@ export const useGetVendorDocument = (documentType: VendorDocumentType, config?: 
         ...config,
     });
 }
+
+export const useCustomerProfile = (config?: TRPCQueryKeyWithoutPrefix) => {
+    const trpc = useTRPC();
+    const { updateType, updateUser } = useUser();
+    
+    const { data, ...res } = useQuery({
+        ...trpc.account.customer.getProfile.queryOptions(),
+        ...config,
+    });
+
+    useEffect(() => {
+        if (data?.status === "ok") {
+            updateUser(data.data);
+            updateType("customer");
+        }
+    }, [data, updateUser, updateType]);
+
+    return { data, ...res }
+}
