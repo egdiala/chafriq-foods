@@ -4,7 +4,7 @@ import { appendQueryParams } from "@/lib/utils";
 import { api, handleErrorMessage } from "@/trpc/helper";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { getVendorOrdersFormSchema, updateVendorOrderStatusSchema } from "@/validations/vendor-order";
-import { addToCartFormSchema } from "@/validations/customer-order";
+import { addToCartFormSchema, pickupDetailsFormSchema } from "@/validations/customer-order";
 
 type GeneralOrderRes = GetOrderStatusCountResponse | GetVendorOrderResponse[]
 
@@ -85,9 +85,24 @@ export const customerOrdersRouter = createTRPCRouter({
             });
         }
     }),
-    getCart: protectedProcedure.query(async ({ ctx }): Promise<{ status: string; data: GetCartResponse[] }> => {
+    getCart: protectedProcedure.query(async ({ ctx }): Promise<{ status: string; data: GetCartResponse }> => {
         try {
             const response = await api.get("customers/accounts/cart-lists", {
+                headers: {
+                    "Authorization": `Bearer ${ctx.accessToken}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: handleErrorMessage(error),
+            });
+        }
+    }),
+    proceedToCheckout: protectedProcedure.input(pickupDetailsFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: CheckoutResponse }> => {
+        try {
+            const response = await api.post("customers/accounts/cart-checkouts", input, {
                 headers: {
                     "Authorization": `Bearer ${ctx.accessToken}`
                 }

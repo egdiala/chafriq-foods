@@ -127,3 +127,11 @@ interface GetCartItemResponse {
     item_quantity_amount: string;
     order_amount: number;
 }
+
+interface CheckoutResponse {
+    order_ref: string;
+    client_secret: string;
+    amount: number;
+    app_secret: string;
+    payment_id: string;
+}

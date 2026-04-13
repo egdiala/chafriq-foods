@@ -50,20 +50,43 @@ export const useUploadVendorOrderFiles = (fn?: (value: unknown) => void) => {
     });
 }
 
-export const useAddToCart = (fn?: (value: unknown) => void) => {
+export const useAddToCart = (msg?: string, fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
     const router = useRouter();
     const queryClient = useQueryClient();
     return useMutation(
         trpc.orders.customer.addToCart.mutationOptions({
             onSuccess: async (data) => {
+                await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getCart.queryKey() })
                 await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getOrders.queryKey() })
-                await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getOrder.queryKey() })
                 fn?.(data.data);
-                toast.success("Added to cart successfully", {
+                toast.success(msg || "Added to cart successfully", {
                     action: {
                         label: 'View Cart',
                         onClick: () => router.push("/customer/cart")
+                    }
+                })
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
+export const useCheckout = (msg?: string, fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const queryClient = useQueryClient();
+    return useMutation(
+        trpc.orders.customer.proceedToCheckout.mutationOptions({
+            onSuccess: async (data) => {
+                await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getCart.queryKey() })
+                await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getOrders.queryKey() })
+                fn?.(data.data);
+                toast.success(msg || "Checkout successful", {
+                    action: {
+                        label: 'Pay Now',
+                        onClick: () => {}
                     }
                 })
             },

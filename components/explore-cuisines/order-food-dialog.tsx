@@ -40,7 +40,7 @@ export const OrderFoodDialog = ({ meal, open, quantity, setOpen }: Props) => {
         orderFoodForm.reset()
     }
 
-    const { mutate, isPending } = useAddToCart(() => closeDialog(false))
+    const { mutate, isPending } = useAddToCart("", () => closeDialog(false))
 
     const menuImage = (meal?.img_data?.filter((item) => item.mime_type.startsWith("image")) || [])?.[0]?.file_url
 

@@ -97,9 +97,11 @@ export const ShoppingCartLink = () => {
 
     return (
         <div className="relative">
-            <span className="absolute -top-0.5 -right-0.5 z-1 text-xs font-medium text-white rounded-full bg-error p-px px-1.5">{data?.data?.length}</span>
-            <Button type="button" size="icon-lg" variant="secondary">
-                <IconShoppingCart />
+            <span className="absolute -top-0.5 -right-0.5 z-1 text-xs font-medium text-white rounded-full bg-error p-px px-1.5">{data?.data?.data?.length}</span>
+            <Button type="button" size="icon-lg" variant="secondary" asChild>
+                <Link href="/customer/cart">
+                    <IconShoppingCart />
+                </Link>
             </Button>
         </div>
     )
