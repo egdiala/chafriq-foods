@@ -75,6 +75,44 @@ export const useAddToCart = (msg?: string, fn?: (value: unknown) => void) => {
     );
 }
 
+export const useRemoveCartItem = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const { clearSelections } = useCart()
+    const queryClient = useQueryClient();
+    return useMutation(
+        trpc.orders.customer.removeCartItem.mutationOptions({
+            onSuccess: async (data) => {
+                await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getCart.queryKey() })
+                clearSelections()
+                fn?.(data.data);
+                toast.success("Cart updated successfully")
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
+export const useEmptyCart = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const { clearSelections } = useCart()
+    const queryClient = useQueryClient();
+    return useMutation(
+        trpc.orders.customer.emptyCart.mutationOptions({
+            onSuccess: async (data) => {
+                await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getCart.queryKey() })
+                clearSelections()
+                fn?.(data.data);
+                toast.success("Cart cleared successfully")
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
 export const useCheckout = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
     const { setCheckoutInfo } = useCart();

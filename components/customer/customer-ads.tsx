@@ -1,10 +1,12 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useCustomerAds } from "@/services/queries/use-ads"
 
 export const CustomerAds = () => {
-    const { data, isLoading } = useCustomerAds()
+    const isMobile = useIsMobile()
+    const { data, isLoading } = useCustomerAds(isMobile ? "mobile" : "web")
     return (
         <>
         {
@@ -19,7 +21,7 @@ export const CustomerAds = () => {
                 }
                 </div>
             ) : (!isLoading && data && (data?.data.length > 0)) ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 lg:col-span-8">
+                <div className="grid md:grid-cols-2 gap-x-8 gap-y-6 lg:col-span-8">
                     {
                         data?.data?.map((ad) => (
                             <div key={ad._id} className="rounded-xl bg-grey-dark-4 h-45 relative w-full overflow-hidden aspect-video">

@@ -4,7 +4,7 @@ import { appendQueryParams } from "@/lib/utils";
 import { api, handleErrorMessage } from "@/trpc/helper";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { updateVendorOrderStatusSchema } from "@/validations/vendor-order";
-import { addToCartFormSchema, getCustomerOrdersFormSchema, pickupDetailsFormSchema } from "@/validations/customer-order";
+import { addToCartFormSchema, getCustomerOrdersFormSchema, pickupDetailsFormSchema, removeFromCartFormSchema } from "@/validations/customer-order";
 
 type GeneralOrderRes = GetOrderStatusCountResponse | GetCustomerOrderResponse[]
 
@@ -73,6 +73,36 @@ export const customerOrdersRouter = createTRPCRouter({
     addToCart: protectedProcedure.input(addToCartFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: VendorProfileResponse }> => {
         try {
             const response = await api.post("customers/accounts/cart-lists", input, {
+                headers: {
+                    "Authorization": `Bearer ${ctx.accessToken}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: handleErrorMessage(error),
+            });
+        }
+    }),
+    removeCartItem: protectedProcedure.input(removeFromCartFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: VendorProfileResponse }> => {
+        try {
+            const response = await api.delete(`customers/accounts/cart-lists/${input.menu_id}`, {
+                headers: {
+                    "Authorization": `Bearer ${ctx.accessToken}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: handleErrorMessage(error),
+            });
+        }
+    }),
+    emptyCart: protectedProcedure.input(removeFromCartFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: VendorProfileResponse }> => {
+        try {
+            const response = await api.delete(appendQueryParams("customers/accounts/cart-lists", input), {
                 headers: {
                     "Authorization": `Bearer ${ctx.accessToken}`
                 }

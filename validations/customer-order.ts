@@ -25,3 +25,7 @@ export const getCustomerOrdersFormSchema = z.object({
 })
 
 export type GetCustomerOrdersFormType = z.infer<typeof getCustomerOrdersFormSchema>;
+
+export const removeFromCartFormSchema = z.object({
+    menu_id: z.string().min(1, "Menu ID is required"),
+})

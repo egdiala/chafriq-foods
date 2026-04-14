@@ -13,11 +13,14 @@ import { usePickupDetailsForm } from "@/hooks/use-pickup-details";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IconHandHeart, IconLock, IconPackage, IconSecurePrivacy, IconShoppingCart, IconTrashSimple, PoweredByStripe } from "@/components/icons";
 import Link from "next/link";
+import { useEmptyCart, useRemoveCartItem } from "@/services/mutations/use-orders";
 
 export const CartContent = () => {
     const { selectedCartItems, toggleCartSelections } = useCart()
     const { data, isLoading } = useGetCart()
     const form = usePickupDetailsForm(data?.data.cart_id || "")
+    const { mutate: clearCart, isPending: isClearing } = useEmptyCart()
+    const { mutate, isPending } = useRemoveCartItem()
 
     const orderSummary = useMemo(() => {
         return [
@@ -35,6 +38,15 @@ export const CartContent = () => {
             },
         ]
     }, [data?.data?.data])
+
+    const deleteCartItems = () => {
+        if (isPending || isClearing || (selectedCartItems.length === 0)) return;
+        if (selectedCartItems.length === 1) {
+            mutate({ menu_id: selectedCartItems[0] })
+        } else {
+            clearCart({ menu_id: selectedCartItems.join(",") })
+        }
+    }
 
     return (
         <>
@@ -63,9 +75,19 @@ export const CartContent = () => {
                                                     />
                                                     <label htmlFor="select-all" className="font-medium text-xs text-grey-dark-3">Select All</label>
                                                 </div>
-                                                <Button type="button" variant="tertiary" size="icon-xs">
-                                                    <IconTrashSimple />
-                                                </Button>
+                                                {
+                                                    (selectedCartItems.length > 0) && (
+                                                        <Button 
+                                                            type="button" 
+                                                            size="icon-xs"  
+                                                            variant="tertiary" 
+                                                            onClick={deleteCartItems}
+                                                            disabled={isPending || isClearing || (selectedCartItems.length === 0)}
+                                                        >
+                                                            {(isPending || isClearing) ? (<Spinner />) : (<IconTrashSimple />)}
+                                                        </Button>
+                                                    )
+                                                }
                                             </div>
                                         </div>
                                     </CardHeader>

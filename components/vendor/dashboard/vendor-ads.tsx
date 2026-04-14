@@ -1,10 +1,12 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useVendorAds } from "@/services/queries/use-ads"
 
 export const VendorAds = () => {
-    const { data, isLoading } = useVendorAds()
+    const isMobile = useIsMobile()
+    const { data, isLoading } = useVendorAds(isMobile ? "mobile" : "web")
     return (
         <>
         {
