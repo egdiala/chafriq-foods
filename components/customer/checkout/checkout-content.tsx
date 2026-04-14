@@ -1,32 +1,35 @@
 "use client";
 
-import { useMemo } from "react";
-import { CartItem } from "./cart-item";
+import { useEffect, useMemo, useState } from "react";
+import { PaymentForm } from "./payment-form";
 import { useCart } from "@/context/use-cart";
+import { loadStripe } from "@stripe/stripe-js";
+import { CheckoutItem } from "./checkout-item";
 import { Button } from "@/components/ui/button";
-import { PickupDetails } from "./pickup-details";
 import { Spinner } from "@/components/ui/spinner";
-import { CheckoutButton } from "./checkout-button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useGetCart } from "@/services/queries/use-orders";
-import { usePickupDetailsForm } from "@/hooks/use-pickup-details";
+import { formatPhoneNumberIntl } from "react-phone-number-input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { IconHandHeart, IconLock, IconPackage, IconSecurePrivacy, IconShoppingCart, IconTrashSimple, PoweredByStripe } from "@/components/icons";
-import Link from "next/link";
+import { StripeElementWrapper } from "@/components/vendor/profile/stripe-element-wrapper";
+import { IconBookOpenText, IconHandHeart, IconLock, IconPackage, IconPhone, IconSecurePrivacy, IconUser, PoweredByStripe } from "@/components/icons";
+import { useRouter } from "next/navigation";
 
-export const CartContent = () => {
-    const { selectedCartItems, toggleCartSelections } = useCart()
+export const CheckoutContent = () => {
+    const router = useRouter()
+    const { checkoutInfo } = useCart()
+    const [open, setOpen] = useState(false)
     const { data, isLoading } = useGetCart()
-    const form = usePickupDetailsForm(data?.data.cart_id || "")
+    const [paymentData, setPaymentData] = useState<CheckoutResponse | null>(null)
 
     const orderSummary = useMemo(() => {
         return [
             {
-                label: "Order Total",
+                label: "Cuisine Total",
                 amount: Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format((data?.data?.data || []).reduce((sum, num) => {
                     return sum + num.order_amount;
                 }, 0))
             },
+            { label: "Tax", amount: "$0" },
             {
                 label: "Total",
                 amount: Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format((data?.data?.data || []).reduce((sum, num) => {
@@ -36,6 +39,18 @@ export const CartContent = () => {
         ]
     }, [data?.data?.data])
 
+    useEffect(() => {
+        if (checkoutInfo !== null) {
+            setPaymentData(checkoutInfo)
+        }
+    }, [checkoutInfo])
+
+    useEffect(() => {
+        if (!data?.data?.cart_id) {
+            router.replace("/customer/cart");
+        }
+    }, [data?.data?.cart_id, router]);
+
     return (
         <>
         {
@@ -43,44 +58,63 @@ export const CartContent = () => {
                 <div className="flex flex-col justify-center h-full">
                     <Spinner className="size-5 mx-auto" />
                 </div>
-            ) : (!isLoading && data?.data?.cart_id) ? (
+            ) : (
                 <div className="flex flex-col gap-8">
-                    <h1 className="font-extrabold text-2xl font-sora">Cart</h1>
+                    <h1 className="font-extrabold text-2xl font-sora">Checkout</h1>
                     <div className="grid items-start gap-8 lg:grid-cols-12">
                         <div className="flex flex-col gap-6 lg:col-span-8 xl:col-span-9">
                             <Card size="sm">
                                 <CardContent className="space-y-4">
                                     <CardHeader className="px-0!">
-                                        <div className="flex items-center justify-between">
-                                            <CardTitle className="text-sm font-normal text-grey-dark-0 uppercase">Cart items</CardTitle>
-                                            <div className="flex items-center justify-end gap-3">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <Checkbox
-                                                        id="select-all"
-                                                        aria-label="Select All"
-                                                        checked={((selectedCartItems.length < (data?.data?.data || [])?.length) && selectedCartItems.length > 0) ? "indeterminate" : !!(selectedCartItems.length === (data?.data?.data || [])?.length)}
-                                                        onCheckedChange={() => toggleCartSelections((data?.data?.data || []).map((item) => item.menu_id))}
-                                                    />
-                                                    <label htmlFor="select-all" className="font-medium text-xs text-grey-dark-3">Select All</label>
-                                                </div>
-                                                <Button type="button" variant="tertiary" size="icon-xs">
-                                                    <IconTrashSimple />
-                                                </Button>
-                                            </div>
-                                        </div>
+                                        <CardTitle className="text-sm font-normal text-grey-dark-0 uppercase">checkout items</CardTitle>
                                     </CardHeader>
                                     <ul className="space-y-4">
                                     {
                                         data?.data?.data?.map((item) => (
                                             <li key={item.menu_id}>
-                                                <CartItem item={item} />
+                                                <CheckoutItem item={item} />
                                             </li>
                                         ))
                                     }
                                     </ul>
                                 </CardContent>
                             </Card>
-                            <PickupDetails form={form} />
+                            <Card size="sm">
+                                <CardContent className="space-y-4">
+                                    <CardHeader className="px-0!">
+                                        <CardTitle className="text-sm font-normal text-grey-dark-0 uppercase">pickup details</CardTitle>
+                                    </CardHeader>
+                                    <ul className="space-y-4">
+                                        <li>
+                                            <div className="grid gap-1">
+                                                <div className="flex items-center gap-1.5">
+                                                    <IconUser className="size-3.5 text-orange-2" />
+                                                    <span className="font-medium text-sm text-grey-dark-2">Recipient Name</span>
+                                                </div>
+                                                <p className="text-sm text-grey-dark-3">{data?.data?.receiver_name}</p>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div className="grid gap-1">
+                                                <div className="flex items-center gap-1.5">
+                                                    <IconPhone className="size-3.5 text-orange-2" />
+                                                    <span className="font-medium text-sm text-grey-dark-2">Recipient Phone</span>
+                                                </div>
+                                                <p className="text-sm text-grey-dark-3">{formatPhoneNumberIntl(`+${data?.data?.receiver_phone}`)}</p>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div className="grid gap-1">
+                                                <div className="flex items-center gap-1.5">
+                                                    <IconBookOpenText className="size-3.5 text-orange-2" />
+                                                    <span className="font-medium text-sm text-grey-dark-2">Pickup Note</span>
+                                                </div>
+                                                <p className="text-sm text-grey-dark-3">{data?.data?.pickup_note}</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </CardContent>
+                            </Card>
                         </div>
                         <div className="flex flex-col gap-6 lg:col-span-4 xl:col-span-3">
                             <div className="flex flex-col gap-6 p-5 rounded-2xl bg-grey-dark-4">
@@ -92,7 +126,7 @@ export const CartContent = () => {
                                 {
                                     orderSummary.map((item, index) => (
                                         <li key={index}>
-                                            <div data-last={index === 1} className="flex items-center justify-between group">
+                                            <div data-last={index === 2} className="flex items-center justify-between group">
                                                 <span className="text-xs text-grey-dark-2 group-data-[last=true]:font-medium">{item.label}</span>
                                                 <span className="text-right text-xs text-grey-dark-2 group-data-[last=true]:text-grey-dark-0 font-medium group-data-[last=true]:text-sm">{item.amount}</span>
                                             </div>
@@ -100,7 +134,7 @@ export const CartContent = () => {
                                     ))
                                 }
                                 </ul>
-                                <CheckoutButton form={form} />
+                                <Button type="button" onClick={() => setOpen(true)} disabled={checkoutInfo === null}>Proceed to Pay</Button>
                             </div>
                             <div className="flex flex-col gap-7">
                                 <div className="grid gap-4">
@@ -136,18 +170,35 @@ export const CartContent = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-            ) : (
-                <div className="flex flex-col items-center w-full max-w-md text-center mx-auto py-12 lg:py-24">
-                    <div className="bg-orange-5 rounded-full grid place-content-center size-9 inset-ring-1 inset-ring-orange-2/50 mb-4">
-                        <IconShoppingCart className="size-4.5 text-orange-2" />
-                    </div>
-                    <span className="text-grey-dark-0 text-base font-semibold">Your cart is empty</span>
-                    <p className="text-grey-dark-2 text-sm font-normal">Add meals from vendors to get started. Once you’ve made your selections, they’ll appear here for checkout.</p>
-                    <Button size="default" className="mt-4" asChild><Link href="/meals">Add Cuisine</Link></Button>
+                    {(open && paymentData) && <StripePayment data={paymentData} open={open} setOpen={setOpen} />}
                 </div>
             )
         }
         </>
     )
 }
+
+interface IStripePayment {
+  data: CheckoutResponse;
+  open: boolean;
+  setOpen: (value: boolean) => void;
+}
+
+export const StripePayment = ({ data, open, setOpen }: IStripePayment) => {
+  const { app_secret, client_secret, payment_id } = data;
+  const stripePromise = loadStripe(app_secret);
+
+  return (
+    <StripeElementWrapper
+      client_secret={client_secret}
+      stripePromise={stripePromise}
+    >
+      <PaymentForm
+        open={open}
+        setOpen={setOpen}
+        transactionId={payment_id}
+        secret={client_secret}
+      />
+    </StripeElementWrapper>
+  );
+};

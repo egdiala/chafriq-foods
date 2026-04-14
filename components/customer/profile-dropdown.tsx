@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Logout } from "../vendor/logout";
 import { useUser } from "@/context/use-user";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { IconArrowDown, IconChefHat, IconCookingPot, IconForkKnife, IconHeadset, IconSignOut, IconUser } from "../icons";
+import { IconArrowDown, IconChefHat, IconCookingPot, IconForkKnife, IconHeadset, IconPackage, IconSignOut, IconUser } from "../icons";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 export const CustomerProfileDropdown = () => {
@@ -54,6 +54,12 @@ export const CustomerProfileDropdown = () => {
                         <Link href="/cooks">
                             <IconChefHat />
                             Explore Cooks
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="[&>svg]:text-orange-2 not-data-[variant=destructive]:focus:**:text-orange-2!" asChild>
+                        <Link href="/customer/orders">
+                            <IconPackage />
+                            Orders
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="[&>svg]:text-orange-2 not-data-[variant=destructive]:focus:**:text-orange-2!">

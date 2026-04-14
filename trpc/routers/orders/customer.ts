@@ -115,4 +115,19 @@ export const customerOrdersRouter = createTRPCRouter({
             });
         }
     }),
+    confirmPayment: protectedProcedure.input(z.string().min(1, "Transaction ID is required")).mutation(async ({ ctx, input }): Promise<{ status: string; data: CheckoutResponse }> => {
+        try {
+            const response = await api.put(`customers/accounts/cart-checkouts/${input}`, {}, {
+                headers: {
+                    "Authorization": `Bearer ${ctx.accessToken}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: handleErrorMessage(error),
+            });
+        }
+    }),
 });

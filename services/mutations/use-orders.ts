@@ -2,6 +2,7 @@ import { useTRPC } from "@/trpc/client";
 import { toast } from 'sonner';
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/context/use-cart";
 
 export const useUpdateVendorOrderStatus = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
@@ -74,21 +75,38 @@ export const useAddToCart = (msg?: string, fn?: (value: unknown) => void) => {
     );
 }
 
-export const useCheckout = (msg?: string, fn?: (value: unknown) => void) => {
+export const useCheckout = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
+    const { setCheckoutInfo } = useCart();
     const queryClient = useQueryClient();
     return useMutation(
         trpc.orders.customer.proceedToCheckout.mutationOptions({
             onSuccess: async (data) => {
+                setCheckoutInfo(data.data)
                 await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getCart.queryKey() })
                 await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getOrders.queryKey() })
                 fn?.(data.data);
-                toast.success(msg || "Checkout successful", {
-                    action: {
-                        label: 'Pay Now',
-                        onClick: () => {}
-                    }
-                })
+                toast.success("Checkout successful")
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
+export const useConfirmPayment = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const { setCheckoutInfo } = useCart();
+    const queryClient = useQueryClient();
+    return useMutation(
+        trpc.orders.customer.confirmPayment.mutationOptions({
+            onSuccess: async (data) => {
+                setCheckoutInfo(null)
+                await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getCart.queryKey() })
+                await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getOrders.queryKey() })
+                fn?.(data.data);
+                toast.success("Payment verification successful")
             },
             onError: (error) => {
                 toast.error(error.message || "Something went wrong");
