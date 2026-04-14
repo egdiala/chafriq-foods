@@ -3,13 +3,13 @@ import { TRPCError } from "@trpc/server";
 import { appendQueryParams } from "@/lib/utils";
 import { api, handleErrorMessage } from "@/trpc/helper";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
-import { getVendorOrdersFormSchema, updateVendorOrderStatusSchema } from "@/validations/vendor-order";
-import { addToCartFormSchema, pickupDetailsFormSchema } from "@/validations/customer-order";
+import { updateVendorOrderStatusSchema } from "@/validations/vendor-order";
+import { addToCartFormSchema, getCustomerOrdersFormSchema, pickupDetailsFormSchema } from "@/validations/customer-order";
 
-type GeneralOrderRes = GetOrderStatusCountResponse | GetVendorOrderResponse[]
+type GeneralOrderRes = GetOrderStatusCountResponse | GetCustomerOrderResponse[]
 
 export const customerOrdersRouter = createTRPCRouter({
-    getOrders: protectedProcedure.input(getVendorOrdersFormSchema).query(async ({ ctx, input }): Promise<{ status: string; data: GeneralOrderRes }> => {
+    getOrders: protectedProcedure.input(getCustomerOrdersFormSchema).query(async ({ ctx, input }): Promise<{ status: string; data: GeneralOrderRes }> => {
         try {
             const response = await api.get(appendQueryParams("customers/accounts/order-lists", input), {
                 headers: {

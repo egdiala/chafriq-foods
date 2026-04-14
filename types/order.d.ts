@@ -135,3 +135,18 @@ interface CheckoutResponse {
     app_secret: string;
     payment_id: string;
 }
+
+interface GetCustomerOrderResponse {
+    _id: string;
+    menu_name: string;
+    quantity_size: number;
+    quantity_unit: string;
+    amount_total: number;
+    amount_paid: number;
+    menu_content: string;
+    order_start_date: string | Date;
+    order_end_date: string | Date;
+    order_status: OrderStatus;
+    order_id: string;
+    file_url: string;
+}
