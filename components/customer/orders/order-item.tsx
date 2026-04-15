@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { format } from "date-fns";
 import { dateToRender } from "@/lib/utils";
 import { IconDot } from "@/components/icons";
@@ -6,14 +7,19 @@ import { VariantProps } from "class-variance-authority";
 import { Badge, badgeVariants } from "@/components/ui/badge";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ORDER_STATUS, ORDER_STATUS_CLASSES } from "@/components/vendor/orders/order-card";
+import { CancelOrder } from "./cancel-order";
+import { useState } from "react";
 
 type Props = {
     item: GetCustomerOrderResponse;
 }
 
-export const OrderItem = ({ item }: Props) => {    
+export const OrderItem = ({ item }: Props) => {   
+    const [open, setOpen] = useState(false)
     return (
-        <div className="flex items-center gap-4 rounded-lg bg-grey-dark-4 p-3">
+        <>
+        <div className="flex items-center gap-4 rounded-lg bg-grey-dark-4 p-3 relative">
+            <Link href={`/customer/orders/${item.order_id}`} className="absolute inset-0 w-full h-full" />
             <Avatar className="size-12 sm:size-18 rounded">
                 <AvatarImage src={item.file_url} alt={item.menu_name} className="size-12 sm:size-18 rounded" />
             </Avatar>
@@ -29,12 +35,29 @@ export const OrderItem = ({ item }: Props) => {
                     </Badge>
                 </div>
             </div>
-            <div className="flex flex-col justify-between items-end gap-8 w-fit h-full">
+            <div className="flex flex-col justify-between items-end w-fit flex-1 self-stretch">
                 <div className="text-2xs text-right text-grey-dark-2 whitespace-nowrap">
                     {dateToRender(item.order_start_date as Date)}, {format(item.order_start_date, "hh:mmaaa")}
                 </div>
-                <Button size="small" variant="secondary" className="text-sm font-medium">Buy Again</Button>
+                {
+                    item.order_status === 1 && (
+                        <Button size="smallest" variant="default" className="text-xs font-medium isolate" type="button" onClick={() => setOpen(true)}>
+                            Cancel Order
+                        </Button>
+                    )
+                }
+                {
+                    item.order_status === 4 && (
+                        <Button size="smallest" variant="default" className="text-xs font-medium isolate" asChild>
+                            <Link href={`/meals/${item._id}`}>
+                                Buy Again
+                            </Link>
+                        </Button>
+                    )
+                }
             </div>
         </div>
+        <CancelOrder open={open} orderId={item.order_id} setOpen={setOpen} />
+        </>
     )
 }

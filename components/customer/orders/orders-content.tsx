@@ -148,7 +148,7 @@ export const CustomerOrdersContent = () => {
                                     <IconHandHeart className="size-4 text-grey-dark-3" />
                                     <span className="font-medium text-xs text-grey-dark-2">Need help?</span>
                                 </div>
-                                <Button variant="link" size="smallest">Contact Us</Button>
+                                <Button variant="link" size="smallest" asChild><Link href="/contact-us">Contact Us</Link></Button>
                             </div>
                         </div>
                         <div className="grid gap-1">

@@ -29,3 +29,8 @@ export type GetCustomerOrdersFormType = z.infer<typeof getCustomerOrdersFormSche
 export const removeFromCartFormSchema = z.object({
     menu_id: z.string().min(1, "Menu ID is required"),
 })
+
+export const cancelCustomerOrderFormSchema = z.object({
+    order_id: z.string().min(1, "Order ID is required"),
+    reason: z.string().min(2, "Reason is required").max(200, "Reason cannot exceed 200 characters")
+})

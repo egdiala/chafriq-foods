@@ -152,3 +152,21 @@ export const useConfirmPayment = (fn?: (value: unknown) => void) => {
         })
     );
 }
+
+export const useCancelCustomerOrder = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const queryClient = useQueryClient()
+    return useMutation(
+        trpc.orders.customer.cancelOrder.mutationOptions({
+            onSuccess: async (data) => {
+                await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getOrders.queryKey() })
+                await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getOrder.queryKey() })
+                fn?.(data.data);
+                toast.success("Order cancelled successfully")
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}

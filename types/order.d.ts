@@ -150,3 +150,45 @@ interface GetCustomerOrderResponse {
     order_id: string;
     file_url: string;
 }
+
+interface GetSingleCustomerOrderResponse {
+    menu_id: string;
+    order_ref: string;
+    item_id: string;
+    menu_name: string;
+    quantity_size: number;
+    quantity_unit: string;
+    amount_total: number;
+    amount_paid: number;
+    cooking_hour: number;
+    menu_content: string;
+    additional_note: string;
+    allegen_note: string;
+    allegen_list: [];
+    allegen_trace: [];
+    order_start_date: string | Date;
+    order_end_date: string | Date;
+    order_status: OrderStatus;
+    customer_rating_count: number;
+    customer_rating_comment: string;
+    platform_fee: {
+        amount: 0,
+        percent: 0
+    };
+    createdAt: string | Date;
+    order_paid_at: string | Date;
+    img_proof: [];
+    img_data: {
+        _id: string;
+        mime_type: string;
+        file_url: string;
+    }[];
+    pickup_data: {
+        receiver_name: string;
+        receiver_phone: string;
+        pickup_note: string;
+    };
+    order_id: string;
+    allergy_list: [];
+    allergy_trace: [];
+}

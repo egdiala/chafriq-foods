@@ -1,20 +1,21 @@
-import { cn, dateToRender, formatHours } from "@/lib/utils";
 import { XIcon } from "lucide-react";
-import { Badge, badgeVariants } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { IconHourglass } from "@/components/icons/icon-hourglass";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { IconBowlFood, IconCalendar, IconClockCountdown, IconCoins, IconCurrencyDollar, IconExternalLink } from "@/components/icons";
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import { useGetOrder } from "@/services/queries/use-orders";
-import { differenceInHours, format } from "date-fns";
-import { ORDER_STATUS, ORDER_STATUS_CLASSES } from "./order-card";
-import { VariantProps } from "class-variance-authority";
 import { Skeleton } from "@/components/ui/skeleton";
+import { differenceInHours, format } from "date-fns";
+import { VariantProps } from "class-variance-authority";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn, dateToRender, formatHours } from "@/lib/utils";
+import { useGetOrder } from "@/services/queries/use-orders";
+import { Badge, badgeVariants } from "@/components/ui/badge";
+import { formatPhoneNumberIntl } from "react-phone-number-input";
+import { IconHourglass } from "@/components/icons/icon-hourglass";
+import { ORDER_STATUS, ORDER_STATUS_CLASSES } from "./order-card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUpdateVendorOrderStatus } from "@/services/mutations/use-orders";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { IconBowlFood, IconCalendar, IconClockCountdown, IconCoins, IconCurrencyDollar, IconExternalLink } from "@/components/icons";
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 
 type Props = {
     orderId: string | null;
@@ -160,7 +161,7 @@ export const OrderDetailsDrawer = ({ onCancel, onDispatched, orderId, setOpen }:
                                                 <span className="font-medium text-xs text-grey-dark-2">{data?.data?.receiver_name}</span>
                                                 <IconExternalLink className="text-orange-2" />
                                             </div>
-                                            <a href={`tel:${data?.data?.receiver_phone}`} className="text-xs text-grey-dark-2">{data?.data?.receiver_phone}</a>
+                                            <a href={`tel:${formatPhoneNumberIntl(`+${data?.data?.receiver_phone}`)}`} className="text-xs text-grey-dark-2">{formatPhoneNumberIntl(`+${data?.data?.receiver_phone}`)}</a>
                                         </div>
                                         </div>
                                         {

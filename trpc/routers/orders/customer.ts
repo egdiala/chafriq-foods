@@ -4,7 +4,7 @@ import { appendQueryParams } from "@/lib/utils";
 import { api, handleErrorMessage } from "@/trpc/helper";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { updateVendorOrderStatusSchema } from "@/validations/vendor-order";
-import { addToCartFormSchema, getCustomerOrdersFormSchema, pickupDetailsFormSchema, removeFromCartFormSchema } from "@/validations/customer-order";
+import { addToCartFormSchema, cancelCustomerOrderFormSchema, getCustomerOrdersFormSchema, pickupDetailsFormSchema, removeFromCartFormSchema } from "@/validations/customer-order";
 
 type GeneralOrderRes = GetOrderStatusCountResponse | GetCustomerOrderResponse[]
 
@@ -24,7 +24,7 @@ export const customerOrdersRouter = createTRPCRouter({
             });
         }
     }),
-    getOrder: protectedProcedure.input(z.string().min(1, "Order ID is required")).query(async ({ ctx, input }): Promise<{ status: string; data: GetSingleVendorOrderResponse }> => {
+    getOrder: protectedProcedure.input(z.string().min(1, "Order ID is required")).query(async ({ ctx, input }): Promise<{ status: string; data: GetSingleCustomerOrderResponse }> => {
         try {
             const response = await api.get(`customers/accounts/order-lists/${input}`, {
                 headers: {
@@ -58,6 +58,22 @@ export const customerOrdersRouter = createTRPCRouter({
     disputeOrder: protectedProcedure.input(updateVendorOrderStatusSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: VendorProfileResponse }> => {
         try {
             const response = await api.post("customers/accounts/order-lists", input, {
+                headers: {
+                    "Authorization": `Bearer ${ctx.accessToken}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: handleErrorMessage(error),
+            });
+        }
+    }),
+    cancelOrder: protectedProcedure.input(cancelCustomerOrderFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: VendorProfileResponse }> => {
+        try {
+            const { order_id, ...payload } = input
+            const response = await api.patch(`customers/accounts/order-lists/${order_id}`, payload, {
                 headers: {
                     "Authorization": `Bearer ${ctx.accessToken}`
                 }
