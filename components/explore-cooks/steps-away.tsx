@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, dateToRender } from "@/lib/utils";
 import { format } from "date-fns";
 import { Content } from "../content";
 import { CookCard } from "./cook-card";
@@ -16,11 +16,14 @@ import { useDishList, useGetCooks } from "@/services/queries/use-explore";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../ui/input-group";
 import { IconArrowDown, IconCalendar, IconChefHat, IconForkKnife, IconMapPinLine, IconSetup } from "../icons";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { useQueryState } from "nuqs";
 
 export const ExploreCooksStepsAway = () => {
     const { location } = useUser()
     const [query, setQuery] = useState("");
     const debouncedQuery = useDebounce(query, 300);
+    const [pickupLocation] = useQueryState('pickup')
+    const [pickupDate] = useQueryState('pickup_date')
 
     const { data: dishList, isLoading: isLoadingDishList } = useDishList()
     const [filters, setFilters] = useState({
@@ -48,14 +51,22 @@ export const ExploreCooksStepsAway = () => {
                     </div>
                     <div className="grid gap-5 w-full md:max-w-217.5 mx-auto">
                         <div className="flex items-center py-2 px-3 gap-4 bg-grey-dark-4 w-fit rounded-full mx-auto [&_svg]:size-3 [&_svg]:text-grey-dark-3">
-                            <div className="flex items-center gap-1">
-                                <IconMapPinLine />
-                                <span className="text-xs text-grey-dark-2">6391 Elgin St. Celina, Delaware 10299</span>
-                            </div>
-                            <Separator orientation="vertical" />
+                            {
+                                pickupLocation && (
+                                    <>
+                                    <div className="flex items-center gap-1">
+                                        <IconMapPinLine />
+                                        <span className="text-xs text-grey-dark-2">{pickupLocation}</span>
+                                    </div>
+                                    <Separator orientation="vertical" />
+                                    </>
+                                )
+                            }
                             <div className="flex items-center gap-1">
                                 <IconCalendar />
-                                <span className="text-xs text-grey-dark-2">2nd May, 2023</span>
+                                <span className="text-xs text-grey-dark-2">
+                                    {dateToRender(pickupDate as unknown as Date || new Date().toISOString() as unknown as Date)}
+                                </span>
                             </div>
                         </div>
                         <InputGroup className="h-13 bg-white">
@@ -107,7 +118,7 @@ export const ExploreCooksStepsAway = () => {
                                 <PopoverContent align="end" className="p-1 w-65">
                                     <Calendar
                                         mode="single"
-                                        selected={filters.order_date as unknown as Date}
+                                        selected={(filters.order_date || pickupDate) as unknown as Date}
                                         onSelect={(pickedDate) => setFilters((prev) => ({
                                             ...prev,
                                             order_date: pickedDate ? format(pickedDate as unknown as Date, "yyyy-MM-dd") : ""

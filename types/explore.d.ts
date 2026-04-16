@@ -1,6 +1,7 @@
 interface SearchLocationsResponse {
     name: string;
     id: string;
+    session_id?: string;
 }
 
 interface GetCountriesResponse {

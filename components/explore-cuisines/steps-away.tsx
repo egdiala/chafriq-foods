@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, dateToRender } from "@/lib/utils";
 import { format } from "date-fns";
 import { Content } from "../content";
 import { Calendar } from "../ui/calendar";
@@ -13,14 +13,17 @@ import { useUser } from "@/context/use-user";
 import { useDebounce } from "@uidotdev/usehooks";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useDishList, useGetMeals } from "@/services/queries/use-explore";
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../ui/input-group";
-import { IconArrowDown, IconBowlFood, IconCalendar, IconForkKnife, IconMapPinLine, IconSetup } from "../icons";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group";
+import { IconArrowDown, IconBowlFood, IconCalendar, IconForkKnife, IconMapPinLine } from "../icons";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { useQueryState } from "nuqs";
 
 export const ExploreCuisinesStepsAway = () => {
     const { location } = useUser()
     const [query, setQuery] = useState("");
     const debouncedQuery = useDebounce(query, 300);
+    const [pickupLocation] = useQueryState('pickup')
+    const [pickupDate, setPickupDate] = useQueryState('pickup_date')
 
     const { data: dishList, isLoading: isLoadingDishList } = useDishList()
     const [filters, setFilters] = useState({
@@ -48,14 +51,22 @@ export const ExploreCuisinesStepsAway = () => {
                     </div>
                     <div className="grid gap-5 w-full md:max-w-217.5 mx-auto">
                         <div className="flex items-center py-2 px-3 gap-4 bg-grey-dark-4 w-fit rounded-full mx-auto [&_svg]:size-3 [&_svg]:text-grey-dark-3">
-                            <div className="flex items-center gap-1">
-                                <IconMapPinLine />
-                                <span className="text-xs text-grey-dark-2 flex-1 line-clamp-1 text-balance">6391 Elgin St. Celina, Delaware 10299</span>
-                            </div>
-                            <Separator orientation="vertical" />
+                            {
+                                pickupLocation && (
+                                    <>
+                                    <div className="flex items-center gap-1">
+                                        <IconMapPinLine />
+                                        <span className="text-xs text-grey-dark-2 flex-1 line-clamp-1 text-balance">{pickupLocation}</span>
+                                    </div>
+                                    <Separator orientation="vertical" />
+                                    </>
+                                )
+                            }
                             <div className="flex items-center gap-1">
                                 <IconCalendar />
-                                <span className="text-xs text-grey-dark-2 flex-1 line-clamp-1 text-balance">2nd May, 2023</span>
+                                <span className="text-xs text-grey-dark-2 flex-1 line-clamp-1 text-balance">
+                                    {dateToRender(pickupDate as unknown as Date || new Date().toISOString() as unknown as Date)}
+                                </span>
                             </div>
                         </div>
                         <InputGroup className="h-13 bg-white">
@@ -63,11 +74,11 @@ export const ExploreCuisinesStepsAway = () => {
                             <InputGroupAddon>
                                 <Search className="ml-1" />
                             </InputGroupAddon>
-                            <InputGroupAddon align="inline-end">
+                            {/* <InputGroupAddon align="inline-end">
                                 <InputGroupButton variant="default" size="icon-sm">
                                     <IconSetup />
                                 </InputGroupButton>
-                            </InputGroupAddon>
+                            </InputGroupAddon> */}
                         </InputGroup>
                         <div className="flex items-center justify-center flex-wrap gap-3 md:gap-7">
                             <DropdownMenu>
@@ -98,20 +109,23 @@ export const ExploreCuisinesStepsAway = () => {
 
                             <Popover>
                                 <PopoverTrigger asChild>
-                                    <button type="button" data-selected={!!filters?.order_date} className="group inline-flex gap-1 items-center inset-ring-1 rounded-full px-3 h-9 bg-grey-dark-4 inset-ring-grey-dark-4 [&>svg]:text-orange-2 data-[selected=true]:bg-orange-5 data-[selected=true]:inset-ring-orange-2 data-[selected=true]:text-orange-2! transition-all duration-200 ease-out">
+                                    <button type="button" data-selected={!!(filters.order_date || pickupDate)} className="group inline-flex gap-1 items-center inset-ring-1 rounded-full px-3 h-9 bg-grey-dark-4 inset-ring-grey-dark-4 [&>svg]:text-orange-2 data-[selected=true]:bg-orange-5 data-[selected=true]:inset-ring-orange-2 data-[selected=true]:text-orange-2! transition-all duration-200 ease-out">
                                         <IconCalendar />
-                                        <span className="text-sm text-grey-dark-2 group-data-[selected=true]:text-orange-2">{filters?.order_date || "Order date"}</span>
+                                        <span className="text-sm text-grey-dark-2 group-data-[selected=true]:text-orange-2">{(filters.order_date || pickupDate) || "Order date"}</span>
                                         <IconArrowDown className="text-grey-dark-3! group-data-[selected=true]:text-orange-2!" />
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent align="end" className="p-1 w-65">
                                     <Calendar
                                         mode="single"
-                                        selected={filters.order_date as unknown as Date}
-                                        onSelect={(pickedDate) => setFilters((prev) => ({
-                                            ...prev,
-                                            order_date: pickedDate ? format(pickedDate as unknown as Date, "yyyy-MM-dd") : ""
-                                        }))}
+                                        selected={(filters.order_date || pickupDate) as unknown as Date}
+                                        onSelect={(pickedDate) => {
+                                            setFilters((prev) => ({
+                                                ...prev,
+                                                order_date: pickedDate ? format(pickedDate as unknown as Date, "yyyy-MM-dd") : ""
+                                            }))
+                                            setPickupDate(pickedDate ? format(pickedDate as unknown as Date, "yyyy-MM-dd") : null)
+                                        }}
                                         defaultMonth={new Date()}
                                         className="bg-transparent"
                                         captionLayout="label"
