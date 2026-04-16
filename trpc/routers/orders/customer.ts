@@ -4,7 +4,7 @@ import { appendQueryParams } from "@/lib/utils";
 import { api, handleErrorMessage } from "@/trpc/helper";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { updateVendorOrderStatusSchema } from "@/validations/vendor-order";
-import { addToCartFormSchema, cancelCustomerOrderFormSchema, getCustomerOrdersFormSchema, pickupDetailsFormSchema, removeFromCartFormSchema } from "@/validations/customer-order";
+import { addToCartFormSchema, cancelCustomerOrderFormSchema, getCustomerOrdersFormSchema, pickupDetailsFormSchema, rateCustomerOrderFormSchema, removeFromCartFormSchema } from "@/validations/customer-order";
 
 type GeneralOrderRes = GetOrderStatusCountResponse | GetCustomerOrderResponse[]
 
@@ -39,10 +39,10 @@ export const customerOrdersRouter = createTRPCRouter({
             });
         }
     }),
-    rateOrder: protectedProcedure.input(updateVendorOrderStatusSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: VendorProfileResponse }> => {
+    rateOrder: protectedProcedure.input(rateCustomerOrderFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; }> => {
         try {
             const { order_id, ...payload } = input;
-            const response = await api.post(`customers/accounts/order-ratings/${order_id}`, payload, {
+            const response = await api.put(`customers/accounts/order-lists/${order_id}`, payload, {
                 headers: {
                     "Authorization": `Bearer ${ctx.accessToken}`
                 }

@@ -170,3 +170,50 @@ export const useCancelCustomerOrder = (fn?: (value: unknown) => void) => {
         })
     );
 }
+
+export const useRateCustomerOrder = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const queryClient = useQueryClient()
+    return useMutation(
+        trpc.orders.customer.rateOrder.mutationOptions({
+            onSuccess: async (data) => {
+                await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getOrders.queryKey() })
+                await queryClient.invalidateQueries({ queryKey: trpc.orders.customer.getOrder.queryKey() })
+                fn?.(data);
+                toast.success("Review sent successfully")
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
+export const useDisputeOrder = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async (payload: { formData: FormData; orderId: string; }) => {
+            const res = await fetch(`/api/customer/dispute-order/${payload.orderId}`, {
+                method: "POST",
+                body: payload.formData,
+            });
+
+            if (!res.ok) {
+                const error = await res.json();
+                throw new Error(error?.error || "Something went wrong");
+            }
+
+            return res.json();
+        },
+        onSuccess: async (data) => {
+            await queryClient.invalidateQueries({ queryKey: trpc.orders.vendor.getOrders.queryKey() })
+            await queryClient.invalidateQueries({ queryKey: trpc.orders.vendor.getOrder.queryKey() })
+            fn?.(data);
+            toast.success("Order reported successfully");
+        },
+        onError: (error) => {
+            toast.error(error.message || "Something went wrong");
+        },
+    });
+}

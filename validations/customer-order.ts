@@ -34,3 +34,18 @@ export const cancelCustomerOrderFormSchema = z.object({
     order_id: z.string().min(1, "Order ID is required"),
     reason: z.string().min(2, "Reason is required").max(200, "Reason cannot exceed 200 characters")
 })
+
+export const rateCustomerOrderFormSchema = z.object({
+    order_id: z.string().min(1, "Order ID is required"),
+    rating: z.enum(["1", "2", "3", "4", "5"], "A rating is required for this order"),
+    comment: z.string().min(2, "Reason is required").max(500, "Reason cannot exceed 500 characters")
+})
+
+export type RateCustomerOrdersFormType = z.infer<typeof rateCustomerOrderFormSchema>;
+
+export const reportCustomerOrderFormSchema = z.object({
+    order_id: z.string().min(1, "Order ID is required"),
+    reason: z.string().min(2, "Reason is required").max(50, "Reason cannot exceed 50 characters"),
+    description: z.string().min(2, "Description is required").max(500, "Reason cannot exceed 500 characters"),
+    file: z.string().min(1, "At least one media evidence is required")
+})

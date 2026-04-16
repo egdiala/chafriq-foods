@@ -1,23 +1,26 @@
 "use client";
 
-import { Content } from "@/components/content";
-import { OrderFoodDialog } from "@/components/explore-cuisines/order-food-dialog";
-import { IconBowlFood, IconBowlSteam, IconClose, IconCookingPot, IconCurrencyDollar, IconDot, IconHourglass, IconLock, IconStarFull } from "@/components/icons";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Separator } from "@/components/ui/separator";
-import { Spinner } from "@/components/ui/spinner";
-import { dateToRender, formatHours } from "@/lib/utils";
-import { useGetCustomerOrder } from "@/services/queries/use-orders";
-import { format } from "date-fns";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { format } from "date-fns";
+import { RateOrder } from "./rate-order";
+import { useUser } from "@/context/use-user";
 import { CancelOrder } from "./cancel-order";
-import { formatPhoneNumberIntl } from "react-phone-number-input";
-import { Badge, badgeVariants } from "@/components/ui/badge";
-import { ORDER_STATUS, ORDER_STATUS_CLASSES } from "@/components/vendor/orders/order-card";
+import { Content } from "@/components/content";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { useEffect, useMemo, useState } from "react";
+import { Separator } from "@/components/ui/separator";
+import { dateToRender, formatHours } from "@/lib/utils";
 import { VariantProps } from "class-variance-authority";
+import { Badge, badgeVariants } from "@/components/ui/badge";
+import { formatPhoneNumberIntl } from "react-phone-number-input";
+import { useGetCustomerOrder } from "@/services/queries/use-orders";
+import { ORDER_STATUS, ORDER_STATUS_CLASSES } from "@/components/vendor/orders/order-card";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { IconBowlFood, IconBowlSteam, IconClose, IconCookingPot, IconCurrencyDollar, IconDot, IconHourglass, IconLock, IconStarFull } from "@/components/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ReportOrder } from "./report-order";
 
 
 type Props = {
@@ -26,8 +29,13 @@ type Props = {
 
 export const OrderDetails = ({ orderId }: Props) => {
     const [open, setOpen] = useState(false)
+    const [openReport, setOpenReport] = useState(false)
+    const [openRating, setOpenRating] = useState(false)
     const { data, isLoading } = useGetCustomerOrder(orderId)
     const [quantity, setQuantity] = useState(1)
+    const { user: userObj } = useUser()
+
+    const user = userObj as CustomerProfileResponse;
 
     const increment = () => {
         setQuantity((qty) => qty + 1);
@@ -166,7 +174,7 @@ export const OrderDetails = ({ orderId }: Props) => {
                                                             Amount
                                                         </div>
                                                         <p className="text-sm font-semibold text-grey-dark-0">
-                                                            {Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format(data?.data?.amount_paid || 0)}
+                                                            {Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format(data?.data?.amount_total || 0)}
                                                         </p>
                                                     </div>
                                                     <div className="flex flex-col p-3 gap-2 bg-grey-dark-4 rounded-xl max-w-40.5 w-full">
@@ -295,16 +303,16 @@ export const OrderDetails = ({ orderId }: Props) => {
                                         </div>
                                         {
                                             data?.data?.order_status === 1 && (
-                                                <Button variant="secondary" className="font-medium isolate" type="button" onClick={() => setOpen(true)}>
+                                                <Button variant="secondary" className="isolate" type="button" onClick={() => setOpen(true)}>
                                                     <IconClose />
                                                     Cancel Order
                                                 </Button>
                                             )
                                         }
                                         {
-                                            data?.data?.order_status === 4 && (
-                                                <Button variant="secondary" className="font-medium isolate" type="button">
-                                                    <IconStarFull />
+                                            data?.data?.order_status === 3 && (
+                                                <Button variant="secondary" className="isolate" type="button" onClick={() => setOpenRating(true)}>
+                                                    <IconStarFull className="text-transparent stroke-orange-2 stroke-1" />
                                                     Leave a Review
                                                 </Button>
                                             )
@@ -328,10 +336,89 @@ export const OrderDetails = ({ orderId }: Props) => {
                                         }
                                         </ul>
                                     </div>
+                                    {
+                                        data?.data && (data?.data?.img_proof?.length > 0) ? (
+                                            <Carousel opts={{ loop: true }} className="relative w-full">
+                                                <CarouselContent>
+                                                    {(data?.data?.img_proof).map((media, index) => (
+                                                    <CarouselItem key={index}>
+                                                        <div className="rounded-xl overflow-hidden aspect-video bg-orange-1">
+                                                            {
+                                                                media.mime_type.startsWith("image") ? (
+                                                                    <img src={media?.file_url} alt={media?._id} className="object-cover object-center w-full" />
+                                                                ): (
+                                                                    <video
+                                                                        autoPlay
+                                                                        loop
+                                                                        muted
+                                                                        playsInline
+                                                                        preload="auto"
+                                                                        className="h-full w-full object-cover"
+                                                                    >
+                                                                        <source src={media?.file_url} type={media?.mime_type} />
+                                                                    </video>
+                                                                )
+                                                            }
+                                                        </div>
+                                                    </CarouselItem>
+                                                    ))}
+                                                </CarouselContent>
+                                                <CarouselPrevious className="start-4" />
+                                                <CarouselNext className="end-4" />
+                                            </Carousel>
+                                        ) : (
+                                            null
+                                        )
+                                    }
+                                    <div className="flex flex-col gap-3 p-4 rounded-2xl bg-grey-dark-4">
+                                        <span className="font-bold text-xs text-grey-dark-2">Review & Rating</span>
+                                        <div className="grid gap-4">
+                                            <div className="flex items-start justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <Avatar className="size-10 sm:size-12 rounded-xl">
+                                                        <AvatarImage src={user.avatar} alt={user.full_name} className="size-10 sm:size-12 rounded-xl" />
+                                                        <AvatarFallback>{user.full_name.split(" ")[0][0]}{user.full_name.split(" ")[1][0]}</AvatarFallback>
+                                                    </Avatar>
+                                                    <div className="grid gap-1">
+                                                        <h3 className="text-xs font-medium text-grey-dark-0">{user.full_name}</h3>
+                                                        <div className="flex items-center">
+                                                            {
+                                                                Array.from({ length: data!.data.customer_rating_count }).map((_, index) => (
+                                                                    <IconStarFull key={index} className="text-yellow-2" />
+                                                                ))
+                                                            }
+                                                            {
+                                                                Array.from({ length: 5 - data!.data.customer_rating_count }).map((_, index) => (
+                                                                    <IconStarFull key={index} className="text-outline" />
+                                                                ))
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {
+                                                    !!(data?.data.customer_rating_at) && (
+                                                        <span className="font-normal text-xs sm:text-sx text-grey-dark-2">
+                                                            {format(data?.data.customer_rating_at as unknown as Date, "MMM dd, yyyy")}
+                                                        </span>
+                                                    )
+                                                }
+                                            </div>
+                                            <p className="font-normal text-xs sm:text-sm text-grey-dark-2">{data?.data?.customer_rating_comment}</p>
+                                        </div>
+                                    </div>
+                                    {
+                                        data?.data?.order_status === 4 && (
+                                            <Button variant="link" className="isolate" type="button" onClick={() => setOpenReport(true)}>
+                                                Report Order
+                                            </Button>
+                                        )
+                                    }
                                 </div>
                             </div>
                         </div>
                         <CancelOrder open={open} orderId={data?.data?.order_id || ""} setOpen={setOpen} />
+                        <RateOrder open={openRating} orderId={data?.data?.order_id || ""} setOpen={setOpenRating} />
+                        <ReportOrder open={openReport} orderId={data?.data?.order_id || ""} setOpen={setOpenReport} />
                     </Content>
                 )
             }

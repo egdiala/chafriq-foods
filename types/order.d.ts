@@ -169,6 +169,7 @@ interface GetSingleCustomerOrderResponse {
     order_start_date: string | Date;
     order_end_date: string | Date;
     order_status: OrderStatus;
+    customer_rating_at: string | Date;
     customer_rating_count: number;
     customer_rating_comment: string;
     platform_fee: {
@@ -177,7 +178,11 @@ interface GetSingleCustomerOrderResponse {
     };
     createdAt: string | Date;
     order_paid_at: string | Date;
-    img_proof: [];
+    img_proof: {
+        _id: string;
+        mime_type: string;
+        file_url: string;
+    }[];
     img_data: {
         _id: string;
         mime_type: string;
