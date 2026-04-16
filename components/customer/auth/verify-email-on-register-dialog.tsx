@@ -10,6 +10,7 @@ import { confirmOtpVendorFormSchema } from "@/validations/vendor-auth";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
 import { useConfirmOtpCustomer, useResendOtpCustomer } from "@/services/mutations/use-auth";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { useRouter } from "next/navigation";
 
 type Props = {
     open: boolean;
@@ -18,9 +19,11 @@ type Props = {
 }
 
 export const VerifyEmailOnRegisterDialog = ({ email, open, setOpen }: Props) => {
+    const router = useRouter()
     const { mutate: resend, isPending: isResending} = useResendOtpCustomer()
     const { mutate: verifyOtp, isPending } = useConfirmOtpCustomer(() => {
         setOpen(false)
+        router.push("/customer/login")
     })
     const { seconds, isFinished, start, reset } = useCountdown({
         initialSeconds: 30,

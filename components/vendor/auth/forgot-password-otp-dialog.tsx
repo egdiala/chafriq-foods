@@ -28,6 +28,7 @@ export const ForgotPasswordOtpDialog = ({ email, open, setOpen }: Props) => {
 
     const verifyEmailForm = useForm({
         defaultValues: {
+            email: email,
             otp_code: ""
         },
         listeners: {
@@ -43,7 +44,7 @@ export const ForgotPasswordOtpDialog = ({ email, open, setOpen }: Props) => {
         },
         onSubmit: async ({ value }) => {
             if (isPending) return;
-            verifyOtp({ email, ...value })
+            verifyOtp({ ...value })
         },
     })
 

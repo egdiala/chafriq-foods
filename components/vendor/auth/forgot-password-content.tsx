@@ -26,7 +26,6 @@ export const VendorForgotPasswordContent = () => {
         onSubmit: async ({ value }) => {
             if (isPending) return;
             mutate(value)
-            setOpen(true)
         },
     })
     

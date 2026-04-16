@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { api, handleErrorMessage } from "@/trpc/helper";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
-import { registerCustomerFormSchema } from "@/validations/customer-auth";
+import { forgotPasswordCustomerFormSchema, registerCustomerFormSchema } from "@/validations/customer-auth";
 import { confirmOtpVendorFormSchema, loginVendorFormSchema, resendOtpVendorFormSchema } from "@/validations/vendor-auth";
 import { ConfirmOtpType } from "./vendor";
 
@@ -44,6 +44,17 @@ export const customerAuthRouter = createTRPCRouter({
     resendOtp: baseProcedure.input(resendOtpVendorFormSchema).mutation(async ({ input }): Promise<{ status: string; }> => {
         try {
             const response = await api.post("customers/auths/resend-otp", input);
+            return response.data;
+        } catch (error) {
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: handleErrorMessage(error),
+            });
+        }
+    }),
+    forgotPassword: baseProcedure.input(forgotPasswordCustomerFormSchema).mutation(async ({ input }): Promise<{ status: string; }> => {
+        try {
+            const response = await api.post("customers/auths/forgot-password", input);
             return response.data;
         } catch (error) {
             throw new TRPCError({

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { type TRPCQueryKeyWithoutPrefix } from "@trpc/tanstack-react-query";
 import { GetVendorOrdersFormType } from "@/validations/vendor-order";
 import { type GetCustomerOrdersFormType } from "@/validations/customer-order";
+import { useUser } from "@/context/use-user";
 
 export const useGetOrders = (params: GetVendorOrdersFormType, config?: TRPCQueryKeyWithoutPrefix) => {
     const trpc = useTRPC();
@@ -23,8 +24,10 @@ export const useGetOrder = (id: string, config?: TRPCQueryKeyWithoutPrefix) => {
 
 export const useGetCart = (config?: TRPCQueryKeyWithoutPrefix) => {
     const trpc = useTRPC();
+    const { type } = useUser()
     return useQuery({
         ...trpc.orders.customer.getCart.queryOptions(),
+        enabled: !!type,
         ...config,
     });
 }

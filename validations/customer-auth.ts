@@ -24,3 +24,44 @@ export const registerCustomerFormSchema = z.object({
 })
 
 export type RegisterCustomerFormType = z.infer<typeof registerCustomerFormSchema>;
+
+export const forgotPasswordCustomerFormSchema = z.object({
+    email: z.email("Invalid email address").min(1, "Email is required"),
+})
+
+export type ForgotPasswordCustomerFormType = z.infer<typeof forgotPasswordCustomerFormSchema>;
+
+export const confirmOtpCustomerFormSchema = z.object({
+    email: z.email("Invalid email address").min(1, "Email is required"),
+    otp_code: z.string().length(4, "Otp code is required"),
+})
+
+export type ConfirmOtpCustomerFormType = z.infer<typeof confirmOtpCustomerFormSchema>;
+
+export const resendOtpCustomerFormSchema = z.object({
+    email: z.email("Invalid email address").min(1, "Email is required"),
+    request_type: z.enum(["register", "reset"]),
+})
+
+export type ResendOtpCustomerFormType = z.infer<typeof resendOtpCustomerFormSchema>;
+
+export const resetPasswordCustomerFormSchema = z.object({
+    email: z.email("Invalid email address").min(1, "Email is required"),
+    otp_code: z.string().length(4, "Otp code is required"),
+    new_password: z.string().min(6, 'Password must be at least 6 characters').refine(
+      (value) => {
+        const { length, uppercase, lowercase, specialChar } = evaluatePasswordRequirements(value);
+        return length && uppercase && lowercase && specialChar;
+      },
+      {
+        message:
+          'Password must contain at least one uppercase letter, one lowercase letter, and one special character'
+      }
+    ),
+    confirm_new_password: z.string()
+}).refine((data) => data.new_password === data.confirm_new_password, {
+  message: 'Passwords do not match',
+  path: ['confirm_new_password']
+});
+
+export type ResetPasswordCustomerFormType = z.infer<typeof resetPasswordCustomerFormSchema>;

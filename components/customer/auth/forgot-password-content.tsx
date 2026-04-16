@@ -7,20 +7,26 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "@tanstack/react-form-nextjs";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { ForgotPasswordOtpDialog } from "./forgot-password-otp-dialog";
+import { forgotPasswordCustomerFormSchema } from "@/validations/customer-auth";
+import { useForgotPasswordCustomer } from "@/services/mutations/use-auth";
+import { Spinner } from "@/components/ui/spinner";
 
 export const CustomerForgotPasswordContent = () => {
     const [open, setOpen] = useState(false)
+    const { mutate, isPending } = useForgotPasswordCustomer(() => {
+        setOpen(true)
+    })
 
     const customerForgotPasswordForm = useForm({
         defaultValues: {
             email: "",
         },
         validators: {
-            // onSubmit: loginFormSchema
+            onSubmit: forgotPasswordCustomerFormSchema
         },
         onSubmit: async ({ value }) => {
-            console.log(value)
-            setOpen(true)
+            if (isPending) return;
+            mutate(value)
         },
     })
     
@@ -59,13 +65,23 @@ export const CustomerForgotPasswordContent = () => {
                     }}
                 </customerForgotPasswordForm.Field>
 
-                <div className="flex flex-col items-center gap-5">
-                    <Button type="submit">Verify Email</Button>
+                <div className="flex flex-col items-center gap-5">      
+                    <customerForgotPasswordForm.Subscribe selector={(state) => [state.canSubmit]}>
+                        {([canSubmit]) => {
+                            return (
+                                <Button type="submit" disabled={!canSubmit || isPending}>
+                                    Verify Email
+                                    {(isPending) && (<Spinner />)}
+                                </Button>
+                            )
+                        }}
+                    </customerForgotPasswordForm.Subscribe>
                 </div>
             </form>
 
             <ForgotPasswordOtpDialog
                 open={open}
+                email={customerForgotPasswordForm.getFieldValue("email")}
                 setOpen={setOpen}
             />
         </>

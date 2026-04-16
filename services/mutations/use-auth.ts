@@ -146,15 +146,30 @@ export const useLoginCustomer = (fn?: (value: unknown) => void) => {
     );
 }
 
+export const useForgotPasswordCustomer = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    return useMutation(
+        trpc.auth.customer.forgotPassword.mutationOptions({
+            onSuccess: (data) => {
+                if (data.status === "ok") {
+                    fn?.(data);
+                    toast.success("Check your email")
+                }
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
 export const useConfirmOtpCustomer = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
-    const router = useRouter();
     return useMutation(
         trpc.auth.customer.confirmOtp.mutationOptions({
             onSuccess: (data) => {
                 fn?.(data);
                 toast.success("Otp confirmed");
-                router.push("/customer/login")
             },
             onError: (error) => {
                 toast.error(error.message || "Something went wrong");
