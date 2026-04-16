@@ -10,6 +10,8 @@ import { confirmOtpVendorFormSchema } from "@/validations/vendor-auth";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useConfirmOtpVendor, useForgotPasswordVendor } from "@/services/mutations/use-auth";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useRouter } from "next/navigation";
+import { useUserAuth } from "@/context/use-user-auth";
 
 type Props = {
     open: boolean;
@@ -18,12 +20,15 @@ type Props = {
 }
 
 export const ForgotPasswordOtpDialog = ({ email, open, setOpen }: Props) => {
+    const router = useRouter()
+    const { updateEmail, updateOtpCode } = useUserAuth()
     const { mutate, isPending: isResending } = useForgotPasswordVendor()
     const { seconds, isFinished, start, reset } = useCountdown({
         initialSeconds: 30,
     });
     const { mutate: verifyOtp, isPending } = useConfirmOtpVendor(() => {
         setOpen(false)
+        router.push("/vendor/reset-password")
     })
 
     const verifyEmailForm = useForm({
@@ -45,6 +50,8 @@ export const ForgotPasswordOtpDialog = ({ email, open, setOpen }: Props) => {
         onSubmit: async ({ value }) => {
             if (isPending) return;
             verifyOtp({ ...value })
+            updateEmail(value.email)
+            updateOtpCode(value.otp_code)
         },
     })
 

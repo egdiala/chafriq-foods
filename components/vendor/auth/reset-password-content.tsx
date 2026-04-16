@@ -6,14 +6,16 @@ import { useForm } from "@tanstack/react-form-nextjs";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { useResetPasswordVendor } from "@/services/mutations/use-auth";
 import { resetPasswordVendorFormSchema } from "@/validations/vendor-auth";
+import { useUserAuth } from "@/context/use-user-auth";
 
 export const VendorResetPasswordContent = () => {
+    const { email, otp_code } = useUserAuth()
     const { mutate, isPending } = useResetPasswordVendor()
     
     const vendorForgotPasswordForm = useForm({
         defaultValues: {
-            email: "",
-            otp_code: "",
+            email: email,
+            otp_code: otp_code,
             new_password: "",
             confirm_new_password: ""
         },

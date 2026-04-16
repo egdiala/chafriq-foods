@@ -45,7 +45,7 @@ export const vendorAuthRouter = createTRPCRouter({
             });
         }
     }),
-    forgotPassword: baseProcedure.input(forgotPasswordVendorFormSchema).mutation(async ({ input }): Promise<RegisterApiResponse> => {
+    forgotPassword: baseProcedure.input(forgotPasswordVendorFormSchema).mutation(async ({ input }): Promise<{ status: string; }> => {
         try {
             const response = await api.post("cooks/auths/forgot-password", input);
             return response.data;
@@ -67,7 +67,7 @@ export const vendorAuthRouter = createTRPCRouter({
             });
         }
     }),
-    resendOtp: baseProcedure.input(resendOtpVendorFormSchema).mutation(async ({ input }): Promise<RegisterApiResponse> => {
+    resendOtp: baseProcedure.input(resendOtpVendorFormSchema).mutation(async ({ input }): Promise<{ status: string }> => {
         try {
             const response = await api.post("cooks/auths/resend-otp", input);
             return response.data;
@@ -78,7 +78,7 @@ export const vendorAuthRouter = createTRPCRouter({
             });
         }
     }),
-    resetPassword: baseProcedure.input(resetPasswordVendorFormSchema).mutation(async ({ input }): Promise<RegisterApiResponse> => {
+    resetPassword: baseProcedure.input(resetPasswordVendorFormSchema).mutation(async ({ input }): Promise<{ status: string }> => {
         try {
             const { confirm_new_password: _confirmNewPassword, ...payload } = input
             const response = await api.post("cooks/auths/reset-password", payload);

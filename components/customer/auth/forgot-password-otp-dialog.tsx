@@ -26,7 +26,7 @@ export const ForgotPasswordOtpDialog = ({ open, email, setOpen }: Props) => {
     const { seconds, isFinished, start, reset } = useCountdown({
         initialSeconds: 30,
     });
-    const { mutate: verifyOtp, isPending, variables } = useConfirmOtpCustomer(() => {
+    const { mutate: verifyOtp, isPending } = useConfirmOtpCustomer(() => {
         setOpen(false)
         router.push("/customer/reset-password")
     })

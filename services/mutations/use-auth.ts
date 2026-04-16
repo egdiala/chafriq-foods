@@ -46,7 +46,7 @@ export const useForgotPasswordVendor = (fn?: (value: unknown) => void) => {
     return useMutation(
         trpc.auth.vendor.forgotPassword.mutationOptions({
             onSuccess: (data) => {
-                if (data.id) {
+                if (data.status === "ok") {
                     fn?.(data);
                     toast.success("Check your email")
                 }
@@ -60,13 +60,11 @@ export const useForgotPasswordVendor = (fn?: (value: unknown) => void) => {
 
 export const useConfirmOtpVendor = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
-    const { handleLogin } = useAuth()
     return useMutation(
         trpc.auth.vendor.confirmOtp.mutationOptions({
             onSuccess: (data) => {
                 if (data.status === "ok") {
                     fn?.(data);
-                    handleLogin(data.data, "vendor")
                     toast.success("Otp confirmed")
                 }
             },
@@ -82,7 +80,7 @@ export const useResendOtpVendor = (fn?: (value: unknown) => void) => {
     return useMutation(
         trpc.auth.vendor.resendOtp.mutationOptions({
             onSuccess: (data) => {
-                if (data.id) {
+                if (data.status === "ok") {
                     fn?.(data);
                     toast.success("Otp sent successfully")
                 }
@@ -96,11 +94,15 @@ export const useResendOtpVendor = (fn?: (value: unknown) => void) => {
 
 export const useResetPasswordVendor = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
+    const router = useRouter()
+    const { clearAll } = useUserAuth()
     return useMutation(
         trpc.auth.vendor.resetPassword.mutationOptions({
             onSuccess: (data) => {
-                if (data.id) {
+                clearAll()
+                if (data.status === "ok") {
                     fn?.(data);
+                    router.push("/vendor/login")
                     toast.success("Password reset successfully")
                 }
             },
@@ -184,9 +186,11 @@ export const useConfirmOtpCustomer = (fn?: (value: unknown) => void) => {
 export const useResetPasswordCustomer = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
     const router = useRouter()
+    const { clearAll } = useUserAuth()
     return useMutation(
         trpc.auth.customer.resetPassword.mutationOptions({
             onSuccess: (data) => {
+                clearAll()
                 if (data.status === "ok") {
                     fn?.(data);
                     router.push("/customer/login")
