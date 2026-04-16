@@ -14,18 +14,22 @@ import { useRef, useState } from "react";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
 import { ChangePassword } from "./change-password";
 import { DeleteAccount } from "./delete-account";
+import { EditCustomerProfile } from "./edit-customer-profile";
+import { ChangeEmail } from "./change-email";
 
 export const CustomerProfileContent = () => {
     const { user: userObj } = useUser()
     const user = userObj as CustomerProfileResponse;
     
-    const fileInputRef = useRef<HTMLInputElement>(null)
     const [file, setFile] = useState<File>()
-    const { mutateAsync, isPending } = useUploadCustomerAvatar()
-    const { mutate, isPending: isUpdating, variables } = useUpdateCustomerProfile()
+    const fileInputRef = useRef<HTMLInputElement>(null)
     const [openDeleteModal, setOpenDeleteModal] = useState(false)
     const [openPersonalModal, setOpenPersonalModal] = useState(false)
+    const [openChangeEmailModal, setOpenChangeEmailModal] = useState(false)
     const [openChangePasswordModal, setOpenChangePasswordModal] = useState(false)
+
+    const { mutateAsync, isPending } = useUploadCustomerAvatar()
+    const { mutate, isPending: isUpdating, variables } = useUpdateCustomerProfile()
 
     const handleClick = () => fileInputRef?.current?.click();
 
@@ -53,7 +57,7 @@ export const CustomerProfileContent = () => {
                             <AvatarImage src={user?.avatar || preview} className="rounded-lg sm:rounded-2xl" />
                             <AvatarFallback className={cn(isPending && "text-orange-5", "rounded-lg sm:rounded-2xl uppercase text-xl")}>{user?.full_name?.[0]?.[0]}{user?.full_name?.[1]?.[0]}</AvatarFallback>
                         </Avatar>
-                        <button type="button" className="absolute grid place-content-center-safe size-3 bg-white rounded-full top-2 right-2" disabled={isPending} onClick={handleClick}>
+                        <button type="button" className="absolute grid place-content-center-safe size-3 bg-white rounded-full top-0.5 sm:top-2 right-0.5 sm:right-2" disabled={isPending} onClick={handleClick}>
                             <IconPencilSimple className="size-2 text-orange-2" />
                         </button>
                         <input ref={fileInputRef} type="file" onChange={(e) => handleFileChange(e.target.files)} hidden accept="image/png, image/jpeg" capture="environment" />
@@ -67,14 +71,17 @@ export const CustomerProfileContent = () => {
                     </div>
                     <div className="flex flex-col">
                         <span className="font-semibold text-grey-dark-0 text-base">{user?.full_name}</span>
-                        <p className="font-medium text-grey-dark-2 text-sm">{user?.gender}</p>
+                        <p className="font-medium text-grey-dark-2 text-sm capitalize">{user?.gender}</p>
                     </div>
                 </div>
                 <div className="flex flex-col gap-6 lg:col-span-9">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-5 gap-4 rounded-xl bg-grey-dark-4 w-full">
                         <div className="flex flex-col">
                             <span className="text-2xs md:text-xs text-grey-dark-2">Email</span>
-                            <p className="font-medium text-xs md:text-sm text-grey-dark-2">{user?.email}</p>
+                            <div className="flex items-center gap-2">
+                                <p className="font-medium text-xs md:text-sm text-grey-dark-2">{user?.email}</p>
+                                <Button type="button" variant="tertiary" size="icon-xs" onClick={() => setOpenChangeEmailModal(true)}><IconPencilSimple /></Button>
+                            </div>
                         </div>
                         <div className="flex flex-col">
                             <span className="text-2xs md:text-xs text-grey-dark-2">Phone</span>
@@ -160,6 +167,8 @@ export const CustomerProfileContent = () => {
                 </div>
             </div>
             <DeleteAccount open={openDeleteModal} setOpen={setOpenDeleteModal} />
+            <ChangeEmail open={openChangeEmailModal} setOpen={setOpenChangeEmailModal} />
+            <EditCustomerProfile open={openPersonalModal} setOpen={setOpenPersonalModal} />
             <ChangePassword open={openChangePasswordModal} setOpen={setOpenChangePasswordModal} />
         </div>
     )

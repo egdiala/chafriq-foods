@@ -22,7 +22,7 @@ export const customerAccountRouter = createTRPCRouter({
             });
         }
     }),
-    updateProfile: protectedProcedure.input(updateCustomerProfileFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: CustomerProfileResponse }> => {
+    updateProfile: protectedProcedure.input(updateCustomerProfileFormSchema).mutation(async ({ ctx, input }): Promise<{ status: string; data: { verify_email: boolean; } }> => {
         try {
             const response = await api.post("customers/accounts", input, {
                 headers: {
