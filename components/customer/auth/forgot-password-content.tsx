@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "@tanstack/react-form-nextjs";
@@ -10,8 +10,10 @@ import { ForgotPasswordOtpDialog } from "./forgot-password-otp-dialog";
 import { forgotPasswordCustomerFormSchema } from "@/validations/customer-auth";
 import { useForgotPasswordCustomer } from "@/services/mutations/use-auth";
 import { Spinner } from "@/components/ui/spinner";
+import { useUserAuth } from "@/context/use-user-auth";
 
 export const CustomerForgotPasswordContent = () => {
+    const { clearAll } = useUserAuth()
     const [open, setOpen] = useState(false)
     const { mutate, isPending } = useForgotPasswordCustomer(() => {
         setOpen(true)
@@ -29,6 +31,10 @@ export const CustomerForgotPasswordContent = () => {
             mutate(value)
         },
     })
+
+    useEffect(() => {
+        clearAll()
+    },[])
     
     return (
         <>

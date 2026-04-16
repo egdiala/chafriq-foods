@@ -11,6 +11,7 @@ import { useConfirmOtpCustomer, useForgotPasswordCustomer } from "@/services/mut
 import { useEffect } from "react";
 import { confirmOtpCustomerFormSchema } from "@/validations/customer-auth";
 import { useRouter } from "next/navigation";
+import { useUserAuth } from "@/context/use-user-auth";
 
 type Props = {
     open: boolean;
@@ -20,11 +21,12 @@ type Props = {
 
 export const ForgotPasswordOtpDialog = ({ open, email, setOpen }: Props) => {
     const router = useRouter()
+    const { updateEmail, updateOtpCode } = useUserAuth()
     const { mutate, isPending: isResending } = useForgotPasswordCustomer()
     const { seconds, isFinished, start, reset } = useCountdown({
         initialSeconds: 30,
     });
-    const { mutate: verifyOtp, isPending } = useConfirmOtpCustomer(() => {
+    const { mutate: verifyOtp, isPending, variables } = useConfirmOtpCustomer(() => {
         setOpen(false)
         router.push("/customer/reset-password")
     })
@@ -48,6 +50,8 @@ export const ForgotPasswordOtpDialog = ({ open, email, setOpen }: Props) => {
         onSubmit: async ({ value }) => {
             if (isPending) return;
             verifyOtp({ ...value })
+            updateEmail(value.email)
+            updateOtpCode(value.otp_code)
         },
     })
 

@@ -4,19 +4,27 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "@tanstack/react-form-nextjs";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { resetPasswordCustomerFormSchema } from "@/validations/customer-auth";
+import { useResetPasswordCustomer } from "@/services/mutations/use-auth";
+import { useUserAuth } from "@/context/use-user-auth";
 
 export const CustomerResetPasswordContent = () => {
+    const { email, otp_code } = useUserAuth()
+    const { mutate, isPending } = useResetPasswordCustomer()
 
     const customerForgotPasswordForm = useForm({
         defaultValues: {
-            password: "",
-            confirmPassword: ""
+            email: email,
+            otp_code: otp_code,
+            new_password: "",
+            confirm_new_password: ""
         },
         validators: {
-            // onSubmit: loginFormSchema
+            onSubmit: resetPasswordCustomerFormSchema
         },
         onSubmit: async ({ value }) => {
-            console.log(value)
+            if (isPending) return;
+            mutate(value)
         },
     })
     
@@ -30,7 +38,7 @@ export const CustomerResetPasswordContent = () => {
             </div>
 
             <FieldGroup>
-                <customerForgotPasswordForm.Field name="password">
+                <customerForgotPasswordForm.Field name="new_password">
                     {(field) => {
                         const isInvalid = !field.state.meta.isValid
                         return (
@@ -51,7 +59,7 @@ export const CustomerResetPasswordContent = () => {
                     }}
                 </customerForgotPasswordForm.Field>
 
-                <customerForgotPasswordForm.Field name="confirmPassword">
+                <customerForgotPasswordForm.Field name="confirm_new_password">
                     {(field) => {
                         const isInvalid = !field.state.meta.isValid
                         return (

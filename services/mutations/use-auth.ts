@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
+import { useUserAuth } from "@/context/use-user-auth";
 
 export const useRegisterVendor = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
@@ -130,9 +131,11 @@ export const useRegisterCustomer = (fn?: (value: unknown) => void) => {
 export const useLoginCustomer = (fn?: (value: unknown) => void) => {
     const trpc = useTRPC();
     const { handleLogin } = useAuth()
+    const { clearAll } = useUserAuth()
     return useMutation(
         trpc.auth.customer.login.mutationOptions({
             onSuccess: (data) => {
+                clearAll()
                 if (data.status === "ok") {
                     handleLogin(data.data, "customer")
                     fn?.(data);
@@ -170,6 +173,25 @@ export const useConfirmOtpCustomer = (fn?: (value: unknown) => void) => {
             onSuccess: (data) => {
                 fn?.(data);
                 toast.success("Otp confirmed");
+            },
+            onError: (error) => {
+                toast.error(error.message || "Something went wrong");
+            },
+        })
+    );
+}
+
+export const useResetPasswordCustomer = (fn?: (value: unknown) => void) => {
+    const trpc = useTRPC();
+    const router = useRouter()
+    return useMutation(
+        trpc.auth.customer.resetPassword.mutationOptions({
+            onSuccess: (data) => {
+                if (data.status === "ok") {
+                    fn?.(data);
+                    router.push("/customer/login")
+                    toast.success("Password reset successfully")
+                }
             },
             onError: (error) => {
                 toast.error(error.message || "Something went wrong");
