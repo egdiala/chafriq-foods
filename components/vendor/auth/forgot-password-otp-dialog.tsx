@@ -78,9 +78,9 @@ export const ForgotPasswordOtpDialog = ({ email, open, setOpen }: Props) => {
             }}>
                 <DialogContent className="sm:max-w-125">
                     <DialogHeader>
-                        <DialogTitle>Verify Your Email</DialogTitle>
+                        <DialogTitle>Reset Code</DialogTitle>
                         <DialogDescription>
-                            Enter the code sent to {email}
+                            Please enter the 4-digit code sent to <strong>{email}</strong>
                         </DialogDescription>
                     </DialogHeader>
                     <verifyEmailForm.Field name="otp_code">

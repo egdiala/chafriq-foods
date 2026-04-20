@@ -36,9 +36,9 @@ export const VendorForgotPasswordContent = () => {
                 vendorForgotPasswordForm.handleSubmit()
             }}>
                 <div className="text-center space-y-3 w-full max-w-153 mx-auto">
-                    <h1 className="font-sora text-grey-dark-0 font-extrabold text-3xl md:text-[2.5rem]">Enter your Email</h1>
+                    <h1 className="font-sora text-grey-dark-0 font-extrabold text-3xl md:text-[2.5rem]">Forgot Password</h1>
                     <div className="flex flex-col gap-1 text-sm text-grey-dark-3">
-                        Please enter the email associated with your account
+                        Enter the email linked to your account, and we’ll send you a code to help you create a new password.
                         <Link href="/vendor/login" className="font-medium text-grey-dark-0 hover:underline hover:underline-offset-1">Sign in instead</Link>
                     </div>
                 </div>
