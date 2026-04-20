@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { formatHours } from "@/lib/utils"
 import { useUser } from "@/context/use-user"
 import { IconHourglass } from "../icons/icon-hourglass"
 import { IconBowlFood, IconPath, IconStorefront } from "../icons"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import Autoplay from "embla-carousel-autoplay";
 
 type Props = {
     cuisine: Partial<GetMenuResponse> & { distance?: number; }
@@ -16,6 +17,7 @@ type Props = {
 
 export const CuisineCard = ({ cuisine, onView }: Props) => {
     const { type } = useUser()
+    const [api, setApi] = useState<CarouselApi>()
 
     const items = useMemo(() => {
         const dishList = (cuisine?.dish_list || []).map((dish) => ({ icon: <IconStorefront />, label: dish.name }))
@@ -33,7 +35,15 @@ export const CuisineCard = ({ cuisine, onView }: Props) => {
             <CardContent onClick={(e) => e.stopPropagation()}>
                 {
                     cuisine?.image_data && (cuisine?.image_data?.length > 0) ? (
-                        <Carousel opts={{ loop: true }} className="w-full">
+                        <Carousel
+                            className="w-full"
+                            setApi={setApi} 
+                            opts={{ loop: true }} 
+                            orientation="horizontal" 
+                            plugins={[Autoplay({ delay: 3000 })]}
+                            onMouseEnter={() => api?.plugins().autoplay?.stop()} 
+                            onMouseLeave={() => api?.plugins().autoplay?.play()}
+                        >
                             <CarouselContent>
                                 {(cuisine?.image_data).map((media, index) => (
                                 <CarouselItem key={index}>

@@ -14,11 +14,12 @@ import { RatingsAndReview } from "../explore-cooks/ratings-and-review";
 import { StoreAvailability } from "../explore-cooks/store-availability";
 import { useGetCook, useGetMeal, useGetRatings } from "@/services/queries/use-explore";
 import { IconBowlFood, IconBowlSteam, IconCookingPot, IconCurrencyDollar, IconStarFull } from "../icons";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
+import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
 import { OrderFoodDialog } from "./order-food-dialog";
 import { LoginNotice } from "../customer/login-notice";
 import { useUser } from "@/context/use-user";
+import Autoplay from "embla-carousel-autoplay";
 
 type Props = {
     mealId: string;
@@ -27,6 +28,7 @@ type Props = {
 export const CuisineDetails = ({ mealId }: Props) => {
     const { type } = useUser()
     const [open, setOpen] = useState(false)
+    const [api, setApi] = useState<CarouselApi>()
     const [openLoginNotice, setOpenLoginNotice] = useState(false)
     const { data: cookRatings, isLoading: isLoadingCookRatings } = useGetRatings({ menu_id: mealId })
     const { data, isLoading } = useGetMeal({ meal_id: mealId, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
@@ -106,7 +108,15 @@ export const CuisineDetails = ({ mealId }: Props) => {
                                             }
                                             </div>
                                             <div className="relative w-full h-auto sm:h-100 order-1 sm:order-2 overflow-hidden rounded-lg">
-                                                <Carousel opts={{ loop: true }} className="group rounded-lg overflow-hidden w-full">
+                                                <Carousel 
+                                                    setApi={setApi} 
+                                                    opts={{ loop: true }} 
+                                                    orientation="horizontal" 
+                                                    plugins={[Autoplay({ delay: 3000 })]}
+                                                    onMouseEnter={() => api?.plugins().autoplay?.stop()} 
+                                                    onMouseLeave={() => api?.plugins().autoplay?.play()}
+                                                    className="group rounded-lg overflow-hidden w-full"
+                                                >
                                                     <CarouselContent className="h-auto sm:h-100">
                                                         {data?.data?.img_data?.map((media, index) => (
                                                         <CarouselItem key={index}>

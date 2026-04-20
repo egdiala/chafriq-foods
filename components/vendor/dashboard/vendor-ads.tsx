@@ -4,24 +4,13 @@ import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, Car
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useVendorAds } from "@/services/queries/use-ads"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
 
 export const VendorAds = () => {
     const isMobile = useIsMobile()
-    const [_count, setCount] = useState(0)
-    const [_current, setCurrent] = useState(0)
     const [api, setApi] = useState<CarouselApi>()
     const { data, isLoading } = useVendorAds(isMobile ? "mobile" : "web")
-
-    useEffect(() => {
-        if (!api) return;
-        setCount(api.scrollSnapList().length)
-        setCurrent(api.selectedScrollSnap() + 1)
-        api.on("select", () => {
-            setCurrent(api.selectedScrollSnap() + 1)
-        })
-    }, [api])
     
     return (
         <>

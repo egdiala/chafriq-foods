@@ -16,11 +16,12 @@ import { Badge, badgeVariants } from "@/components/ui/badge";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
 import { useGetCustomerOrder } from "@/services/queries/use-orders";
 import { ORDER_STATUS, ORDER_STATUS_CLASSES } from "@/components/vendor/orders/order-card";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { IconBowlFood, IconBowlSteam, IconClose, IconCookingPot, IconCurrencyDollar, IconDot, IconHourglass, IconLock, IconStarFull } from "@/components/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReportOrder } from "./report-order";
+import Autoplay from "embla-carousel-autoplay";
 
 
 type Props = {
@@ -28,12 +29,13 @@ type Props = {
 }
 
 export const OrderDetails = ({ orderId }: Props) => {
+    const { user: userObj } = useUser()
     const [open, setOpen] = useState(false)
+    const [quantity, setQuantity] = useState(1)
+    const [api, setApi] = useState<CarouselApi>()
     const [openReport, setOpenReport] = useState(false)
     const [openRating, setOpenRating] = useState(false)
     const { data, isLoading } = useGetCustomerOrder(orderId)
-    const [quantity, setQuantity] = useState(1)
-    const { user: userObj } = useUser()
 
     const user = userObj as CustomerProfileResponse;
 
@@ -122,7 +124,15 @@ export const OrderDetails = ({ orderId }: Props) => {
                                                 )
                                             }
                                             <div className="relative w-full h-auto sm:h-100 order-1 sm:order-2 overflow-hidden rounded-lg">
-                                                <Carousel opts={{ loop: true }} className="group rounded-lg overflow-hidden w-full">
+                                                <Carousel 
+                                                    setApi={setApi} 
+                                                    opts={{ loop: true }} 
+                                                    orientation="horizontal" 
+                                                    plugins={[Autoplay({ delay: 3000 })]}
+                                                    className="group rounded-lg overflow-hidden w-full"
+                                                    onMouseEnter={() => api?.plugins().autoplay?.stop()} 
+                                                    onMouseLeave={() => api?.plugins().autoplay?.play()}
+                                                >
                                                     <CarouselContent className="h-auto sm:h-100">
                                                         {data?.data?.img_data?.map((media, index) => (
                                                         <CarouselItem key={index}>
@@ -338,7 +348,15 @@ export const OrderDetails = ({ orderId }: Props) => {
                                     </div>
                                     {
                                         data?.data && (data?.data?.img_proof?.length > 0) ? (
-                                            <Carousel opts={{ loop: true }} className="relative w-full">
+                                            <Carousel 
+                                                setApi={setApi} 
+                                                opts={{ loop: true }} 
+                                                orientation="horizontal" 
+                                                className="relative w-full"
+                                                plugins={[Autoplay({ delay: 3000 })]}
+                                                onMouseEnter={() => api?.plugins().autoplay?.stop()} 
+                                                onMouseLeave={() => api?.plugins().autoplay?.play()}
+                                            >
                                                 <CarouselContent>
                                                     {(data?.data?.img_proof).map((media, index) => (
                                                     <CarouselItem key={index}>
