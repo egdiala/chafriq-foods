@@ -5,12 +5,15 @@ import { clearCredentials, setCredentials } from "@/lib/action";
 import { useTRPC } from "@/trpc/client";
 import { type ConfirmOtpType } from "@/trpc/routers/auth/vendor";
 import { useQueryClient } from "@tanstack/react-query";
+import { RouteType } from "next/dist/lib/load-custom-routes";
 import { useRouter } from "next/navigation";
+import { useQueryState } from "nuqs";
 
 export const useAuth = () => {
     const trpc = useTRPC();
     const router = useRouter();
     const queryClient = useQueryClient();
+    const [routeTo] = useQueryState("routeTo");
     const updateType = useUser((s) => s.updateType);
     const updateUser = useUser((s) => s.updateUser);
     
@@ -46,7 +49,7 @@ export const useAuth = () => {
             updateType(userType)
         }
         
-        router.push(`/${userType}`)
+        router.push((routeTo as unknown as __next_route_internal_types__.RouteImpl<RouteType>) || `/${userType}`)
     }
 
     return { logout: logoutUser, handleLogin, handleLogout }

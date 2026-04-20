@@ -17,13 +17,17 @@ import { IconBowlFood, IconBowlSteam, IconCookingPot, IconCurrencyDollar, IconSt
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
 import { OrderFoodDialog } from "./order-food-dialog";
+import { LoginNotice } from "../customer/login-notice";
+import { useUser } from "@/context/use-user";
 
 type Props = {
     mealId: string;
 }
 
 export const CuisineDetails = ({ mealId }: Props) => {
+    const { type } = useUser()
     const [open, setOpen] = useState(false)
+    const [openLoginNotice, setOpenLoginNotice] = useState(false)
     const { data: cookRatings, isLoading: isLoadingCookRatings } = useGetRatings({ menu_id: mealId })
     const { data, isLoading } = useGetMeal({ meal_id: mealId, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
     const { data: cookData, isLoading: isLoadingCook } = useGetCook({ cook_id: data?.data?.cook_id || "", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
@@ -185,7 +189,9 @@ export const CuisineDetails = ({ mealId }: Props) => {
                                                     </div>
                                                     <Button size="icon-sm" variant="secondary" type="button" onClick={increment}><Plus /></Button>
                                                 </div>
-                                                <Button type="button" onClick={() => setOpen(true)}><IconCookingPot className="size-6" /> Order Cuisine</Button>
+                                                <Button type="button" onClick={() => type === "customer" ? setOpen(true) : setOpenLoginNotice(true)}>
+                                                    <IconCookingPot className="size-6" /> Order Cuisine
+                                                </Button>
                                             </div>
                                         </div>
                                     </div>
@@ -258,6 +264,7 @@ export const CuisineDetails = ({ mealId }: Props) => {
                     </Content>
                 )
             }
+            <LoginNotice open={openLoginNotice} setOpen={setOpenLoginNotice} />
             <OrderFoodDialog cookId={data?.data?.cook_id || ""} quantity={quantity} meal={data?.data} open={open} setOpen={setOpen} />
         </section>
     )

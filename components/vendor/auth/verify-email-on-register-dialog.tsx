@@ -10,6 +10,7 @@ import { confirmOtpVendorFormSchema } from "@/validations/vendor-auth";
 import { useConfirmOtpVendor, useResendOtpVendor } from "@/services/mutations/use-auth";
 import { useCountdown } from "@/hooks/use-countdown";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {
     open: boolean;
@@ -18,9 +19,11 @@ type Props = {
 }
 
 export const VerifyEmailOnRegisterDialog = ({ email, open, setOpen }: Props) => {
+    const router = useRouter()
     const { mutate: resend, isPending: isResending} = useResendOtpVendor()
     const { mutate: verifyOtp, isPending } = useConfirmOtpVendor(() => {
-        setOpen(false)
+        setOpen(false);
+        router.push("/vendor")
     })
     const { seconds, isFinished, start, reset } = useCountdown({
         initialSeconds: 120,
