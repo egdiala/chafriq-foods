@@ -9,7 +9,7 @@ function InputFile({ className, selectedFile, isLoading, ...props }: React.Compo
 
     const handleClick = () => ref.current?.click();
     return (
-        <div onClick={handleClick} className="bg-input-field rounded px-3 py-1 text-sm text-grey-dark-0 transition-colors h-12 inset-ring-1 inset-ring-outline focus-visible:inset-ring-orange-2 focus-visible:bg-orange-5 flex items-center justify-between">
+        <div onClick={handleClick} className="bg-input-field rounded px-3 py-1 text-sm text-grey-dark-0 transition-colors h-12 inset-ring-1 inset-ring-outline focus-visible:inset-ring-orange-2 focus-visible:bg-orange-5 flex items-center justify-between gap-2">
             <input
                 ref={ref}
                 type="file"
@@ -24,7 +24,7 @@ function InputFile({ className, selectedFile, isLoading, ...props }: React.Compo
                 )}
                 {...props}
             />
-            <span className="text-xs font-normal text-grey-dark-3">{(selectedFile as unknown as File)?.name || "Select a file"}</span>
+            <span className="text-xs font-normal text-grey-dark-3 line-clamp-1 text-ellipsis">{(selectedFile as unknown as File)?.name || "Select a file"}</span>
             <Button variant="link" size="link" type="button" disabled={isLoading}>
                 {(isLoading) ? (<Spinner className="absolute right-4 size-5" />) : "Select File"}
             </Button>
