@@ -28,7 +28,7 @@ export const editVendorProfileFormSchema = z.object({
 export const editVendorBusinessFormSchema = z.object({
     business_username: z.string().min(1, "Username is required"),
     business_address_id: z.string().min(1, "Business location is required"),
-    dish_list: z.array(z.string().min(1, "Cuisine cannot be empty")).min(1, "At least one cuisine is required"),
+    dish_list: z.array(z.string().min(1, "Meal cannot be empty")).min(1, "At least one meal is required"),
     order_distance: z.string().transform((val) => Number(val)).refine((val) => !isNaN(val) && val >= 0 && val <= 100, {
         message: "Order distance must be a number between 0 and 100 km"
     })

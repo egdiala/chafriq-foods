@@ -34,7 +34,7 @@ export const Menu = ({ className }: Props) => {
                     <Button variant="secondary" size="small" className="text-sm font-medium" asChild>
                         <Link href="/vendor/storefront/add">
                             <Plus className="size-4!" />
-                            <span className="sr-only sm:not-sr-only">Add New Cuisine</span>
+                            <span className="sr-only sm:not-sr-only">Add New Meal</span>
                         </Link>
                     </Button>
                 </div>
@@ -74,7 +74,7 @@ export const Menu = ({ className }: Props) => {
                             <IconBowlFood className="size-4.5 text-orange-2" />
                         </div>
                         <span className="text-grey-dark-0 text-base font-semibold">Ready to start selling?</span>
-                        <p className="text-grey-dark-2 text-sm font-normal">Add your first cuisine to create your menu and let customers discover what you cook best.</p>
+                        <p className="text-grey-dark-2 text-sm font-normal">Add your first meal to create your menu and let customers discover what you cook best.</p>
                     </div>
                 )
             }

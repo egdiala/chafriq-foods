@@ -151,7 +151,7 @@ export const VendorAddCuisineContent = () => {
     return (
         <>
             <div className="text-center space-y-2 mx-auto">
-                <h1 className="font-sora text-grey-dark-0 font-extrabold text-lg md:text-2xl">Add Cuisine</h1>
+                <h1 className="font-sora text-grey-dark-0 font-extrabold text-lg md:text-2xl">Add Meal</h1>
                 <p className="text-grey-dark-3 font-normal text-xs">Add a new dish to your menu by filling in the details below. Make sure to include clear information and an appealing description to attract customers.</p>
             </div>
 
@@ -160,14 +160,14 @@ export const VendorAddCuisineContent = () => {
                 addCuisineForm.handleSubmit()
             }}>
                 <FieldSet>
-                    <FieldLegend>Cuisine Information</FieldLegend>
+                    <FieldLegend>Meal Information</FieldLegend>
                     <FieldGroup>
                         <addCuisineForm.Field name="menu_name">
                             {(field) => {
                                 const isInvalid = !field.state.meta.isValid
                                 return (
                                     <Field data-invalid={isInvalid}>
-                                        <FieldLabel htmlFor={field.name}>Cuisine Name</FieldLabel>
+                                        <FieldLabel htmlFor={field.name}>Meal Name</FieldLabel>
                                         <Input
                                             type="text"
                                             id={field.name}
@@ -264,7 +264,7 @@ export const VendorAddCuisineContent = () => {
                                     const isInvalid = !field.state.meta.isValid
                                     return (
                                         <Field data-invalid={isInvalid}>
-                                            <FieldLabel htmlFor={field.name}>Content of the Cuisine</FieldLabel>
+                                            <FieldLabel htmlFor={field.name}>Content of the Meal</FieldLabel>
                                             <Input
                                                 type="text"
                                                 id={field.name}
@@ -284,7 +284,7 @@ export const VendorAddCuisineContent = () => {
                                     const isInvalid = !field.state.meta.isValid
                                     return (
                                         <Field data-invalid={isInvalid}>
-                                            <FieldLabel htmlFor={field.name}>Type of Cuisine</FieldLabel>
+                                            <FieldLabel htmlFor={field.name}>Type of Meal</FieldLabel>
                                             <Combobox
                                                 multiple
                                                 items={user?.dish_data || []}
@@ -319,7 +319,7 @@ export const VendorAddCuisineContent = () => {
                                                     <ComboboxValue
                                                         placeholder={
                                                         <span className="text-left">
-                                                            Select a cuisine
+                                                            Select a meal
                                                         </span>
                                                         }
                                                     >
@@ -327,7 +327,7 @@ export const VendorAddCuisineContent = () => {
                                                         <>
                                                             {item.length === 0 ? (
                                                             <span className="text-contrast-low">
-                                                                Select a cuisine
+                                                                Select a meal
                                                             </span>
                                                             ) : item.length > 1 ? (
                                                             <span className="line-clamp-1 text-ellipsis">{item.map((itm) => {
@@ -443,7 +443,7 @@ export const VendorAddCuisineContent = () => {
                                 const isInvalid = !field.state.meta.isValid
                                 return (
                                     <div className="grid gap-2">
-                                        <span className="text-xs text-grey-dark-0">Select allergens that are ingredients in this cuisine (optional)</span>
+                                        <span className="text-xs text-grey-dark-0">Select allergens that are ingredients in this meal (optional)</span>
                                         <div className="flex items-center gap-x-4 gap-y-2 flex-wrap"> 
                                             {data?.data?.map((item, i) => {
                                                 return (
@@ -520,7 +520,7 @@ export const VendorAddCuisineContent = () => {
                 </Activity>
 
                 <FieldSet>
-                    <FieldLegend>CUISINE IMAGES</FieldLegend>
+                    <FieldLegend>MEAL IMAGES</FieldLegend>
                     <FieldGroup className="gap-2">
                         <span className="text-xs text-grey-dark-0">{cuisineImages.length}/{MAX_FILES} files</span>
                         <div className="grid gap-8">
@@ -583,7 +583,7 @@ export const VendorAddCuisineContent = () => {
                         {([canSubmit, isSubmitting]) => {
                             return (
                                 <Button type="submit" disabled={!canSubmit || isPending || isUploadingMedia}>
-                                    Add Cuisine
+                                    Add Meal
                                     {(isPending || isSubmitting || isUploadingMedia) && (<Spinner className="absolute right-4 size-5" />)}
                                 </Button>
                             )

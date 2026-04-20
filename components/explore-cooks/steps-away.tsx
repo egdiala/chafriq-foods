@@ -70,7 +70,7 @@ export const ExploreCooksStepsAway = () => {
                             </div>
                         </div>
                         <InputGroup className="h-13 bg-white">
-                            <InputGroupInput placeholder="Search a meal, cook, cuisine" onChange={(e) => setQuery(e.target.value)} />
+                            <InputGroupInput placeholder="Search a meal, cook" onChange={(e) => setQuery(e.target.value)} />
                             <InputGroupAddon>
                                 <Search className="ml-1" />
                             </InputGroupAddon>

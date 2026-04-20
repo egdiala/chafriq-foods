@@ -25,7 +25,7 @@ export const CheckoutContent = () => {
     const orderSummary = useMemo(() => {
         return [
             {
-                label: "Cuisine Total",
+                label: "Total Meals",
                 amount: Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format((data?.data?.data || []).reduce((sum, num) => {
                     return sum + num.order_amount;
                 }, 0))

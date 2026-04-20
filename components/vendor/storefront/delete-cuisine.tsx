@@ -23,7 +23,7 @@ export const DeleteCuisine = ({ open, cuisine, setOpen }: Props) => {
                     <Image src="/caution.gif" alt="caution" fill />
                 </div>
                 <DialogHeader>
-                    <DialogTitle className="font-semibold text-base">Delete cuisine?</DialogTitle>
+                    <DialogTitle className="font-semibold text-base">Delete meal?</DialogTitle>
                     <DialogDescription>
                         This action would remove {cuisine?.menu_name} and is irreversible.
                     </DialogDescription>

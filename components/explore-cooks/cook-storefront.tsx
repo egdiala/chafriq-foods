@@ -53,7 +53,7 @@ export const CookStorefront = ({ cookId }: Props) => {
                             </BreadcrumbList>
                         </Breadcrumb>
                         <InputGroup className="h-13 bg-white">
-                            <InputGroupInput placeholder="Search a meal, cuisine " />
+                            <InputGroupInput placeholder="Search a meal " />
                             <InputGroupAddon>
                                 <Search className="ml-1" />
                             </InputGroupAddon>

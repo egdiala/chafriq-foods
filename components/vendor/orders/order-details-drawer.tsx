@@ -49,7 +49,7 @@ export const OrderDetailsDrawer = ({ onCancel, onDispatched, orderId, setOpen }:
         };
     }, [viewportRef]);
 
-    const start = new Date(data?.data?.order_start_date || new Date());
+    const start = new Date() || data?.data?.order_start_date;
     const end = new Date(data?.data?.order_end_date || new Date());
     return (
         <Drawer direction="right" open={!!orderId} onOpenChange={setOpen}>
@@ -142,7 +142,7 @@ export const OrderDetailsDrawer = ({ onCancel, onDispatched, orderId, setOpen }:
                                             <IconHourglass />
                                             Time left
                                         </div>
-                                        <p className="text-sm font-medium text-grey-dark-2">{formatHours(differenceInHours(end, start))}</p>
+                                        <p className="text-sm font-medium text-grey-dark-2">{data?.data?.order_status === 2 ? formatHours(differenceInHours(end, start)) : "-"}</p>
                                     </div>
                                 </div>
 

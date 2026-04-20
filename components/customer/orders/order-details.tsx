@@ -55,7 +55,7 @@ export const OrderDetails = ({ orderId }: Props) => {
     const orderSummary = useMemo(() => {
         return [
             {
-                label: "Cuisine Total",
+                label: "Total Meals",
                 amount: Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format(data?.data?.amount_total || 0)
             },
             { label: "Tax", amount: "$0" },
@@ -219,7 +219,7 @@ export const OrderDetails = ({ orderId }: Props) => {
                                             {
                                                 !!data?.data?.allergy_list?.length && (
                                                     <div className="grid gap-2">
-                                                        <span className="text-xs text-grey-dark-3">Allergens that are ingredients in this cuisine</span>
+                                                        <span className="text-xs text-grey-dark-3">Allergens that are ingredients in this meal</span>
                                                         <div className="flex items-center gap-4 flex-wrap"> 
                                                             {data?.data?.allergy_list.map((item, i) => {
                                                                 return (
@@ -370,42 +370,46 @@ export const OrderDetails = ({ orderId }: Props) => {
                                             null
                                         )
                                     }
-                                    <div className="flex flex-col gap-3 p-4 rounded-2xl bg-grey-dark-4">
-                                        <span className="font-bold text-xs text-grey-dark-2">Review & Rating</span>
-                                        <div className="grid gap-4">
-                                            <div className="flex items-start justify-between">
-                                                <div className="flex items-center gap-2">
-                                                    <Avatar className="size-10 sm:size-12 rounded-xl">
-                                                        <AvatarImage src={user.avatar} alt={user.full_name} className="size-10 sm:size-12 rounded-xl" />
-                                                        <AvatarFallback>{user.full_name.split(" ")[0][0]}{user.full_name.split(" ")[1][0]}</AvatarFallback>
-                                                    </Avatar>
-                                                    <div className="grid gap-1">
-                                                        <h3 className="text-xs font-medium text-grey-dark-0">{user.full_name}</h3>
-                                                        <div className="flex items-center">
-                                                            {
-                                                                Array.from({ length: data!.data.customer_rating_count }).map((_, index) => (
-                                                                    <IconStarFull key={index} className="text-yellow-2" />
-                                                                ))
-                                                            }
-                                                            {
-                                                                Array.from({ length: 5 - data!.data.customer_rating_count }).map((_, index) => (
-                                                                    <IconStarFull key={index} className="text-outline" />
-                                                                ))
-                                                            }
+                                    {
+                                        data?.data.customer_rating_at && (
+                                            <div className="flex flex-col gap-3 p-4 rounded-2xl bg-grey-dark-4">
+                                                <span className="font-bold text-xs text-grey-dark-2">Review & Rating</span>
+                                                <div className="grid gap-4">
+                                                    <div className="flex items-start justify-between">
+                                                        <div className="flex items-center gap-2">
+                                                            <Avatar className="size-10 sm:size-12 rounded-xl">
+                                                                <AvatarImage src={user.avatar} alt={user.full_name} className="size-10 sm:size-12 rounded-xl" />
+                                                                <AvatarFallback>{user.full_name.split(" ")[0][0]}{user.full_name.split(" ")[1][0]}</AvatarFallback>
+                                                            </Avatar>
+                                                            <div className="grid gap-1">
+                                                                <h3 className="text-xs font-medium text-grey-dark-0">{user.full_name}</h3>
+                                                                <div className="flex items-center">
+                                                                    {
+                                                                        Array.from({ length: data!.data.customer_rating_count }).map((_, index) => (
+                                                                            <IconStarFull key={index} className="text-yellow-2" />
+                                                                        ))
+                                                                    }
+                                                                    {
+                                                                        Array.from({ length: 5 - data!.data.customer_rating_count }).map((_, index) => (
+                                                                            <IconStarFull key={index} className="text-outline" />
+                                                                        ))
+                                                                    }
+                                                                </div>
+                                                            </div>
                                                         </div>
+                                                        {
+                                                            !!(data?.data.customer_rating_at) && (
+                                                                <span className="font-normal text-xs sm:text-sx text-grey-dark-2">
+                                                                    {format(data?.data.customer_rating_at as unknown as Date, "MMM dd, yyyy")}
+                                                                </span>
+                                                            )
+                                                        }
                                                     </div>
+                                                    <p className="font-normal text-xs sm:text-sm text-grey-dark-2">{data?.data?.customer_rating_comment}</p>
                                                 </div>
-                                                {
-                                                    !!(data?.data.customer_rating_at) && (
-                                                        <span className="font-normal text-xs sm:text-sx text-grey-dark-2">
-                                                            {format(data?.data.customer_rating_at as unknown as Date, "MMM dd, yyyy")}
-                                                        </span>
-                                                    )
-                                                }
-                                            </div>
-                                            <p className="font-normal text-xs sm:text-sm text-grey-dark-2">{data?.data?.customer_rating_comment}</p>
-                                        </div>
-                                    </div>
+                                            </div> 
+                                        )
+                                    }
                                     {
                                         data?.data?.order_status === 4 && (
                                             <Button variant="link" className="isolate" type="button" onClick={() => setOpenReport(true)}>

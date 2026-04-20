@@ -134,7 +134,7 @@ export const ProfileTabContent = () => {
                         <p className="font-medium text-sm text-grey-dark-2">{user?.order_distance || "0"}km</p>
                     </div>
                     <div className="flex flex-col gap-1 lg:col-span-2">
-                        <span className="text-xs text-grey-dark-2">Type of Cuisine</span>
+                        <span className="text-xs text-grey-dark-2">Type of Meal</span>
                         <div className="flex items-center gap-3.5 flex-wrap">
                         {
                             user?.dish_data.map((dish) => (

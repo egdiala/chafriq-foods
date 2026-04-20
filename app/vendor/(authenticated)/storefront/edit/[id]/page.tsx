@@ -18,7 +18,7 @@ export default async function VendorEditCuisine({ params }: { params: Promise<{ 
                         </BreadcrumbItem>   
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Edit Cuisine</BreadcrumbPage>
+                            <BreadcrumbPage>Edit Meal</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>

@@ -10,6 +10,7 @@ import { useForm } from "@tanstack/react-form-nextjs";
 import { useLoginCustomer } from "@/services/mutations/use-auth";
 import { loginVendorFormSchema } from "@/validations/vendor-auth";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Spinner } from "@/components/ui/spinner";
 
 export const CustomerLoginContent = () => {
     const { mutate, isPending } = useLoginCustomer()
@@ -116,7 +117,10 @@ export const CustomerLoginContent = () => {
             </FieldGroup>
 
             <div className="flex flex-col items-center gap-5">
-                <Button type="submit" disabled={isPending}>Sign in</Button>
+                <Button type="submit" disabled={isPending}>
+                    Sign in
+                    {(isPending) && (<Spinner />)}
+                </Button>
                 <p className="text-xs text-grey-dark-3 text-center">By clicking Sign in you agree to the terms and conditions of using this service</p>
             </div>
         </form>

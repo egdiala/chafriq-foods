@@ -157,7 +157,7 @@ export const CuisineDetails = ({ mealId }: Props) => {
                                                             <IconCurrencyDollar />
                                                             Amount
                                                         </div>
-                                                        <p className="text-sm font-semibold text-grey-dark-0">
+                                                        <p className="text-sm font-semibold text-grey-dark-0 lowercase">
                                                             {Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format(data?.data?.menu_amount || 0)}
                                                             /{data?.data?.quantity_unit}
                                                         </p>
@@ -174,7 +174,7 @@ export const CuisineDetails = ({ mealId }: Props) => {
                                                             <IconBowlFood />
                                                             MOQ
                                                         </div>
-                                                        <p className="text-sm font-semibold text-grey-dark-0">{data?.data?.min_order} {data?.data?.quantity_unit}</p>
+                                                            <p className="text-sm font-semibold text-grey-dark-0 lowercase">{data?.data?.min_order} {data?.data?.quantity_unit}{data?.data?.min_order === 1 ? "" : "s"}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -190,7 +190,7 @@ export const CuisineDetails = ({ mealId }: Props) => {
                                                     <Button size="icon-sm" variant="secondary" type="button" onClick={increment}><Plus /></Button>
                                                 </div>
                                                 <Button type="button" onClick={() => type === "customer" ? setOpen(true) : setOpenLoginNotice(true)}>
-                                                    <IconCookingPot className="size-6" /> Order Cuisine
+                                                    <IconCookingPot className="size-6" /> Order Meal
                                                 </Button>
                                             </div>
                                         </div>
@@ -202,7 +202,7 @@ export const CuisineDetails = ({ mealId }: Props) => {
                                             {
                                                 !!data?.data?.allergy_list?.length && (
                                                     <div className="grid gap-2">
-                                                        <span className="text-xs text-grey-dark-3">Allergens that are ingredients in this cuisine</span>
+                                                        <span className="text-xs text-grey-dark-3">Allergens that are ingredients in this meal</span>
                                                         <div className="flex items-center gap-4 flex-wrap"> 
                                                             {data?.data?.allergy_list.map((item, i) => {
                                                                 return (

@@ -10,7 +10,7 @@ export const useCreateMenu = (fn?: (value: CreateMenuResponse) => void) => {
             onSuccess: async (data) => {
                 await queryClient.invalidateQueries({ queryKey: trpc.menu.getMenuList.queryKey() })
                 fn?.(data.data);
-                toast.success("Cuisine added successfully")
+                toast.success("Meal added successfully")
             },
             onError: (error) => {
                 toast.error(error.message || "Something went wrong");
@@ -27,7 +27,7 @@ export const useEditMenu = (fn?: (value: CreateMenuResponse) => void) => {
             onSuccess: async (data) => {
                 await queryClient.invalidateQueries({ queryKey: trpc.menu.getMenuList.queryKey() })
                 fn?.(data.data);
-                toast.success("Cuisine edited successfully")
+                toast.success("Meal edited successfully")
             },
             onError: (error) => {
                 toast.error(error.message || "Something went wrong");
@@ -69,7 +69,7 @@ export const useDeleteMenu = (fn?: (value: unknown) => void) => {
             onSuccess: async (data) => {
                 await queryClient.invalidateQueries({ queryKey: trpc.menu.getMenuList.queryKey() })
                 fn?.(data.data);
-                toast.success("Cuisine deleted successfully")
+                toast.success("Meal deleted successfully")
             },
             onError: (error) => {
                 toast.error(error.message || "Something went wrong");

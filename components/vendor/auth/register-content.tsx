@@ -399,7 +399,7 @@ const PersonalInformation = () => {
                                     const isInvalid = !field.state.meta.isValid
                                     return (
                                         <Field data-invalid={isInvalid}>
-                                            <FieldLabel htmlFor={field.name}>Type of Cuisine</FieldLabel>
+                                            <FieldLabel htmlFor={field.name}>Type of Meal</FieldLabel>
                                             <Combobox
                                                 multiple
                                                 disabled={isLoadingDishList}
@@ -435,7 +435,7 @@ const PersonalInformation = () => {
                                                     <ComboboxValue
                                                         placeholder={
                                                         <span className="text-left">
-                                                            Select a cuisine
+                                                            Select a meal
                                                         </span>
                                                         }
                                                     >
@@ -443,7 +443,7 @@ const PersonalInformation = () => {
                                                         <>
                                                             {item.length === 0 ? (
                                                             <span className="text-contrast-low">
-                                                                Select a cuisine
+                                                                Select a meal
                                                             </span>
                                                             ) : item.length > 1 ? (
                                                             <span className="line-clamp-1 text-ellipsis">{item.map((itm) => {

@@ -16,7 +16,7 @@ export default function VendorAddCuisine() {
                         </BreadcrumbItem>   
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Add Cuisine</BreadcrumbPage>
+                            <BreadcrumbPage>Add Meal</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>

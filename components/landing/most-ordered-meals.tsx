@@ -16,7 +16,7 @@ export const MostOrderedMeals = () => {
                 <div className="flex flex-col gap-7">
                     <div className="grid gap-2">
                         <h2 className="font-sora text-grey-dark-0 font-extrabold text-base md:text-xl lg:text-2xl xl:text-[2.5rem] leading-12">Most Ordered Meals</h2>
-                        <p className="text-bas text-grey-dark-2">Cuisine categories ranked by order volume</p>
+                        <p className="text-bas text-grey-dark-2">Meal categories ranked by order volume</p>
                     </div>
                     {
                         isLoading ? (

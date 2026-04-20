@@ -56,10 +56,10 @@ export const TopCards = ({ className }: Props) => {
                 }
                 </div>
             ) : (!isLoading && data && (data?.data as GetOrderStatusCountResponse)) ? (
-                <div className={cn("grid gap-4", className)} style={{ gridTemplateColumns: "repeat(auto-fill, minmax(164px, 1fr))" }}>
+                <div className={cn("flex items-center overflow-scroll overscroll-contain snap-x scroll-pl-4 sm:grid gap-4", className)} style={{ gridTemplateColumns: "repeat(auto-fill, minmax(164px, 1fr))" }}>
                     {
                         cards.map((card, index) => (
-                            <div key={index} className="flex items-center gap-3 p-4 inset-ring-1 inset-ring-outline rounded-xl">
+                            <div key={index} className="flex items-center gap-3 p-4 inset-ring-1 inset-ring-outline rounded-xl shrink-0 min-w-41">
                                 <div className="grid place-content-center-safe size-8 bg-orange-5 text-orange-2 [&>svg]:size-4 rounded-xl">{card.icon}</div>
                                 <div className="grid gap-px">
                                     <span className="text-xs text-grey-dark-2">{card.title}</span>

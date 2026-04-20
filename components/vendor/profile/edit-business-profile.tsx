@@ -222,7 +222,7 @@ export const EditBusinessProfile = ({ open, setOpen }: Props) => {
                                                 <ComboboxValue
                                                     placeholder={
                                                     <span className="text-left">
-                                                        Select a cuisine
+                                                        Select a meal
                                                     </span>
                                                     }
                                                 >
@@ -230,7 +230,7 @@ export const EditBusinessProfile = ({ open, setOpen }: Props) => {
                                                     <>
                                                         {item.length === 0 ? (
                                                         <span className="text-contrast-low">
-                                                            Select a cuisine
+                                                            Select a meal
                                                         </span>
                                                         ) : item.length > 1 ? (
                                                         <span className="line-clamp-1 text-ellipsis">{item.map((itm) => {

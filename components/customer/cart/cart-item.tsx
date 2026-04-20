@@ -12,6 +12,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useAddToCart } from "@/services/mutations/use-orders";
 import { IconArrowDown, IconCalendar } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import Link from "next/link";
 
 type Props = {
     item: GetCartItemResponse;
@@ -62,7 +63,7 @@ export const CartItem = ({ item }: Props) => {
                 <AvatarImage src={item.file_url} alt={item.menu_name} className="size-16 rounded" />
             </Avatar>
             <div className="grid gap-2">
-                <span className="font-medium text-xs text-grey-dark-0">{item.menu_name}</span>
+                <Link href={`/meals/${item.menu_id}`} className="font-medium text-xs text-grey-dark-0 hover:underline">{item.menu_name}</Link>
                 <p className="text-xs text-grey-dark-3 line-clamp-1">{item.menu_content}</p>
                 <Popover>
                     <PopoverTrigger disabled={isPending && (variables.order_date !== item.order_date)} asChild>

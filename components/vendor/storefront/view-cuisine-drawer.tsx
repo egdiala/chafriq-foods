@@ -170,7 +170,7 @@ export const ViewCuisineDrawer = ({ menuId, setOpen }: Props) => {
                                 <div className="flex flex-col gap-2 inset-ring-1 inset-ring-outline p-3 rounded-lg">
                                     <span className="font-medium text-sm text-grey-dark-0">Allergy Information</span>
                                     <div className="grid gap-3">
-                                        <span className="text-xs text-grey-dark-2">Allergens that are ingredients in this cuisine</span>
+                                        <span className="text-xs text-grey-dark-2">Allergens that are ingredients in this meal</span>
                                         <div className="flex items-center gap-x-4 gap-y-2 flex-wrap"> 
                                             {data?.data?.allegen_list?.map((item, i) => (
                                                 <div key={i} className="capitalize active:scale-98 inline-flex text-xs rounded-full px-3 py-1 inset-ring-1 inset-ring-grey-dark-4 bg-grey-dark-4 text-grey-dark-2">
@@ -206,7 +206,7 @@ export const ViewCuisineDrawer = ({ menuId, setOpen }: Props) => {
                     <DrawerClose asChild>
                         <Button variant="secondary">Go Back</Button>
                     </DrawerClose>
-                    <Button asChild><Link href={`/vendor/storefront/edit/${menuId}`}>Edit Cuisine</Link></Button>
+                    <Button asChild><Link href={`/vendor/storefront/edit/${menuId}`}>Edit Meal</Link></Button>
                 </DrawerFooter>
             </DrawerContent>
         </Drawer>

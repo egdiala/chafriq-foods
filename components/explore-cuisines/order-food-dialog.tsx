@@ -95,7 +95,11 @@ export const OrderFoodDialog = ({ cookId, meal, open, quantity, setOpen }: Props
                         </div>
                     </div>
                     <span className="font-semibold text-base text-grey-dark-0">
-                        {Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format(quantity * (meal?.menu_amount || 0))}
+                        {Intl.NumberFormat("en-AU", {
+                            style: "currency",
+                            currency: "AUD",
+                            maximumFractionDigits: 2
+                        }).format(quantity * ((meal?.menu_amount || 0) / (meal?.quantity_size || 0)))}
                     </span>
                 </div>
                 <form id="temporary-availability-form" className="space-y-6" onSubmit={(e) => {

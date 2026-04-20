@@ -53,7 +53,7 @@ export const registerVendorFormSchema = z.object({
     is_home_address: z.boolean(),
     business_abn: z.string().min(1, "ABN is required"),
     year_exp: z.string().min(1, "Years of experience is required"),
-    dish_list: z.array(z.string().min(1, "Cuisine cannot be empty")).min(1, "At least one cuisine is required"),
+    dish_list: z.array(z.string().min(1, "Meal cannot be empty")).min(1, "At least one meal is required"),
     gender: z.string().min(1, "Gender is required"),
     phone_number: z.string().min(1, "Phone number is required"),
     email: z.email("Invalid email address").min(1, "Email is required"),

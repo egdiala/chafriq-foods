@@ -177,7 +177,7 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
                 ) : (
                     <>
                         <div className="text-center space-y-2 mx-auto">
-                            <h1 className="font-sora text-grey-dark-0 font-extrabold text-lg md:text-2xl">Edit Cuisine</h1>
+                            <h1 className="font-sora text-grey-dark-0 font-extrabold text-lg md:text-2xl">Edit Meal</h1>
                             <p className="text-grey-dark-3 font-normal text-xs">Lorem ipsum dolor sit amet consectetur. Pharetra vitae tristique volutpat sed augue augue viverra orci lectus. Diam diam ut ac at leo convallis.</p>
                         </div>
 
@@ -186,14 +186,14 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
                             editCuisineForm.handleSubmit()
                         }}>
                             <FieldSet>
-                                <FieldLegend>Cuisine Information</FieldLegend>
+                                <FieldLegend>Meal Information</FieldLegend>
                                 <FieldGroup>
                                     <editCuisineForm.Field name="menu_name">
                                         {(field) => {
                                             const isInvalid = !field.state.meta.isValid
                                             return (
                                                 <Field data-invalid={isInvalid}>
-                                                    <FieldLabel htmlFor={field.name}>Cuisine Name</FieldLabel>
+                                                    <FieldLabel htmlFor={field.name}>Meal Name</FieldLabel>
                                                     <Input
                                                         type="text"
                                                         id={field.name}
@@ -290,7 +290,7 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
                                                 const isInvalid = !field.state.meta.isValid
                                                 return (
                                                     <Field data-invalid={isInvalid}>
-                                                        <FieldLabel htmlFor={field.name}>Content of the Cuisine</FieldLabel>
+                                                        <FieldLabel htmlFor={field.name}>Content of the Meal</FieldLabel>
                                                         <Input
                                                             type="text"
                                                             id={field.name}
@@ -310,7 +310,7 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
                                                 const isInvalid = !field.state.meta.isValid
                                                 return (
                                                     <Field data-invalid={isInvalid}>
-                                                        <FieldLabel htmlFor={field.name}>Type of Cuisine</FieldLabel>
+                                                        <FieldLabel htmlFor={field.name}>Type of Meal</FieldLabel>
                                                         <Combobox
                                                             multiple
                                                             items={user?.dish_data || []}
@@ -345,7 +345,7 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
                                                                 <ComboboxValue
                                                                     placeholder={
                                                                     <span className="text-left">
-                                                                        Select a cuisine
+                                                                        Select a meal
                                                                     </span>
                                                                     }
                                                                 >
@@ -353,7 +353,7 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
                                                                     <>
                                                                         {item.length === 0 ? (
                                                                         <span className="text-contrast-low">
-                                                                            Select a cuisine
+                                                                            Select a meal
                                                                         </span>
                                                                         ) : item.length > 1 ? (
                                                                         <span className="line-clamp-1 text-ellipsis">{item.map((itm) => {
@@ -468,7 +468,7 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
                                         const isInvalid = !field.state.meta.isValid
                                         return (
                                             <div className="grid gap-2">
-                                                <span className="text-xs text-grey-dark-0">Select allergens that are ingredients in this cuisine</span>
+                                                <span className="text-xs text-grey-dark-0">Select allergens that are ingredients in this meal</span>
                                                 <div className="flex items-center gap-4 flex-wrap"> 
                                                     {allergies?.data?.map((item, i) => {
                                                         return (
@@ -544,7 +544,7 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
                             </FieldSet>
 
                             <FieldSet>
-                                <FieldLegend>CUISINE IMAGES</FieldLegend>
+                                <FieldLegend>MEAL IMAGES</FieldLegend>
                                 <FieldGroup className="gap-2">
                                     <span className="text-xs text-grey-dark-0">{totalFiles}/{MAX_FILES} files</span>
                                     <div className="grid gap-8">
@@ -620,7 +620,7 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
                                                 <Link href="/vendor/storefront">Cancel</Link>
                                             </Button>
                                             <Button type="submit" disabled={!canSubmit || isUploadingMedia || isPending}>
-                                                Edit Cuisine
+                                                Edit Meal
                                                 {(isPending) && (<Spinner className="absolute right-4 size-5" />)}
                                             </Button>
                                         </div>

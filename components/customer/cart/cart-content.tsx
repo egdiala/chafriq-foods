@@ -166,7 +166,7 @@ export const CartContent = () => {
                     </div>
                     <span className="text-grey-dark-0 text-base font-semibold">Your cart is empty</span>
                     <p className="text-grey-dark-2 text-sm font-normal">Add meals from vendors to get started. Once you’ve made your selections, they’ll appear here for checkout.</p>
-                    <Button size="default" className="mt-4" asChild><Link href="/meals">Add Cuisine</Link></Button>
+                    <Button size="default" className="mt-4" asChild><Link href="/meals">Add Meal</Link></Button>
                 </div>
             )
         }
