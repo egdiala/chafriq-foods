@@ -25,7 +25,7 @@ export const CustomerAds = () => {
                 }
                 </div>
             ) : (!isLoading && data && (data?.data.length > 0)) ? (
-                <div className="relative w-full h-auto sm:h-75 overflow-hidden rounded-lg lg:col-span-8">
+                <div className="relative w-full h-50 sm:h-37.5 overflow-hidden rounded-lg lg:col-span-8">
                     <Carousel 
                         setApi={setApi} 
                         opts={{ loop: true }} 
@@ -35,7 +35,7 @@ export const CustomerAds = () => {
                         onMouseEnter={() => api?.plugins().autoplay?.stop()} 
                         onMouseLeave={() => api?.plugins().autoplay?.play()}
                     >
-                        <CarouselContent className="h-auto sm:h-75">
+                        <CarouselContent className="h-50 sm:h-37.5">
                             {data?.data?.map((ad) => (
                             <CarouselItem key={ad._id}>
                                 <img src={ad.file_link} alt={ad._id} className="object-cover object-center w-full h-full" />

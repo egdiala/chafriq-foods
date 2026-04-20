@@ -13,16 +13,17 @@ import { CustomerNotificationsDropdown } from "./notifications-dropdown";
 import { useGetCart } from "@/services/queries/use-orders";
 import { useUser } from "@/context/use-user";
 
+export const CUSTOMER_HEADER_LINKS = [
+    { icon: <IconUser />, text: "Profile", href: "/customer/profile" },
+    { icon: <IconForkKnife />, text: "Explore Meals", href: "/meals" },
+    { icon: <IconChefHat />, text: "Explore Cooks", href: "/cooks" },
+    { icon: <IconHeadset />, text: "Support", href: "#" },
+]
+
 export const CustomerHeader = () => {
     const [openDrawer, setOpenDrawer] = useState(false)
     const [openLogout, setOpenLogout] = useState(false)
 
-    const headerLinks = [
-        { icon: <IconUser />, text: "Profile", href: "/customer/profile" },
-        { icon: <IconForkKnife />, text: "Explore Meals", href: "/meals" },
-        { icon: <IconChefHat />, text: "Explore Cooks", href: "/cooks" },
-        { icon: <IconHeadset />, text: "Support", href: "#" },
-    ]
     return (
         <>
         <header className={cn("bg-white border-b border-b-input-field")}>
@@ -50,7 +51,7 @@ export const CustomerHeader = () => {
         >
             <div className="flex flex-col flex-1 mt-48 items-center justify-center gap-14">
                 {
-                    headerLinks.map((headerLink, index) => (
+                    CUSTOMER_HEADER_LINKS.map((headerLink, index) => (
                         <Link
                             key={index}
                             href={headerLink.href as unknown as __next_route_internal_types__.RouteImpl<RouteType>}

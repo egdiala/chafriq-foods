@@ -11,14 +11,16 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { VendorNotificationsDropdown } from "./notifications-dropdown";
 
+export const VENDOR_HEADER_LINKS = [
+    { icon: <IconChartLine />, text: "Dashboard", href: "/vendor" },
+    { icon: <IconBowlSteam />, text: "Orders", href: "/vendor/orders" },
+    { icon: <IconStorefront />, text: "Storefront", href: "/vendor/storefront" },
+    { icon: <IconChartBar />, text: "Reporting", href: "/vendor/reporting" },
+]
+
 export const VendorHeader = () => {
     const [openDrawer, setOpenDrawer] = useState(false)
-    const headerLinks = [
-        { icon: <IconChartLine />, text: "Dashboard", href: "/vendor" },
-        { icon: <IconBowlSteam />, text: "Orders", href: "/vendor/orders" },
-        { icon: <IconStorefront />, text: "Storefront", href: "/vendor/storefront" },
-        { icon: <IconChartBar />, text: "Reporting", href: "/vendor/reporting" },
-    ]
+
     return (
         <>
         <nav className="lg:rounded-3xl bg-white lg:border-b-0 border-b border-b-outline sticky top-0 inset-x-0 z-50">
@@ -29,7 +31,7 @@ export const VendorHeader = () => {
                     </Link>
                     <div className="hidden lg:flex flex-1 items-center justify-center gap-6">
                     {
-                        headerLinks.map(({ icon, text, ...props }, index) => (
+                        VENDOR_HEADER_LINKS.map(({ icon, text, ...props }, index) => (
                             <NavItem key={index} href={props.href as unknown as __next_route_internal_types__.RouteImpl<RouteType>}>
                                 {icon}
                                 {text}
@@ -55,7 +57,7 @@ export const VendorHeader = () => {
         >
             <div className="flex flex-col flex-1 mt-48 items-center justify-center gap-6">
             {
-                headerLinks.map(({ icon, text, ...props }, index) => (
+                VENDOR_HEADER_LINKS.map(({ icon, text, ...props }, index) => (
                     <Link key={index} className="flex items-center gap-3 text-white text-base py-4 [&>svg]:text-orange-2 [&>svg]:size-6" onClick={() => setOpenDrawer((prev) => !prev)} href={props.href as unknown as __next_route_internal_types__.RouteImpl<RouteType>}>
                         {icon}
                         {text}
