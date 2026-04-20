@@ -142,7 +142,7 @@ const PersonalInformation = () => {
             }}>
                 <div className="text-center space-y-3 w-full max-w-153 mx-auto">
                     <h1 className="font-sora text-grey-dark-0 font-extrabold text-3xl md:text-[2.5rem]">Join Our Culinary Team</h1>
-                    <p className="text-grey-dark-3 font-normal text-sm">Correct to: Become a Chafriq cook today! Share your passion for food and earn money doing what you love. Quick signup, flexible hours!</p>
+                    <p className="text-grey-dark-3 font-normal text-sm">Become a Chafriq cook today! Share your passion for food and earn money doing what you love. Quick signup, flexible hours!</p>
                 </div>
                 <FieldSet>
                     <FieldLegend>Personal Information </FieldLegend>
