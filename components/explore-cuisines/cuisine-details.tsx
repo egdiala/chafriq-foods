@@ -258,7 +258,7 @@ export const CuisineDetails = ({ mealId }: Props) => {
                     </Content>
                 )
             }
-            <OrderFoodDialog quantity={quantity} meal={data?.data} open={open} setOpen={setOpen} />
+            <OrderFoodDialog cookId={data?.data?.cook_id || ""} quantity={quantity} meal={data?.data} open={open} setOpen={setOpen} />
         </section>
     )
 }

@@ -71,7 +71,7 @@ export const EditCustomerProfile = ({ open, setOpen }: Props) => {
                                 const isInvalid = !field.state.meta.isValid
                                 return (
                                     <Field data-invalid={isInvalid}>
-                                        <FieldLabel htmlFor={field.name}>Years of Experience</FieldLabel>
+                                        <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
                                         <Input
                                             type="text"
                                             id={field.name}
@@ -178,7 +178,7 @@ export const EditCustomerProfile = ({ open, setOpen }: Props) => {
                                 const isInvalid = !field.state.meta.isValid
                                 return (
                                     <Field data-invalid={isInvalid}>
-                                        <FieldLabel htmlFor={field.name}>Zip/Postal Code</FieldLabel>
+                                        <FieldLabel htmlFor={field.name}>Postal Code</FieldLabel>
                                         <Input
                                             type="text"
                                             id={field.name}

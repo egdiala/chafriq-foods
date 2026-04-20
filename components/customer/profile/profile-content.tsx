@@ -75,17 +75,31 @@ export const CustomerProfileContent = () => {
                     </div>
                 </div>
                 <div className="flex flex-col gap-6 lg:col-span-9">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-5 gap-4 rounded-xl bg-grey-dark-4 w-full">
-                        <div className="flex flex-col">
-                            <span className="text-2xs md:text-xs text-grey-dark-2">Email</span>
-                            <div className="flex items-center gap-2">
-                                <p className="font-medium text-xs md:text-sm text-grey-dark-2">{user?.email}</p>
-                                <Button type="button" variant="tertiary" size="icon-xs" onClick={() => setOpenChangeEmailModal(true)}><IconPencilSimple /></Button>
+                    <div className="flex flex-col sm:flex-row sm:justify-between p-5 gap-4 rounded-xl bg-grey-dark-4 w-full">
+                        <div className="grid grid-cols-2 flex-1 gap-4">
+                            <div className="flex flex-col">
+                                <span className="text-2xs md:text-xs text-grey-dark-2">Email</span>
+                                <div className="flex items-center gap-2">
+                                    <p className="font-medium text-xs md:text-sm text-grey-dark-2">{user?.email}</p>
+                                    <Button type="button" variant="tertiary" size="icon-xs" onClick={() => setOpenChangeEmailModal(true)}><IconPencilSimple /></Button>
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-2xs md:text-xs text-grey-dark-2">Phone</span>
-                            <p className="font-medium text-xs md:text-sm text-grey-dark-2">{formatPhoneNumberIntl(`+${user?.phone_number}` as string)}</p>
+                            <div className="flex flex-col">
+                                <span className="text-2xs md:text-xs text-grey-dark-2">Phone</span>
+                                <p className="font-medium text-xs md:text-sm text-grey-dark-2">{formatPhoneNumberIntl(`+${user?.phone_number}` as string)}</p>
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-2xs md:text-xs text-grey-dark-2">City</span>
+                                <p className="font-medium text-xs md:text-sm text-grey-dark-2">{user?.city}</p>
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-2xs md:text-xs text-grey-dark-2">State</span>
+                                <p className="font-medium text-xs md:text-sm text-grey-dark-2">{user?.state}</p>
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-2xs md:text-xs text-grey-dark-2">Postal Code</span>
+                                <p className="font-medium text-xs md:text-sm text-grey-dark-2">{user?.zipcode}</p>
+                            </div>
                         </div>
                         <Button type="button" variant="tertiary" size="smallest" className="w-fit" onClick={() => setOpenPersonalModal(true)}>
                             <IconPencilSimple />Edit

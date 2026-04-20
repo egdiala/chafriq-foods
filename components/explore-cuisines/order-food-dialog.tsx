@@ -1,24 +1,58 @@
 "use client";
 
-import { format } from "date-fns";
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Calendar } from "@/components/ui/calendar";
 import { useForm } from "@tanstack/react-form-nextjs";
 import { Field, FieldError } from "@/components/ui/field";
+import { useGetCook } from "@/services/queries/use-explore";
 import { useAddToCart } from "@/services/mutations/use-orders";
 import { addToCartFormSchema } from "@/validations/customer-order";
+import { addDays, format, isSameDay, startOfWeek } from "date-fns";
 import { Dialog, DialogTitle, DialogHeader, DialogContent, DialogFooter, DialogClose } from "@/components/ui/dialog";
 
 type Props = {
     open: boolean;
+    cookId: string;
     quantity: number;
     meal: GetMealResponse | undefined;
     setOpen: (isOpen: boolean) => void;
 }
 
-export const OrderFoodDialog = ({ meal, open, quantity, setOpen }: Props) => {
+export const OrderFoodDialog = ({ cookId, meal, open, quantity, setOpen }: Props) => {
+    const start = startOfWeek(new Date(), { weekStartsOn: 1 });
+    const weekDays = Array.from({ length: 7 }, (_, i) => addDays(start, i)).map((item) => item.getDay());
+    const { data } = useGetCook({ cook_id: cookId, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
+
+    const inActivePermanentScheduleDays = useMemo(() => {
+        const days = data?.data?.schedule_data?.filter((item) => item.avail_type === 1).map((item) => item.day_week) || []
+        const activeDays = days.map((day) => day === 7 ? 0 : day)
+        return weekDays.filter((weekDay) => !activeDays.includes(weekDay))
+    }, [data?.data?.schedule_data, weekDays])
+
+    const activeTemporaryScheduleDays = useMemo(() => {
+        const days = data?.data?.schedule_data?.filter((item) => item.avail_type === 2) || []
+        return days.map((day) => new Date(day.day_date))
+    }, [data?.data?.schedule_data])
+
+    const isDateDisabled = (date: Date) => {
+        // 1. Disable past dates (if that's still required)
+        const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+        if (isPast) return true;
+
+        // 2. ENABLE if it's in the temporary active list (overrides permanent schedule)
+        const isTemporarilyActive = activeTemporaryScheduleDays.some((tempDate) => 
+            isSameDay(date, tempDate)
+        );
+        if (isTemporarilyActive) return false;
+
+        // 3. DISABLE if it's in your permanent inactive days of the week
+        const dayOfWeek = date.getDay();
+        return inActivePermanentScheduleDays.includes(dayOfWeek);
+    };
+    
     const orderFoodForm = useForm({
         defaultValues: {
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -79,7 +113,7 @@ export const OrderFoodDialog = ({ meal, open, quantity, setOpen }: Props) => {
                                         onSelect={(selectedDate) => subField.handleChange(format(selectedDate as unknown as Date, "yyyy-MM-dd"))}
                                         className="bg-transparent"
                                         captionLayout="label"
-                                        disabled={{ before: new Date() }}
+                                        disabled={isDateDisabled}
                                     />
                                     {isInvalid && (<FieldError errors={subField.state.meta.errors} />)}
                                 </Field>

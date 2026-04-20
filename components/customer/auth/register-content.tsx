@@ -183,7 +183,7 @@ const PersonalInformation = () => {
                 </FieldGroup>
 
                 <div className="flex flex-col items-center gap-5">
-                    <Button type="submit">Verify Email</Button>
+                    <Button type="submit" disabled={isPending}>Signup</Button>
                     <p className="text-sm text-grey-dark-3">Already have an account? <Link href="/customer/login" className="font-medium text-grey-dark-0 hover:underline hover:underline-offset-1">Sign in instead</Link></p>
                 </div>
             </form>

@@ -74,7 +74,7 @@ export const VerifyEmailOnRegisterDialog = ({ email, open, setOpen }: Props) => 
                         <DialogTitle>Verify Your Email</DialogTitle>
                         <DialogDescription asChild>
                             <div className="flex flex-col items-start gap-1">
-                                <p>Enter the code sent to {email}</p>
+                                <p>Please enter the 4-digit code sent to <strong>{email}</strong> </p>
                                 <DialogClose asChild>
                                     <Button variant="link" size="link">Edit Email</Button>
                                 </DialogClose>
