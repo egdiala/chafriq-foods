@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { contactUsFormSchema } from "@/validations/explore";
+import { useContactUs } from "@/services/mutations/use-explore";
 
 const contactList = [
     {
@@ -28,19 +30,21 @@ const contactList = [
 ]
 
 export default function ContactUsPage() {
-
+    const { mutateAsync, isPending } = useContactUs()
     const contactForm = useForm({
         defaultValues: {
-            firstName: "",
-            lastName: "",
+            first_name: "",
+            last_name: "",
             subject: "",
-            message: ""
+            message: "",
+            email: ""
         },
         validators: {
-            // onSubmit: loginFormSchema
+            onSubmit: contactUsFormSchema
         },
         onSubmit: async ({ value }) => {
-            console.log(value)
+            await mutateAsync(value)
+            contactForm.reset()
         },
     })
     
@@ -67,13 +71,13 @@ export default function ContactUsPage() {
                     </div>
                     <div className="bg-white flex flex-col gap-12.5 py-7 px-8 rounded-3xl shadow-card md:col-span-7">
                         <h2 className="font-semibold text-xl text-grey-dark-2">How Can We Help?</h2>
-                        <form className="space-y-5 [&_button]:w-1/3! [&_button]:mt-5! [&_button]:mx-auto!" onSubmit={(e) => {
+                        <form className="space-y-5 [&_button]:w-1/2! [&_button]:mt-5! [&_button]:mx-auto!" onSubmit={(e) => {
                             e.preventDefault()
                             contactForm.handleSubmit()
                         }}>
                             <FieldGroup>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                    <contactForm.Field name="firstName">
+                                    <contactForm.Field name="first_name">
                                         {(field) => {
                                             const isInvalid = !field.state.meta.isValid
                                             return (
@@ -93,7 +97,7 @@ export default function ContactUsPage() {
                                             )
                                         }}
                                     </contactForm.Field>
-                                    <contactForm.Field name="lastName">
+                                    <contactForm.Field name="last_name">
                                         {(field) => {
                                             const isInvalid = !field.state.meta.isValid
                                             return (
@@ -114,6 +118,26 @@ export default function ContactUsPage() {
                                         }}
                                     </contactForm.Field>
                                 </div>
+                                <contactForm.Field name="email">
+                                    {(field) => {
+                                        const isInvalid = !field.state.meta.isValid
+                                        return (
+                                            <Field data-invalid={isInvalid}>
+                                                <FieldLabel htmlFor={field.name}>Email Address</FieldLabel>
+                                                <Input
+                                                    type="text"
+                                                    id={field.name}
+                                                    name={field.name}
+                                                    aria-invalid={isInvalid}
+                                                    value={field.state.value}
+                                                    onBlur={field.handleBlur}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                />
+                                                {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
+                                            </Field>
+                                        )
+                                    }}
+                                </contactForm.Field>
                                 <contactForm.Field name="subject">
                                     {(field) => {
                                         const isInvalid = !field.state.meta.isValid
@@ -157,9 +181,9 @@ export default function ContactUsPage() {
                                 <contactForm.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
                                     {([canSubmit, isSubmitting]) => {
                                         return (
-                                            <Button type="submit" disabled={!canSubmit}>
+                                            <Button type="submit" disabled={!canSubmit || isSubmitting || isPending}>
                                                 Submit
-                                                {(isSubmitting) && (<Spinner className="absolute right-4 size-5" />)}
+                                                {(isSubmitting || isPending) && (<Spinner className="md:absolute md:right-4 md:size-5" />)}
                                             </Button>
                                         )
                                     }}

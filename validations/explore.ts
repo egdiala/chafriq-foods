@@ -84,3 +84,11 @@ export const getRatingsSchema = z.object({
 })
 
 export type GetRatingsType = z.infer<typeof getRatingsSchema>;
+
+export const contactUsFormSchema = z.object({
+    first_name: z.string().min(1, "First name is required").min(2, "First name should be at least 2 characters").max(50, "First name cannot exceed 50 characters"),
+    last_name: z.string().min(1, "Last name is required").min(2, "Last name should be at least 2 characters").max(50, "Last name cannot exceed 50 characters"),
+    email: z.email("Invalid email address").min(1, "Email is required"),
+    subject: z.string().min(2, "Subject should be at least 2 characters").max(150, "Reason cannot exceed 150 characters"),
+    message: z.string().min(5, "Message should be at least 2 characters").max(2000, "Reason cannot exceed 2000 characters")
+})
