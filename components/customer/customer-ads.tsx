@@ -3,9 +3,13 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useCustomerAds } from "@/services/queries/use-ads"
+import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
+import { useState } from "react";
+import Autoplay from "embla-carousel-autoplay";
 
 export const CustomerAds = () => {
     const isMobile = useIsMobile()
+    const [api, setApi] = useState<CarouselApi>()
     const { data, isLoading } = useCustomerAds(isMobile ? "mobile" : "web")
     return (
         <>
@@ -13,22 +17,34 @@ export const CustomerAds = () => {
             isLoading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 lg:col-span-8">
                 {
-                    Array.from({ length: 2 }).map((_, index) => (
+                    Array.from({ length: 1 }).map((_, index) => (
                         <div key={index}>
-                            <Skeleton className="h-45" />
+                            <Skeleton className="h-75" />
                         </div>
                     ))
                 }
                 </div>
             ) : (!isLoading && data && (data?.data.length > 0)) ? (
-                <div className="grid md:grid-cols-2 gap-x-8 gap-y-6 lg:col-span-8">
-                    {
-                        data?.data?.map((ad) => (
-                            <div key={ad._id} className="rounded-xl bg-grey-dark-4 h-45 relative w-full overflow-hidden aspect-video">
-                                <img src={ad.file_link} className="object-cover h-full w-full" />
-                            </div>
-                        ))
-                    }
+                <div className="relative w-full h-auto sm:h-75 overflow-hidden rounded-lg lg:col-span-8">
+                    <Carousel 
+                        setApi={setApi} 
+                        opts={{ loop: true }} 
+                        orientation="horizontal" 
+                        plugins={[Autoplay({ delay: 3000 })]}
+                        className="group rounded-lg overflow-hidden w-full"
+                        onMouseEnter={() => api?.plugins().autoplay?.stop()} 
+                        onMouseLeave={() => api?.plugins().autoplay?.play()}
+                    >
+                        <CarouselContent className="h-auto sm:h-75">
+                            {data?.data?.map((ad) => (
+                            <CarouselItem key={ad._id}>
+                                <img src={ad.file_link} alt={ad._id} className="object-cover object-center w-full h-full" />
+                            </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                        <CarouselPrevious className="group-hover:start-4" />
+                        <CarouselNext className="group-hover:end-4" />
+                    </Carousel>
                 </div>
             ) : (
                 null

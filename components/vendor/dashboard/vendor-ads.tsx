@@ -18,7 +18,7 @@ export const VendorAds = () => {
             isLoading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 lg:col-span-8">
                 {
-                    Array.from({ length: 2 }).map((_, index) => (
+                    Array.from({ length: 1 }).map((_, index) => (
                         <div key={index}>
                             <Skeleton className="h-80" />
                         </div>
