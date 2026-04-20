@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { Content } from "../content"
+import { AppStoreDownload, GooglePlayDownload } from "../icons"
 
 export const DownloadOurApp = () => {
     return (
@@ -10,6 +11,14 @@ export const DownloadOurApp = () => {
                     <div className="grid gap-4 w-full md:max-w-108 md:place-self-center">
                         <h2 className="font-sora text-white font-extrabold text-[3.5rem] leading-15">Good Food, Whenever You Want It</h2>
                         <p className="text-white font-normal text-base">Order faster, save favorites, track deliveries, and discover new cooks — all from your phone</p>
+                        <div className="flex items-center gap-4">
+                            <a href="#">
+                                <AppStoreDownload />
+                            </a>
+                            <a href="#">
+                                <GooglePlayDownload />
+                            </a>
+                        </div>
                     </div>
                     <div className="md:absolute -z-10 ml-auto md:inset-x-0 md:right-0 md:[&>img]:translate-x-0 md:bottom-0 md:h-full hidden md:flex w-[50vw]">
                         <Image
