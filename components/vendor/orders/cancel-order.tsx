@@ -5,6 +5,7 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { cancelOrderFormSchema } from "@/validations/vendor-order";
 import { useUpdateVendorOrderStatus } from "@/services/mutations/use-orders";
+import { Spinner } from "@/components/ui/spinner";
 
 type Props = {
     open: boolean;
@@ -16,16 +17,14 @@ export const CancelOrder = ({ open, orderId, setOpen }: Props) => {
     const cancelForm = useForm({
         defaultValues: {
             reason: "",
+            status: "5" as const,
+            order_id: orderId as string
         },
         validators: {
             onSubmit: cancelOrderFormSchema
         },
         onSubmit: async ({ value }) => {
-            mutate({
-                reason: value.reason,
-                order_id: orderId as string,
-                status: "5"
-            })
+            mutate(value)
         },
     })
 
@@ -73,7 +72,10 @@ export const CancelOrder = ({ open, orderId, setOpen }: Props) => {
                     <DialogClose asChild>
                         <Button type="button" variant="secondary">Back</Button>
                     </DialogClose>
-                    <Button type="submit" disabled={isPending} form="cancel-order-form">Cancel Order</Button>
+                    <Button type="submit" disabled={isPending} form="cancel-order-form">
+                        Cancel Order
+                        {(isPending) && (<Spinner />)}
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

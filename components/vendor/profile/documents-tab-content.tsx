@@ -495,7 +495,7 @@ const Others = () => {
     const { mutateAsync, isPending, variables } = useUploadVendorDocuments()
 
     return (
-        <div className="flex flex-col gap-4 justify-between inset-ring-1 inset-ring-outline p-5 rounded-xl md:col-span-2">
+        <div className="flex flex-col gap-4 sm:gap-8 justify-between inset-ring-1 inset-ring-outline p-5 rounded-xl md:col-span-2">
             <FieldSet>
                 <FieldLegend>Others</FieldLegend>
                 <FieldGroup>
