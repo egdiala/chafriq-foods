@@ -59,7 +59,7 @@ export const ProfileTabContent = () => {
                         <p className="font-medium text-sm text-grey-dark-2">{user?.home_city}</p>
                     </div>
                     <div className="flex flex-col gap-1">
-                        <span className="text-xs text-grey-dark-2">Zip Code</span>
+                        <span className="text-xs text-grey-dark-2">Postal Code</span>
                         <p className="font-medium text-sm text-grey-dark-2">{user?.home_zip}</p>
                     </div>
                     <div className="flex flex-col gap-1">

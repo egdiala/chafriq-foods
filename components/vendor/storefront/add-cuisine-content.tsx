@@ -24,7 +24,8 @@ export const VendorAddCuisineContent = () => {
     const router = useRouter()
     const { user: userObj } = useUser()
     const user = userObj as VendorProfileResponse;
-    const { data, isLoading } = useGetAllergies()
+    const { data, isLoading } = useGetAllergies();
+    const [isDragging, setIsDragging] = useState(false);
     const [cuisineImages, setCuisineImages] = useState<File[]>([])
 
     const [searchValue, setSearchValue] = useState('');
@@ -32,6 +33,28 @@ export const VendorAddCuisineContent = () => {
     const abortControllerRef = useRef<AbortController | null>(null);
 
     const isMaxReached = cuisineImages.length >= MAX_FILES;
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!isMaxReached) setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+        if (isMaxReached) return;
+
+        const files = e.dataTransfer.files;
+        if (files?.length) handleFiles(files);
+    };
 
     const addCuisineForm = useForm({
         defaultValues: {
@@ -501,7 +524,17 @@ export const VendorAddCuisineContent = () => {
                     <FieldGroup className="gap-2">
                         <span className="text-xs text-grey-dark-0">{cuisineImages.length}/{MAX_FILES} files</span>
                         <div className="grid gap-8">
-                            <label htmlFor="cuisineImages" className={cn("py-13 rounded-lg border border-dashed border-grey-dark-3 bg-grey-dark-4", isMaxReached ? "opacity-50 cursor-not-allowed" : "cursor-pointer")}>
+                            <label
+                                htmlFor="cuisineImages"
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onDrop={handleDrop}
+                                className={cn(
+                                    "py-13 rounded-lg border border-dashed border-grey-dark-3 bg-grey-dark-4",
+                                    isDragging ? "border-orange-2 bg-orange-2/5" : "border-grey-dark-3",
+                                    isMaxReached ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                                )}
+                            >
                                 <input
                                     id="cuisineImages"
                                     name="cuisineImages"
@@ -513,7 +546,9 @@ export const VendorAddCuisineContent = () => {
                                 />
                                 <div className="flex flex-col items-center gap-1">
                                     <IconCloudArrowUp className="text-orange-2" />
-                                    <p className="font-medium text-xs text-grey-dark-3">Drag and drop your photo here, or <span className="text-orange-2 underline">Click Here</span></p>
+                                    <p className="font-medium text-xs text-grey-dark-3">
+                                        Drag and drop your photo here, or <span className="text-orange-2 underline">Click Here</span>
+                                    </p>
                                     <p className="text-xs text-grey-dark-3">JPG or PNG only. Max size: 5 MB</p>
                                 </div>
                             </label>

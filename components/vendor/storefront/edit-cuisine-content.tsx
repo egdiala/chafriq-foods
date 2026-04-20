@@ -34,6 +34,7 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
         id: "",
         isOpen: false
     })
+    const [isDragging, setIsDragging] = useState(false);
     const { data, isLoading } = useGetSingleMenu(cuisineId)
     const [cuisineImages, setCuisineImages] = useState<File[]>([])
     const { data: allergies, isLoading: isLoadingAllergies } = useGetAllergies()
@@ -45,6 +46,28 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
     const totalFiles = cuisineImages.length + (data?.data?.image_data || [])?.length
 
     const isMaxReached = totalFiles >= MAX_FILES;
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!isMaxReached) setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+        if (isMaxReached) return;
+
+        const files = e.dataTransfer.files;
+        if (files?.length) handleFiles(files);
+    };
 
     const editCuisineForm = useForm({
         defaultValues: {
@@ -525,7 +548,17 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
                                 <FieldGroup className="gap-2">
                                     <span className="text-xs text-grey-dark-0">{totalFiles}/{MAX_FILES} files</span>
                                     <div className="grid gap-8">
-                                        <label htmlFor="cuisineImages" className={cn("py-13 rounded-lg border border-dashed border-grey-dark-3 bg-grey-dark-4", isMaxReached ? "opacity-50 cursor-not-allowed" : "cursor-pointer")}>
+                                        <label 
+                                            htmlFor="cuisineImages" 
+                                            onDragOver={handleDragOver}
+                                            onDragLeave={handleDragLeave}
+                                            onDrop={handleDrop}
+                                            className={cn(
+                                                "py-13 rounded-lg border border-dashed border-grey-dark-3 bg-grey-dark-4",
+                                                isDragging ? "border-orange-2 bg-orange-2/5" : "border-grey-dark-3",
+                                                isMaxReached ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                                            )}
+                                        >
                                             <input
                                                 id="cuisineImages"
                                                 name="cuisineImages"

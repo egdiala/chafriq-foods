@@ -10,6 +10,7 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { IconCloudArrowUp, IconTrashSimple } from "@/components/icons";
 import { reportCustomerOrderFormSchema } from "@/validations/customer-order";
 import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 type Props = {
     open: boolean;
@@ -23,6 +24,32 @@ const ALLOWED_TYPES = ["image/", "video/"];
 
 export const ReportOrder = ({ open, orderId, setOpen }: Props) => {
     const [images, setImages] = useState<File[]>([])
+    const [isDragging, setIsDragging] = useState(false);
+
+    const totalFiles = images.length
+    const isMaxReached = totalFiles >= MAX_FILES;
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!isMaxReached) setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+        if (isMaxReached) return;
+
+        const files = e.dataTransfer.files;
+        if (files?.length) handleFiles(files);
+    };
 
     const handleFiles = (files: FileList | null) => {
         if (!files) return;
@@ -158,7 +185,16 @@ export const ReportOrder = ({ open, orderId, setOpen }: Props) => {
                                 <Field data-invalid={isInvalid}>
                                     <FieldLabel htmlFor={field.name}>Description</FieldLabel>
                                     <div className="grid gap-3 content-start">
-                                        <label htmlFor="pickup-images" className="py-13 rounded-lg border border-dashed border-grey-dark-3 bg-grey-dark-4">
+                                        <label
+                                            htmlFor="pickup-images"
+                                            onDragOver={handleDragOver}
+                                            onDragLeave={handleDragLeave}
+                                            onDrop={handleDrop}
+                                            className={cn(
+                                                "py-13 rounded-lg border border-dashed border-grey-dark-3 bg-grey-dark-4",
+                                                isDragging ? "border-orange-2 bg-orange-2/5" : "border-grey-dark-3"
+                                            )}
+                                        >
                                             <input id="pickup-images" type="file" accept="image/*,video/*" onChange={(e) => handleFiles(e.target.files)} multiple hidden />
                                             <div className="flex flex-col items-center gap-1">
                                                 <IconCloudArrowUp className="text-orange-2" />
