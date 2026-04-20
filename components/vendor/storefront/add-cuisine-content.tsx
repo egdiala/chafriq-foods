@@ -137,7 +137,7 @@ export const VendorAddCuisineContent = () => {
                 addCuisineForm.handleSubmit()
             }}>
                 <FieldSet>
-                    <FieldLegend>Cuisine Info</FieldLegend>
+                    <FieldLegend>Cuisine Information</FieldLegend>
                     <FieldGroup>
                         <addCuisineForm.Field name="menu_name">
                             {(field) => {

@@ -32,7 +32,7 @@ export const TopCards = ({ className }: Props) => {
             },
             {
                 icon: <IconPackage />,
-                title: "Avg Order Value",
+                title: "Average Order Value",
                 value: Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2, minimumFractionDigits: 0 }).format(reportStats?.kpi?.avg_order_value),
                 trend: reportStats?.kpi?.avg_order_value_change,
                 asAgainst: "vs last month"

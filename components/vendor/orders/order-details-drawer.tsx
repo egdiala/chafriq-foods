@@ -147,7 +147,7 @@ export const OrderDetailsDrawer = ({ onCancel, onDispatched, orderId, setOpen }:
                                 </div>
 
                                 <div className="flex flex-col gap-2">
-                                    <span className="font-medium text-xs text-grey-dark-3 uppercase">CUSTOMER INFO.</span>
+                                    <span className="font-medium text-xs text-grey-dark-3 uppercase">CUSTOMER INFORMATION</span>
                                     <div className="flex p-3 gap-3 bg-grey-dark-4 rounded-xl">
                                         <Avatar className="size-12.5">
                                             <AvatarImage src="" />
@@ -161,7 +161,7 @@ export const OrderDetailsDrawer = ({ onCancel, onDispatched, orderId, setOpen }:
                                                 <span className="font-medium text-xs text-grey-dark-2">{data?.data?.receiver_name}</span>
                                                 <IconExternalLink className="text-orange-2" />
                                             </div>
-                                            <a href={`tel:${formatPhoneNumberIntl(`+${data?.data?.receiver_phone}`)}`} className="text-xs text-grey-dark-2">{formatPhoneNumberIntl(`+${data?.data?.receiver_phone}`)}</a>
+                                            <a href={`tel:${formatPhoneNumberIntl(`+${data?.data?.receiver_phone}`) || data?.data?.receiver_phone}`} className="text-xs text-grey-dark-2">{formatPhoneNumberIntl(`+${data?.data?.receiver_phone}`) || data?.data?.receiver_phone}</a>
                                         </div>
                                         </div>
                                         {

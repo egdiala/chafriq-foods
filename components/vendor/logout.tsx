@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Button } from "../ui/button"
 import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent, DialogFooter, DialogClose } from "../ui/dialog"
 import { useAuth } from "@/hooks/use-auth";
+import { useUser } from "@/context/use-user";
 
 type Props = {
     open: boolean;
@@ -9,6 +10,7 @@ type Props = {
 }
 
 export const Logout = ({ open, setOpen }: Props) => {
+    const { type } = useUser()
     const { handleLogout } = useAuth()
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -26,7 +28,7 @@ export const Logout = ({ open, setOpen }: Props) => {
                     <DialogClose asChild>
                         <Button type="button" variant="secondary">Cancel</Button>
                     </DialogClose>
-                    <Button type="button" onClick={() => handleLogout()}>Logout</Button>
+                    <Button type="button" onClick={() => handleLogout(`/${type}/login`)}>Logout</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

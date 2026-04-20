@@ -21,7 +21,7 @@ export const VendorHeader = () => {
     ]
     return (
         <>
-        <nav className="lg:rounded-3xl bg-white lg:border-b-0 border-b border-b-outline">
+        <nav className="lg:rounded-3xl bg-white lg:border-b-0 border-b border-b-outline sticky top-0 inset-x-0 z-50">
             <Content className="py-0 md:py-0 md:px-4">
                 <div className="flex items-center justify-between py-4">
                     <Link href="/" className={cn(openDrawer ? "z-50" : "")}>

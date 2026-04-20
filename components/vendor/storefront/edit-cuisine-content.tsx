@@ -163,7 +163,7 @@ export const VendorEditCuisineContent = ({ cuisineId }: Props) => {
                             editCuisineForm.handleSubmit()
                         }}>
                             <FieldSet>
-                                <FieldLegend>Cuisine Info</FieldLegend>
+                                <FieldLegend>Cuisine Information</FieldLegend>
                                 <FieldGroup>
                                     <editCuisineForm.Field name="menu_name">
                                         {(field) => {

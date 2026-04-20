@@ -44,12 +44,12 @@ export const SetTemporarySchedule = ({ open, setOpen }: Props) => {
 
     return (
         <Dialog open={open} onOpenChange={closeDialog}>
-            <DialogContent className="gap-5 sm:max-w-125" showCloseButton={false}>
+            <DialogContent className="gap-5 sm:max-w-125 h-[78dvh]" showCloseButton={false}>
                 <DialogHeader>
                     <DialogTitle>Set your Temporary Schedule</DialogTitle>
                     <DialogDescription>Temporary schedules are one-off schedule outside your permanent regular schedule and they expire when the time elapses</DialogDescription>
                 </DialogHeader>
-                <form id="temporary-availability-form" className="space-y-6" onSubmit={(e) => {
+                <form id="temporary-availability-form" className="space-y-6 overflow-scroll" onSubmit={(e) => {
                     e.preventDefault()
                     availabilityForm.handleSubmit()
                 }}>
