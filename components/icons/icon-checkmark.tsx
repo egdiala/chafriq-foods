@@ -13,3 +13,11 @@ export function IconCheckmark(props: React.HTMLAttributes<SVGElement>) {
         </svg>
     );
 }
+
+export function IconCheckmarkDouble(props: React.HTMLAttributes<SVGElement>) {
+    return (
+        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+            <path d="M5.99996 2L2.33329 5.66667L0.666626 4M7.33329 3.33333L4.83329 5.83333L4.33329 5.33333" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    )
+}

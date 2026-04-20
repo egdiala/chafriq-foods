@@ -134,7 +134,7 @@ export const Hero = () => {
                                 name="search-location" 
                                 placeholder="Enter your pickup suburb/postcode"
                                 onChange={(e) => setQuery(e.target.value)}
-                                className="h-13 bg-orange-5 rounded-full"
+                                className="h-13 rounded-full"
                                 showTrigger={false}
                             >
                                 <InputGroupAddon>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Eye, EyeOff } from "lucide-react";
+import { ChevronDownIcon, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -16,6 +16,7 @@ import { useCountryList, useDishList, useSearchLocations } from "@/services/quer
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
 import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList, ComboboxStatus, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox";
+import { PasswordRules } from "@/components/password-rules";
 
 export const VendorRegisterContent = () => {
     return (
@@ -141,10 +142,10 @@ const PersonalInformation = () => {
             }}>
                 <div className="text-center space-y-3 w-full max-w-153 mx-auto">
                     <h1 className="font-sora text-grey-dark-0 font-extrabold text-3xl md:text-[2.5rem]">Join Our Culinary Team</h1>
-                    <p className="text-grey-dark-3 font-normal text-sm">Become a Chafiq cook today! Share your passion for food and earn money doing what you love. Quick signup, flexible hours!</p>
+                    <p className="text-grey-dark-3 font-normal text-sm">Correct to: Become a Chafriq cook today! Share your passion for food and earn money doing what you love. Quick signup, flexible hours!</p>
                 </div>
                 <FieldSet>
-                    <FieldLegend>Personal Info</FieldLegend>
+                    <FieldLegend>Personal Information </FieldLegend>
                     <FieldGroup>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <vendorPersonalInfoForm.Field name="first_name">
@@ -350,7 +351,7 @@ const PersonalInformation = () => {
                                     const isInvalid = !field.state.meta.isValid
                                     return (
                                         <Field data-invalid={isInvalid}>
-                                            <FieldLabel htmlFor={field.name}>Zip/Postal Code</FieldLabel>
+                                            <FieldLabel htmlFor={field.name}>Postal code</FieldLabel>
                                             <Input
                                                 type="text"
                                                 id={field.name}
@@ -430,7 +431,7 @@ const PersonalInformation = () => {
                                                 }}
                                             >
                                             <ComboboxTrigger render={
-                                                <button type="button" className="h-12 text-left bg-input-field w-full rounded px-3 py-1 text-sm text-grey-dark-0 transition-colors inset-ring-1 inset-ring-outline data-popup-open:inset-ring-orange-2 data-popup-open:bg-orange-5 active:scale-99">
+                                                <button type="button" className="relative flex items-center justify-between h-12 text-left bg-input-field w-full rounded pl-3 pr-8.5 py-1 text-sm text-grey-dark-0 transition-colors inset-ring-1 inset-ring-outline data-popup-open:inset-ring-orange-2 data-popup-open:bg-orange-5 active:scale-99">
                                                     <ComboboxValue
                                                         placeholder={
                                                         <span className="text-left">
@@ -454,6 +455,7 @@ const PersonalInformation = () => {
                                                         </>
                                                         )}
                                                     </ComboboxValue>
+                                                    <ChevronDownIcon className="absolute right-3 text-muted-foreground size-4 pointer-events-none" />
                                                 </button>
                                             } />
                                             <ComboboxContent>
@@ -483,7 +485,7 @@ const PersonalInformation = () => {
                                             <FieldLabel htmlFor={field.name}>Business location (This would be shown to customers) </FieldLabel>
                                             <Combobox
                                                 filter={null}
-                                                items={data?.data || []}
+                                                items={businessLocations?.data || []}
                                                 value={businessValue}
                                                 autoHighlight
                                                 readOnly={isHomeAddress}
@@ -649,28 +651,31 @@ const PersonalInformation = () => {
                                 {(field) => {
                                     const isInvalid = !field.state.meta.isValid
                                     return (
-                                        <Field data-invalid={isInvalid}>
-                                            <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                                            <div className="relative">
-                                                <Input
-                                                    type={showPassword ? "text" : "password"}
-                                                    id={field.name}
-                                                    name={field.name}
-                                                    aria-invalid={isInvalid}
-                                                    value={field.state.value}
-                                                    onBlur={field.handleBlur}
-                                                    onChange={(e) => field.handleChange(e.target.value)}
-                                                />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setShowPassword(!showPassword)}
-                                                    className="absolute inset-y-0 right-2 text-grey-dark-2 [&>svg]:size-4"
-                                                >
-                                                    {showPassword ? <EyeOff /> : <Eye />}
-                                                </button>
-                                            </div>
-                                            {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
-                                        </Field>
+                                        <div className="grid gap-2">
+                                            <Field data-invalid={isInvalid}>
+                                                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                                                <div className="relative">
+                                                    <Input
+                                                        type={showPassword ? "text" : "password"}
+                                                        id={field.name}
+                                                        name={field.name}
+                                                        aria-invalid={isInvalid}
+                                                        value={field.state.value}
+                                                        onBlur={field.handleBlur}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setShowPassword(!showPassword)}
+                                                        className="absolute inset-y-0 right-2 text-grey-dark-2 [&>svg]:size-4"
+                                                    >
+                                                        {showPassword ? <EyeOff /> : <Eye />}
+                                                    </button>
+                                                </div>
+                                                {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
+                                            </Field>
+                                            <PasswordRules value={field.state.value} />
+                                        </div>
                                     )
                                 }}
                             </vendorPersonalInfoForm.Field>

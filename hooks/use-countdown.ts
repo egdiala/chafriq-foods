@@ -5,7 +5,7 @@ type UseCountdownOptions = {
     autoStart?: boolean;
 };
 
-export const useCountdown = ({ initialSeconds = 30, autoStart = false }: UseCountdownOptions = {}) => {
+export const useCountdown = ({ initialSeconds = 120, autoStart = false }: UseCountdownOptions = {}) => {
     const [seconds, setSeconds] = useState(initialSeconds);
     const [isActive, setIsActive] = useState(autoStart);
 
@@ -25,9 +25,9 @@ export const useCountdown = ({ initialSeconds = 30, autoStart = false }: UseCoun
         intervalRef.current = setInterval(() => {
             setSeconds((prev) => {
                 if (prev <= 1) {
-                clear();
-                setIsActive(false); // safe here (inside callback)
-                return 0;
+                    clear();
+                    setIsActive(false); // safe here (inside callback)
+                    return 0;
                 }
                 return prev - 1;
             });

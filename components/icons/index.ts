@@ -34,6 +34,7 @@ export * from "./icon-hourglass";
 export * from "./icon-lock";
 export * from "./icon-mail-open";
 export * from "./icon-map-pin-line";
+export * from "./icon-octagon-minus";
 export * from "./icon-package"
 export * from "./icon-path";
 export * from "./icon-pencil-simple";

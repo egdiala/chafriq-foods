@@ -24,7 +24,7 @@ export const ForgotPasswordOtpDialog = ({ open, email, setOpen }: Props) => {
     const { updateEmail, updateOtpCode } = useUserAuth()
     const { mutate, isPending: isResending } = useForgotPasswordCustomer()
     const { seconds, isFinished, start, reset } = useCountdown({
-        initialSeconds: 30,
+        initialSeconds: 120,
     });
     const { mutate: verifyOtp, isPending } = useConfirmOtpCustomer(() => {
         setOpen(false)
@@ -57,7 +57,7 @@ export const ForgotPasswordOtpDialog = ({ open, email, setOpen }: Props) => {
 
     useEffect(() => {
         if (open) {
-            reset(30);
+            reset(120);
             start();
         }
     }, [open]);
@@ -66,7 +66,7 @@ export const ForgotPasswordOtpDialog = ({ open, email, setOpen }: Props) => {
         if (!isFinished || isResending) return;
 
         mutate({ email });
-        reset(30);
+        reset(120);
         start();
     };
 

@@ -7,14 +7,14 @@ export const registerCustomerFormSchema = z.object({
         return parts.length >= 2 && parts.length <= 3;
     }, "Enter a valid full name (first and last name)"),
     email: z.email("Invalid email address").min(1, "Email is required"),
-    password: z.string().min(6, 'Password must be at least 6 characters').refine(
+    password: z.string().min(6, ' ').refine(
       (value) => {
         const { length, uppercase, lowercase, specialChar } = evaluatePasswordRequirements(value);
         return length && uppercase && lowercase && specialChar;
       },
       {
         message:
-          'Password must contain at least one uppercase letter, one lowercase letter, and one special character'
+          ' '
       }
     ),
     phone_number: z.string().min(1, "Phone number is required"),

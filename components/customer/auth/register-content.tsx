@@ -13,6 +13,7 @@ import { VerifyEmailOnRegisterDialog } from "./verify-email-on-register-dialog";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { useRegisterCustomer } from "@/services/mutations/use-auth";
 import { Eye, EyeOff } from "lucide-react";
+import { PasswordRules } from "@/components/password-rules";
 
 
 export const CustomerRegisterContent = () => {
@@ -133,28 +134,31 @@ const PersonalInformation = () => {
                             {(field) => {
                                 const isInvalid = !field.state.meta.isValid
                                 return (
-                                    <Field data-invalid={isInvalid}>
-                                        <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                                        <div className="relative">
-                                            <Input
-                                                type={showPassword ? "text" : "password"}
-                                                id={field.name}
-                                                name={field.name}
-                                                aria-invalid={isInvalid}
-                                                value={field.state.value}
-                                                onBlur={field.handleBlur}
-                                                onChange={(e) => field.handleChange(e.target.value)}
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowPassword(!showPassword)}
-                                                className="absolute inset-y-0 right-2 text-grey-dark-2 [&>svg]:size-4"
-                                            >
-                                                {showPassword ? <EyeOff /> : <Eye />}
-                                            </button>
-                                        </div>
-                                        {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
-                                    </Field>
+                                    <div className="grid gap-2">
+                                        <Field data-invalid={isInvalid}>
+                                            <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                                            <div className="relative">
+                                                <Input
+                                                    type={showPassword ? "text" : "password"}
+                                                    id={field.name}
+                                                    name={field.name}
+                                                    aria-invalid={isInvalid}
+                                                    value={field.state.value}
+                                                    onBlur={field.handleBlur}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute inset-y-0 right-2 text-grey-dark-2 [&>svg]:size-4"
+                                                >
+                                                    {showPassword ? <EyeOff /> : <Eye />}
+                                                </button>
+                                            </div>
+                                            {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
+                                        </Field>
+                                        <PasswordRules value={field.state.value} />
+                                    </div>
                                 )
                             }}
                         </customerPersonalInfoForm.Field>

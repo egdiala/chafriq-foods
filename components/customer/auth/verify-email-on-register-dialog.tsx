@@ -26,7 +26,7 @@ export const VerifyEmailOnRegisterDialog = ({ email, open, setOpen }: Props) => 
         router.push("/customer/login")
     })
     const { seconds, isFinished, start, reset } = useCountdown({
-        initialSeconds: 30,
+        initialSeconds: 120,
     });
 
     const verifyEmailForm = useForm({
@@ -53,7 +53,7 @@ export const VerifyEmailOnRegisterDialog = ({ email, open, setOpen }: Props) => 
 
     useEffect(() => {
         if (open) {
-            reset(30);
+            reset(120);
             start();
         }
     }, [open]);
@@ -62,7 +62,7 @@ export const VerifyEmailOnRegisterDialog = ({ email, open, setOpen }: Props) => 
         if (!isFinished || isResending) return;
 
         resend({ email, request_type: "register" });
-        reset(30);
+        reset(120);
         start();
     };
 
