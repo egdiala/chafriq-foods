@@ -30,14 +30,14 @@ export const CustomerHeader = () => {
             <Content className="py-0 md:py-0">
                 <div className="flex items-center justify-between py-4">
                     <Link href="/" className={cn(openDrawer ? "z-50" : "")}>
-                        <LogoWithText />
+                        <LogoWithText className="h-7.5 lg:h-auto w-auto" />
                     </Link>
                     <div className="flex items-center justify-end gap-5">
                         <ShoppingCartLink />
                         <CustomerNotificationsDropdown />
                         <CustomerProfileDropdown />
                         <Button type="button" size="icon-lg" className={cn("flex lg:hidden", openDrawer ? "z-50" : "")} onClick={() => setOpenDrawer((prev) => !prev)}>
-                            {openDrawer ? (<IconClose />) : (<IconHamMenu />)}
+                            <IconHamMenu />
                         </Button>
                     </div>
                 </div>
@@ -45,10 +45,20 @@ export const CustomerHeader = () => {
         </header>
         <div 
             className={cn(
-                "absolute bg-grey-dark-1 inset-0 z-40 origin-top-right transform transition-all duration-500 lg:hidden",
+                "fixed bg-grey-dark-1 inset-0 z-[999] origin-top-right transform transition-all duration-500 lg:hidden",
                 !openDrawer ? "-translate-x-full" : "translate-x-0"
             )}
         >
+            <Content className="py-0 md:py-0">
+                <div className="flex items-center justify-between py-4">
+                    <Link href="/" className={cn(openDrawer ? "z-50" : "")}>
+                        <LogoWithText />
+                    </Link>
+                    <Button type="button" size="icon-lg" className={cn("flex lg:hidden", openDrawer ? "z-50" : "")} onClick={() => setOpenDrawer((prev) => !prev)}>
+                        <IconClose />
+                    </Button>
+                </div>
+            </Content>
             <div className="flex flex-col flex-1 mt-48 items-center justify-center gap-14">
                 {
                     CUSTOMER_HEADER_LINKS.map((headerLink, index) => (

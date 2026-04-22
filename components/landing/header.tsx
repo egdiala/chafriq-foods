@@ -38,7 +38,7 @@ export const Header = () => {
                 <div className="flex items-center justify-between py-4">
                     <Link href="/" className={cn(openDrawer ? "z-50" : "")}>
                         {
-                            isWhite ? <LogoWithTextWhite /> : <LogoWithText />
+                            isWhite ? <LogoWithTextWhite className="h-7.5 lg:h-auto w-auto" /> : <LogoWithText className="h-7.5 lg:h-auto w-auto" />
                         }
                     </Link>
                     <div className="flex items-center justify-end gap-5">

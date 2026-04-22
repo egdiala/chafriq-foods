@@ -38,11 +38,18 @@ export const CustomerNotificationsDropdown = () => {
     return (
         <>
         <Popover>
-            <PopoverTrigger asChild>
-                <Button type="button" size="icon-lg" variant="secondary">
-                    <IconBell />
-                </Button>
-            </PopoverTrigger>
+            <div className="relative">
+                {
+                    unreadMessages.length > 0 && (
+                        <span className="absolute -top-0.5 -right-0.5 z-1 text-xs font-medium text-white rounded-full bg-error p-px px-1.5">{unreadMessages.length}</span>
+                    )
+                }
+                <PopoverTrigger asChild>
+                    <Button type="button" size="icon-lg" variant="secondary">
+                        <IconBell />
+                    </Button>
+                </PopoverTrigger>  
+            </div>
             <PopoverContent className="p-0! w-100 origin-top-right gap-0 max-h-149.5" align="end" sideOffset={8}>
                 <div className="flex items-center justify-between py-4 px-5 bg-input-field rounded-t-2xl">
                     <PopoverHeader>

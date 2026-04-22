@@ -33,7 +33,7 @@ export const YourMenu = ({ className }: Props) => {
                     <>
                     {
                         data?.data?.slice(0, 4)?.map((menu) => (
-                            <Link href={`/vendor/storefront?menu_id=${menu.menu_id}`} key={menu.menu_id} className="flex items-center gap-2 rounded-lg p-3 inset-ring-1 inset-ring-outline hover:inset-ring-orange-2">
+                            <Link href={`/vendor/storefront?menu_id=${menu.menu_id}`} key={menu.menu_id} className="flex items-center gap-2 rounded-lg p-3 inset-ring-1 inset-ring-outline hover:inset-ring-orange-2 hover:bg-orange-5/30">
                                 <div className="rounded-xl overflow-hidden size-9.5">
                                     <Avatar className="rounded-xl size-9.5">
                                         <AvatarImage src={menu.file_url} alt="food" className="rounded-xl size-9.5 object-cover object-center" />
