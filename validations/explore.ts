@@ -62,6 +62,11 @@ export const exploreCookSchema = z.object({
     longitude: z.string().optional(),
     cook_id: z.string().optional(),
     timezone: z.string().optional(),
+    order_date: z.string().optional(),
+    dish_type_id: z.string().optional(),
+    q: z.string().optional(),
+    req_type: z.enum(["1", "2"]).optional(), // 	1 = default listing, 2 = most ordered cooks
+    item_per_page: z.string().optional()
 })
 
 export type ExploreCookType = z.infer<typeof exploreCookSchema>;

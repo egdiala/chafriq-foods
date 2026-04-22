@@ -74,11 +74,6 @@ export const ExploreCooksStepsAway = () => {
                             <InputGroupAddon>
                                 <Search className="ml-1" />
                             </InputGroupAddon>
-                            <InputGroupAddon align="inline-end">
-                                <InputGroupButton variant="default" size="icon-sm">
-                                    <IconSetup />
-                                </InputGroupButton>
-                            </InputGroupAddon>
                         </InputGroup>
                         <div className="flex items-center justify-center flex-wrap gap-3 md:gap-7">
                             <DropdownMenu>

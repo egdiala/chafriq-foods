@@ -3,7 +3,7 @@ import { cn, formatHours } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { IconBowlFood, IconCalendar, IconClockCountdown, IconCoins, IconCurrencyDollar } from "@/components/icons";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Separator } from "@/components/ui/separator";
@@ -17,7 +17,7 @@ type Props = {
 }
 
 export const ViewCuisineDrawer = ({ menuId, setOpen }: Props) => {
-    const [api, setApi] = useState<CarouselApi>()
+    const autoplay = useRef(Autoplay({ delay: 3000 }));
     const { data, isLoading } = useGetSingleMenu(menuId || "")
     const viewportRef = useRef<HTMLDivElement | null>(null)
     const [isBottomVisible, setIsBottomVisible] = useState(true);
@@ -50,13 +50,12 @@ export const ViewCuisineDrawer = ({ menuId, setOpen }: Props) => {
                     ) : (
                         <div className="group relative h-44 w-full rounded-t overflow-hidden">
                             <Carousel 
-                                setApi={setApi} 
                                 opts={{ loop: true }} 
                                 orientation="horizontal" 
                                 className="w-full h-full"
-                                plugins={[Autoplay({ delay: 3000 })]}
-                                onMouseEnter={() => api?.plugins().autoplay?.stop()} 
-                                onMouseLeave={() => api?.plugins().autoplay?.play()}
+                                plugins={[autoplay.current]}
+                                onMouseEnter={() => autoplay.current.stop()} 
+                                onMouseLeave={() => autoplay.current.play()}
                             >
                                 <CarouselContent>
                                     {(data?.data?.image_data || []).map((media, index) => (

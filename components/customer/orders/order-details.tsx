@@ -8,7 +8,7 @@ import { CancelOrder } from "./cancel-order";
 import { Content } from "@/components/content";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { dateToRender, formatHours } from "@/lib/utils";
 import { VariantProps } from "class-variance-authority";
@@ -16,7 +16,7 @@ import { Badge, badgeVariants } from "@/components/ui/badge";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
 import { useGetCustomerOrder } from "@/services/queries/use-orders";
 import { ORDER_STATUS, ORDER_STATUS_CLASSES } from "@/components/vendor/orders/order-card";
-import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { IconBowlFood, IconBowlSteam, IconClose, IconCookingPot, IconCurrencyDollar, IconDot, IconHourglass, IconLock, IconStarFull } from "@/components/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -32,7 +32,7 @@ export const OrderDetails = ({ orderId }: Props) => {
     const { user: userObj } = useUser()
     const [open, setOpen] = useState(false)
     const [quantity, setQuantity] = useState(1)
-    const [api, setApi] = useState<CarouselApi>()
+    const autoplay = useRef(Autoplay({ delay: 3000 }));
     const [openReport, setOpenReport] = useState(false)
     const [openRating, setOpenRating] = useState(false)
     const { data, isLoading } = useGetCustomerOrder(orderId)
@@ -124,14 +124,13 @@ export const OrderDetails = ({ orderId }: Props) => {
                                                 )
                                             }
                                             <div className="relative w-full h-auto sm:h-100 order-1 sm:order-2 overflow-hidden rounded-lg">
-                                                <Carousel 
-                                                    setApi={setApi} 
+                                                <Carousel
                                                     opts={{ loop: true }} 
                                                     orientation="horizontal" 
-                                                    plugins={[Autoplay({ delay: 3000 })]}
+                                                    plugins={[autoplay.current]}
+                                                    onMouseEnter={() => autoplay.current.stop()}
+                                                    onMouseLeave={() => autoplay.current.play()}
                                                     className="group rounded-lg overflow-hidden w-full"
-                                                    onMouseEnter={() => api?.plugins().autoplay?.stop()} 
-                                                    onMouseLeave={() => api?.plugins().autoplay?.play()}
                                                 >
                                                     <CarouselContent className="h-auto sm:h-100">
                                                         {data?.data?.img_data?.map((media, index) => (
@@ -349,13 +348,12 @@ export const OrderDetails = ({ orderId }: Props) => {
                                     {
                                         data?.data && (data?.data?.img_proof?.length > 0) ? (
                                             <Carousel 
-                                                setApi={setApi} 
                                                 opts={{ loop: true }} 
                                                 orientation="horizontal" 
                                                 className="relative w-full"
-                                                plugins={[Autoplay({ delay: 3000 })]}
-                                                onMouseEnter={() => api?.plugins().autoplay?.stop()} 
-                                                onMouseLeave={() => api?.plugins().autoplay?.play()}
+                                                plugins={[autoplay.current]}
+                                                onMouseEnter={() => autoplay.current.stop()}
+                                                onMouseLeave={() => autoplay.current.play()}
                                             >
                                                 <CarouselContent>
                                                     {(data?.data?.img_proof).map((media, index) => (

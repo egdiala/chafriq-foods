@@ -3,13 +3,13 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useCustomerAds } from "@/services/queries/use-ads"
-import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
-import { useState } from "react";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
+import { useRef } from "react";
 import Autoplay from "embla-carousel-autoplay";
 
 export const CustomerAds = () => {
     const isMobile = useIsMobile()
-    const [api, setApi] = useState<CarouselApi>()
+    const autoplay = useRef(Autoplay({ delay: 3000 }));
     const { data, isLoading } = useCustomerAds(isMobile ? "mobile" : "web")
     return (
         <>
@@ -27,13 +27,12 @@ export const CustomerAds = () => {
             ) : (!isLoading && data && (data?.data.length > 0)) ? (
                 <div className="relative w-full h-50 sm:h-37.5 overflow-hidden rounded-lg lg:col-span-8">
                     <Carousel 
-                        setApi={setApi} 
                         opts={{ loop: true }} 
                         orientation="horizontal" 
-                        plugins={[Autoplay({ delay: 3000 })]}
+                        plugins={[autoplay.current]}
+                        onMouseEnter={() => autoplay.current.stop()}
+                        onMouseLeave={() => autoplay.current.play()}
                         className="group rounded-lg overflow-hidden w-full"
-                        onMouseEnter={() => api?.plugins().autoplay?.stop()} 
-                        onMouseLeave={() => api?.plugins().autoplay?.play()}
                     >
                         <CarouselContent className="h-50 sm:h-37.5">
                             {data?.data?.map((ad) => (

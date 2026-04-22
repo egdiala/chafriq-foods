@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Content } from "../content";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
@@ -14,7 +14,7 @@ import { RatingsAndReview } from "../explore-cooks/ratings-and-review";
 import { StoreAvailability } from "../explore-cooks/store-availability";
 import { useGetCook, useGetMeal, useGetRatings } from "@/services/queries/use-explore";
 import { IconBowlFood, IconBowlSteam, IconCookingPot, IconCurrencyDollar, IconStarFull } from "../icons";
-import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
 import { OrderFoodDialog } from "./order-food-dialog";
 import { LoginNotice } from "../customer/login-notice";
@@ -28,12 +28,12 @@ type Props = {
 export const CuisineDetails = ({ mealId }: Props) => {
     const { type } = useUser()
     const [open, setOpen] = useState(false)
-    const [api, setApi] = useState<CarouselApi>()
+    const [quantity, setQuantity] = useState(1)
+    const autoplay = useRef(Autoplay({ delay: 3000 }));
     const [openLoginNotice, setOpenLoginNotice] = useState(false)
     const { data: cookRatings, isLoading: isLoadingCookRatings } = useGetRatings({ menu_id: mealId })
     const { data, isLoading } = useGetMeal({ meal_id: mealId, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
     const { data: cookData, isLoading: isLoadingCook } = useGetCook({ cook_id: data?.data?.cook_id || "", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
-    const [quantity, setQuantity] = useState(1)
 
     const increment = () => {
         setQuantity((qty) => qty + 1);
@@ -109,12 +109,11 @@ export const CuisineDetails = ({ mealId }: Props) => {
                                             </div>
                                             <div className="relative w-full h-auto sm:h-100 order-1 sm:order-2 overflow-hidden rounded-lg">
                                                 <Carousel 
-                                                    setApi={setApi} 
                                                     opts={{ loop: true }} 
                                                     orientation="horizontal" 
-                                                    plugins={[Autoplay({ delay: 3000 })]}
-                                                    onMouseEnter={() => api?.plugins().autoplay?.stop()} 
-                                                    onMouseLeave={() => api?.plugins().autoplay?.play()}
+                                                    plugins={[autoplay.current]}
+                                                    onMouseEnter={() => autoplay.current.stop()} 
+                                                    onMouseLeave={() => autoplay.current.play()}
                                                     className="group rounded-lg overflow-hidden w-full"
                                                 >
                                                     <CarouselContent className="h-auto sm:h-100">

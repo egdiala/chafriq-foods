@@ -22,6 +22,7 @@ export const ExploreCuisinesStepsAway = () => {
     const { location } = useUser()
     const [query, setQuery] = useState("");
     const debouncedQuery = useDebounce(query, 300);
+    const [dishType, setDishType] = useQueryState('dish_type')
     const [pickupLocation] = useQueryState('pickup')
     const [pickupDate, setPickupDate] = useQueryState('pickup_date')
 
@@ -39,7 +40,13 @@ export const ExploreCuisinesStepsAway = () => {
         ...filters
     })
 
-    const selectedDish = useMemo(() => dishList?.data?.find((item) => item.dish_type_id === filters.dish_type_id)?.name, [dishList?.data, filters.dish_type_id])
+    const selectedDish = useMemo(() =>
+        dishList?.data?.find((item) => item.dish_type_id === (filters.dish_type_id || dishType))?.name
+    , [dishList?.data, dishType, filters.dish_type_id])
+
+    const selectedDishId = useMemo(() =>
+        dishList?.data?.find((item) => item.dish_type_id === (filters.dish_type_id || dishType))?.dish_type_id
+    , [dishList?.data, dishType, filters.dish_type_id])
 
     return (
         <section id="steps-away" className="relative isolate bg-white after:hidden after:md:block after:-z-10 after:absolute after:bg-red-2 after:size-67.5 after:rounded-full after:bottom-0 after:top-1/2 after:right-0 after:translate-x-1/2 after:filter after:blur-[300px] overflow-hidden">
@@ -74,11 +81,6 @@ export const ExploreCuisinesStepsAway = () => {
                             <InputGroupAddon>
                                 <Search className="ml-1" />
                             </InputGroupAddon>
-                            {/* <InputGroupAddon align="inline-end">
-                                <InputGroupButton variant="default" size="icon-sm">
-                                    <IconSetup />
-                                </InputGroupButton>
-                            </InputGroupAddon> */}
                         </InputGroup>
                         <div className="flex items-center justify-center flex-wrap gap-3 md:gap-7">
                             <DropdownMenu>
@@ -94,13 +96,16 @@ export const ExploreCuisinesStepsAway = () => {
                                     dishList?.data.map((item) => (
                                         <DropdownMenuItem
                                             className="relative not-data-[variant=destructive]:focus:**:text-orange-2"
-                                            key={item.dish_type_id} onClick={() => setFilters((prev) => ({
-                                                ...prev,
-                                                dish_type_id: item.dish_type_id === prev.dish_type_id ? "" : item.dish_type_id
-                                            }))}
+                                            key={item.dish_type_id} onClick={() => {
+                                                setFilters((prev) => ({
+                                                    ...prev,
+                                                    dish_type_id: item.dish_type_id === prev.dish_type_id ? "" : item.dish_type_id
+                                                }))
+                                                setDishType(item.dish_type_id === selectedDishId ? null : item.dish_type_id)
+                                            }}
                                         >
                                             {item.name}
-                                            <Check className={cn("absolute right-2", item.dish_type_id === filters.dish_type_id ? "visible" : "invisible")} />
+                                            <Check className={cn("absolute right-2", item.dish_type_id === (filters.dish_type_id || dishType) ? "visible" : "invisible")} />
                                         </DropdownMenuItem>
                                     ))
                                 }

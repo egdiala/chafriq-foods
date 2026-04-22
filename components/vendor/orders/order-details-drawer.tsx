@@ -13,7 +13,7 @@ import { IconHourglass } from "@/components/icons/icon-hourglass";
 import { ORDER_STATUS, ORDER_STATUS_CLASSES } from "./order-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUpdateVendorOrderStatus } from "@/services/mutations/use-orders";
-import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { IconBowlFood, IconCalendar, IconClockCountdown, IconCoins, IconCurrencyDollar, IconExternalLink } from "@/components/icons";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import Autoplay from "embla-carousel-autoplay";
@@ -26,7 +26,7 @@ type Props = {
 }
 
 export const OrderDetailsDrawer = ({ onCancel, onDispatched, orderId, setOpen }: Props) => {
-    const [api, setApi] = useState<CarouselApi>()
+    const autoplay = useRef(Autoplay({ delay: 3000 }));
     const { data, isLoading } = useGetOrder(orderId || "")
     const viewportRef = useRef<HTMLDivElement | null>(null)
     const [isBottomVisible, setIsBottomVisible] = useState(true);
@@ -176,13 +176,12 @@ export const OrderDetailsDrawer = ({ onCancel, onDispatched, orderId, setOpen }:
                                         {
                                             data?.data && (data?.data?.order_images?.length > 0) ? (
                                                 <Carousel
-                                                    setApi={setApi} 
                                                     opts={{ loop: true }} 
                                                     orientation="horizontal" 
                                                     className="relative w-full"
-                                                    plugins={[Autoplay({ delay: 3000 })]}
-                                                    onMouseEnter={() => api?.plugins().autoplay?.stop()} 
-                                                    onMouseLeave={() => api?.plugins().autoplay?.play()}
+                                                    plugins={[autoplay.current]}
+                                                    onMouseEnter={() => autoplay.current.stop()} 
+                                                    onMouseLeave={() => autoplay.current.play()}
                                                 >
                                                     <CarouselContent>
                                                         {(data?.data?.order_images).map((media, index) => (

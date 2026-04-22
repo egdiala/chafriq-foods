@@ -11,7 +11,7 @@ import { useUser } from "@/context/use-user";
 import { Check, Search } from "lucide-react";
 import { useDebounce } from "@uidotdev/usehooks";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { useDishList, useGetMeals, useSearchLocations } from "@/services/queries/use-explore";
+import { useDishList, useSearchLocations } from "@/services/queries/use-explore";
 import { IconArrowDown, IconCalendar, IconCookingPot, IconForkKnife, IconMapPinLine } from "../icons";
 import { InputGroupAddon, InputGroupButton } from "../ui/input-group";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
@@ -22,7 +22,7 @@ import { type RouteType } from "next/dist/lib/load-custom-routes";
 
 export const Hero = () => {
     const router = useRouter()
-    const { type, location } = useUser()
+    const { type } = useUser()
     const [query, setQuery] = useState("");
     const trimmedSearchValue = query.trim();
     const debouncedQuery = useDebounce(trimmedSearchValue, 300);
@@ -33,13 +33,6 @@ export const Hero = () => {
         order_date: ""
     })
 
-    const { data: meals, isLoading: isLoadingMeals } = useGetMeals({
-        latitude: location?.latitude?.toString() || "",
-        longitude: location?.longitude?.toString() || "",
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        q: debouncedQuery,
-        ...filters
-    })
     const { data, isLoading, error } = useSearchLocations({ q: debouncedQuery, country: "au" })
     const [defaultValue, setDefaultValue] = useState<SearchLocationsResponse | null>(null);
     const abortControllerRef = useRef<AbortController | null>(null);
@@ -70,7 +63,7 @@ export const Hero = () => {
 
     const handleSearch = () => {
         if (!defaultValue) return;
-        router.push(appendQueryParams("/meals", { pickup: defaultValue?.name, pickup_date: filters.order_date }) as unknown as __next_route_internal_types__.RouteImpl<RouteType>)
+        router.push(appendQueryParams("/meals", { pickup: defaultValue?.name, pickup_date: filters.order_date, dish_type: filters.dish_type_id }) as unknown as __next_route_internal_types__.RouteImpl<RouteType>)
     }
     return (
         <section id="hero" className={cn("relative overflow-hidden", type === "customer" ? "h-[50svh]" : "h-svh")}>
@@ -191,7 +184,7 @@ export const Hero = () => {
                         {
                             type != "customer" ? (
                                 <Button className="[&>svg]:size-6!" asChild>
-                                    <Link href={appendQueryParams("/meals", { pickup: defaultValue?.name, pickup_date: filters.order_date }) as unknown as __next_route_internal_types__.RouteImpl<RouteType>}>
+                                    <Link href={appendQueryParams("/meals", { pickup: defaultValue?.name, pickup_date: filters.order_date, dish_type: filters.dish_type_id }) as unknown as __next_route_internal_types__.RouteImpl<RouteType>}>
                                         <IconCookingPot />
                                         Find Meals
                                     </Link>
