@@ -137,17 +137,23 @@ interface CheckoutResponse {
 }
 
 interface GetCustomerOrderResponse {
-    _id: string;
+    order_ref: string;
+    order_placed: string | Date;
+    items: CustomerOrderItem[]
+}
+
+interface CustomerOrderItem {
+    order_id: string;
     menu_name: string;
+    menu_content: string;
     quantity_size: number;
     quantity_unit: string;
     amount_total: number;
     amount_paid: number;
-    menu_content: string;
+    order_status: OrderStatus;
+    menu_id: string;
     order_start_date: string | Date;
     order_end_date: string | Date;
-    order_status: OrderStatus;
-    order_id: string;
     file_url: string;
 }
 

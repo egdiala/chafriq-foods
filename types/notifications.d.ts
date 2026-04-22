@@ -9,3 +9,7 @@ interface GetVendorNotificationResponse {
     notification_id: string;
     status: 0 | 1;
 }
+
+interface GetNotificationCountResponse {
+    total: number;
+}

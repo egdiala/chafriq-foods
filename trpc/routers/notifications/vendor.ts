@@ -2,11 +2,15 @@ import z from "zod";
 import { TRPCError } from "@trpc/server";
 import { api, handleErrorMessage } from "@/trpc/helper";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { customerNotificationsSchema } from "@/validations/customer-notifications";
+import { appendQueryParams } from "@/lib/utils";
+
+type CustomerNotificationsResponse = GetVendorNotificationResponse[] | GetNotificationCountResponse
 
 export const vendorNotificationsRouter = createTRPCRouter({
-    getNotifications: protectedProcedure.query(async ({ ctx }): Promise<{ status: string; data: GetVendorNotificationResponse[] }> => {
+    getNotifications: protectedProcedure.input(customerNotificationsSchema).query(async ({ ctx, input }): Promise<{ status: string; data: CustomerNotificationsResponse }> => {
         try {
-            const response = await api.get("cooks/accounts/notifications", {
+            const response = await api.get(appendQueryParams("cooks/accounts/notifications", input), {
                 headers: {
                     "Authorization": `Bearer ${ctx.accessToken}`
                 }
