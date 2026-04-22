@@ -5,23 +5,23 @@ import { format } from "date-fns";
 import { RateOrder } from "./rate-order";
 import { useUser } from "@/context/use-user";
 import { CancelOrder } from "./cancel-order";
+import { ReportOrder } from "./report-order";
+import Autoplay from "embla-carousel-autoplay";
 import { Content } from "@/components/content";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { dateToRender, formatHours } from "@/lib/utils";
 import { VariantProps } from "class-variance-authority";
 import { Badge, badgeVariants } from "@/components/ui/badge";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
 import { useGetCustomerOrder } from "@/services/queries/use-orders";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ORDER_STATUS, ORDER_STATUS_CLASSES } from "@/components/vendor/orders/order-card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { IconBowlFood, IconBowlSteam, IconClose, IconCookingPot, IconCurrencyDollar, IconDot, IconHourglass, IconLock, IconStarFull } from "@/components/icons";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ReportOrder } from "./report-order";
-import Autoplay from "embla-carousel-autoplay";
 
 
 type Props = {
@@ -31,7 +31,6 @@ type Props = {
 export const OrderDetails = ({ orderId }: Props) => {
     const { user: userObj } = useUser()
     const [open, setOpen] = useState(false)
-    const [quantity, setQuantity] = useState(1)
     const autoplay = useRef(Autoplay({ delay: 3000 }));
     const [openReport, setOpenReport] = useState(false)
     const [openRating, setOpenRating] = useState(false)
@@ -39,28 +38,16 @@ export const OrderDetails = ({ orderId }: Props) => {
 
     const user = userObj as CustomerProfileResponse;
 
-    const increment = () => {
-        setQuantity((qty) => qty + 1);
-    }
-
-    const decrease = () => {
-        if (quantity === (data?.data?.quantity_size || 1)) return;
-        setQuantity((qty) => qty - 1)
-    }
-
-    useEffect(() => {
-        if (data) {
-            setQuantity(data?.data?.quantity_size)
-        }
-    }, [data])
-
     const orderSummary = useMemo(() => {
         return [
             {
                 label: "Total Meals",
                 amount: Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format(data?.data?.amount_total || 0)
             },
-            { label: "Tax", amount: "$0" },
+            {
+                label: "Tax",
+                amount: Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format(data?.data?.platform_fee?.amount || 0)
+            },
             {
                 label: "Total",
                 amount: Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 2 }).format(data?.data?.amount_total || 0)
